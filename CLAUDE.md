@@ -4,7 +4,7 @@ Claude Code loads this file automatically at the start of every session in this 
 It records the full history and every decision from the original cloud session that built the project.
 
 ## Owner and working style
-- Owner: Krishav (GitHub `krishavshaurya0303`, repo `krishavshaurya0303/AlgViz-`, branch `claude/algoviz-javafx-dsa-qsn47c`).
+- Owner: Krishav (GitHub `krishavshaurya0303`, repo `krishavshaurya0303/AlgViz-`, branch `main`).
 - Purpose: college DSA + Java OOP project, to be demoed to a Head of Department and defended in a viva.
 - Wants replies that are strict, blunt, concise and complete.
 - When teaching: one small idea at a time, with ASCII traces before code, one question at a time.
@@ -119,8 +119,8 @@ Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and 
 - The JavaFX 21 + Java 27 combination works for launching. If issues appear, bump `javafx.version` in `pom.xml`.
 
 ## Git
-- The original remote branch is `claude/algoviz-javafx-dsa-qsn47c`.
-- Remote: `origin` = `https://github.com/krishavshaurya0303/AlgViz-.git`. The local branch `claude/algoviz-javafx-dsa-qsn47c` tracks `origin/claude/algoviz-javafx-dsa-qsn47c`, with `core.autocrlf true`.
+- The only branch is `main` (renamed on 2026-10-27 from the original `claude/algoviz-javafx-dsa-qsn47c`).
+- Remote: `origin` = `https://github.com/krishavshaurya0303/AlgViz-.git`. Local `main` tracks `origin/main`, with `core.autocrlf true`.
 - Git lives at `C:\Program Files\Git\cmd`. Shells opened before the install may need `$env:Path = "C:\Program Files\Git\cmd;$env:Path"`.
 - Push only when the user says so. The first push opens a GitHub sign-in window for the user.
 - Commit messages so far end with a `Co-Authored-By` line.

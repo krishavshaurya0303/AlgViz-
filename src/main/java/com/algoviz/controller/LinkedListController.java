@@ -48,7 +48,6 @@ public final class LinkedListController extends VisualizerController<ListStep> {
     @FXML private LinkedListCanvas canvas;
     @FXML private VBox emptyHolder;
     @FXML private Label codeTitle;
-    @FXML private Label aboutLabel;
 
     private final SinglyLinkedList list = new SinglyLinkedList();
     private final Random random = new Random();
@@ -83,7 +82,7 @@ public final class LinkedListController extends VisualizerController<ListStep> {
         emptyHolder.getChildren().add(emptyState);
 
         legend.item(Palette.CYAN, "current")
-                .item(Palette.INDIGO, "Visited")
+                .item(Palette.BLUE, "Visited")
                 .item(Palette.GREEN, "New / found")
                 .item(Palette.CORAL, "Removing")
                 .item(Palette.AMBER, "Pointer just changed")
@@ -93,13 +92,8 @@ public final class LinkedListController extends VisualizerController<ListStep> {
                         MetricType.POINTER_CHANGES, MetricType.NODE_COUNT),
                 List.<String[]>of(new String[]{STEP, "Position in the recorded steps of the current operation."}));
 
-        aboutLabel.setText("Each node stores a value and a next pointer. The list is reached only through head, "
-                + "so getting to index i means following i pointers. Inserting and deleting never shift elements; "
-                + "they only redirect pointers — and the order of those redirections matters.");
-
         initPlayback();
         load(list.currentState(ListOperation.TRAVERSE, "The list is empty: head points to null."), false);
-        showComplexity(ListOperation.INSERT_HEAD);
     }
 
     private static void tip(Button b, String text) {
@@ -264,11 +258,6 @@ public final class LinkedListController extends VisualizerController<ListStep> {
         }
     }
 
-    private void showComplexity(ListOperation op) {
-        complexityCard.showSingle(op.label(), op.time(), "O(1)",
-                "Worst case for a list with only a head pointer. " + context.catalog().singlyLinkedList().complexityNote());
-    }
-
     // ------------------------------------------------------------ rendering
 
     @Override
@@ -283,7 +272,6 @@ public final class LinkedListController extends VisualizerController<ListStep> {
             shownCode = op;
             pseudocodePanel.setCode(op.pseudocode());
             codeTitle.setText("PSEUDOCODE · " + op.label().toUpperCase());
-            showComplexity(op);
         }
     }
 

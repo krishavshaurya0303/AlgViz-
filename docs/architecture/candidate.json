@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "AlgoViz — how a run becomes steps on screen",
+    "output": "docs/architecture/algoviz-architecture.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/krishavshaurya0303/AlgViz-.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "b17223d59de635e76d8cf58c7a4f8443673006da"
+    }
+  },
+  "components": [
+    {
+      "id": "student", "type": "external", "label": "Student", "sublabel": "mouse and arrow keys",
+      "pos": [40, 230], "size": [140, 64]
+    },
+    {
+      "id": "shell", "type": "frontend", "label": "MainController", "sublabel": "shell, lazy FXML modules",
+      "pos": [270, 60], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/controller/MainController.java", "line": 38, "end_line": 45, "label": "shell and lazy module cache" },
+        { "path": "src/main/java/com/algoviz/controller/MainController.java", "line": 79, "end_line": 85, "label": "controller factory injects AppContext" },
+        { "path": "src/main/java/com/algoviz/AlgoVizApplication.java", "line": 37, "end_line": 44, "label": "startup wiring" }
+      ]
+    },
+    {
+      "id": "modules", "type": "frontend", "label": "Visualizer screens", "sublabel": "Sorting, Graph, Tree, List",
+      "pos": [520, 60], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/controller/VisualizerController.java", "line": 53, "end_line": 75, "label": "shared base wires bar and render" },
+        { "path": "src/main/java/com/algoviz/controller/SortingController.java", "line": 258, "end_line": 274, "label": "submit run, then driver.load" }
+      ]
+    },
+    {
+      "id": "runner", "type": "backend", "label": "BackgroundRunner", "sublabel": "Task + ticket, newest wins",
+      "pos": [770, 60], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/ui/animation/BackgroundRunner.java", "line": 10, "end_line": 47, "label": "single worker thread, stale results dropped" }
+      ]
+    },
+    {
+      "id": "sortgraph", "type": "backend", "label": "Sort & graph engines", "sublabel": "5 sorts, BFS/DFS/Dijkstra",
+      "pos": [1020, 60], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/engine/sorting/SortingAlgorithm.java", "line": 14, "end_line": 27, "label": "template run() records steps" },
+        { "path": "src/main/java/com/algoviz/engine/graph/GraphSearchAlgorithm.java", "line": 17, "end_line": 29, "label": "graph search template" },
+        { "path": "src/main/java/com/algoviz/service/AlgorithmCatalog.java", "line": 29, "end_line": 35, "label": "registered strategies" }
+      ]
+    },
+    {
+      "id": "treelist", "type": "backend", "label": "BST & linked list", "sublabel": "traced ops, run on FX thread",
+      "pos": [520, 230], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/engine/tree/BinarySearchTree.java", "line": 14, "end_line": 23, "label": "ops mutate tree, return a trace" },
+        { "path": "src/main/java/com/algoviz/engine/linkedlist/SinglyLinkedList.java", "line": 16, "end_line": 23, "label": "each pointer change is a step" },
+        { "path": "src/main/java/com/algoviz/controller/TreeController.java", "line": 145, "end_line": 167, "label": "called directly, no background task" }
+      ]
+    },
+    {
+      "id": "trace", "type": "backend", "label": "ExecutionTrace", "sublabel": "immutable step snapshots",
+      "pos": [1020, 230], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/engine/ExecutionTrace.java", "line": 8, "end_line": 28, "label": "unmodifiable list of steps" }
+      ]
+    },
+    {
+      "id": "playbar", "type": "frontend", "label": "PlaybackBar", "sublabel": "Previous / Next only",
+      "pos": [270, 400], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/ui/component/PlaybackBar.java", "line": 38, "end_line": 52, "label": "buttons call stepBackward / stepForward" },
+        { "path": "src/main/java/com/algoviz/controller/VisualizerController.java", "line": 115, "end_line": 124, "label": "arrow keys do the same" }
+      ]
+    },
+    {
+      "id": "driver", "type": "backend", "label": "FxPlaybackDriver", "sublabel": "cursor over snapshots",
+      "pos": [770, 400], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/ui/animation/FxPlaybackDriver.java", "line": 96, "end_line": 133, "label": "load and step commands" },
+        { "path": "src/main/java/com/algoviz/engine/PlaybackController.java", "line": 120, "end_line": 142, "label": "step forward / backward" },
+        { "path": "src/main/java/com/algoviz/engine/ExecutionHistory.java", "line": 5, "end_line": 26, "label": "moves a cursor, never recomputes" }
+      ]
+    },
+    {
+      "id": "canvases", "type": "frontend", "label": "Canvas renderers", "sublabel": "bars, grid, tree, list",
+      "pos": [520, 560], "size": [150, 64],
+      "sources": [
+        { "path": "src/main/java/com/algoviz/controller/VisualizerController.java", "line": 58, "end_line": 75, "label": "each step updates explanation, code, metrics" },
+        { "path": "src/main/java/com/algoviz/ui/render/SortingCanvas.java", "line": 56, "end_line": 60, "label": "tween from previous to current step" }
+      ]
+    }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Background thread: algoviz-trace-builder", "wraps": ["runner", "sortgraph"] }
+  ],
+  "connections": [
+    { "id": "navigate", "from": "student", "to": "shell", "label": "navigate" },
+    { "id": "open-module", "from": "shell", "to": "modules", "label": "open()" },
+    { "id": "submit-run", "from": "modules", "to": "runner", "label": "submit(run)", "variant": "emphasis" },
+    { "id": "run-input", "from": "runner", "to": "sortgraph", "label": "run(input)", "variant": "emphasis" },
+    { "id": "records-sort", "from": "sortgraph", "to": "trace", "label": "records" },
+    { "id": "direct-op", "from": "modules", "to": "treelist", "label": "insert, delete…" },
+    { "id": "records-tree", "from": "treelist", "to": "trace", "label": "returns trace" },
+    { "id": "load-trace", "from": "trace", "to": "driver", "label": "driver.load(trace)" },
+    { "id": "press-step", "from": "student", "to": "playbar", "label": "Prev / Next" },
+    { "id": "step-cursor", "from": "playbar", "to": "driver", "label": "step ±1" },
+    { "id": "render-step", "from": "driver", "to": "canvases", "label": "render(step)" },
+    { "id": "draws", "from": "canvases", "to": "student", "label": "draws step" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Step backward is a lookup", "items": ["Every step stores a full copy of the data and counters", "Previous moves a cursor back; nothing is undone or recomputed"] },
+    { "dot": "emerald", "title": "Threads", "items": ["Sort and graph traces are built off the JavaFX thread; only the newest result is delivered", "BST and linked-list operations are small and run directly on the JavaFX thread"] },
+    { "dot": "violet", "title": "Not drawn", "items": ["AppContext hands AlgorithmCatalog and SettingsService to every controller (no singletons)", "Settings are saved to ~/.algoviz/settings.properties", "The engine package has no JavaFX imports"] }
+  ]
+}

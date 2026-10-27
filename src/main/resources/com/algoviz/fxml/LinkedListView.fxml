@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.algoviz.ui.component.ComplexityCard?>
 <?import com.algoviz.ui.component.ExplanationCard?>
 <?import com.algoviz.ui.component.Legend?>
 <?import com.algoviz.ui.component.MetricsPanel?>
@@ -85,11 +84,6 @@
                 <VBox styleClass="card">
                     <Label fx:id="codeTitle" text="PSEUDOCODE" styleClass="card-title"/>
                     <PseudocodePanel fx:id="pseudocodePanel"/>
-                </VBox>
-                <ComplexityCard fx:id="complexityCard"/>
-                <VBox styleClass="card">
-                    <Label text="POINTERS IN A NUTSHELL" styleClass="card-title"/>
-                    <Label fx:id="aboutLabel" styleClass="doc-text" wrapText="true"/>
                 </VBox>
             </VBox>
         </ScrollPane>

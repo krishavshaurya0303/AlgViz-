@@ -97,7 +97,7 @@ public final class GridCanvas extends ResizableCanvas {
         originY = Math.floor(top + (h - top - bottom - cell * rows) / 2);
         double t = tween.eased();
         double gap = cell >= 14 ? 1.5 : 1;
-        double radius = Math.min(5, cell * 0.22);
+        double radius = Math.min(2, cell * 0.12);
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -121,7 +121,7 @@ public final class GridCanvas extends ResizableCanvas {
 
                 Color overlay = switch (vis) {
                     case FRONTIER -> Palette.CELL_FRONTIER;
-                    case VISITED -> grid.isWeighted(node) ? Color.web("#4a3f6e") : Palette.CELL_VISITED;
+                    case VISITED -> grid.isWeighted(node) ? Palette.CELL_WEIGHT.interpolate(Palette.CELL_VISITED, 0.6) : Palette.CELL_VISITED;
                     case CURRENT -> Palette.AMBER;
                     case PATH -> Palette.CELL_PATH;
                     default -> null;
@@ -173,12 +173,10 @@ public final class GridCanvas extends ResizableCanvas {
         double r = cell * 0.38;
         double cx = x + cell / 2;
         double cy = y + cell / 2;
-        gc.setFill(Palette.withAlpha(color, 0.25));
-        gc.fillOval(cx - r - 3, cy - r - 3, 2 * r + 6, 2 * r + 6);
         gc.setFill(color);
         gc.fillOval(cx - r, cy - r, 2 * r, 2 * r);
         if (cell >= 14) {
-            gc.setFill(Color.WHITE);
+            gc.setFill(Palette.BG_0);
             gc.setFont(FontLoader.uiBold(Math.min(12, cell * 0.42)));
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setTextBaseline(VPos.CENTER);

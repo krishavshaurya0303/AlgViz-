@@ -3,6 +3,7 @@ package com.algoviz.ui.render;
 import com.algoviz.engine.tree.TreeHighlight;
 import com.algoviz.engine.tree.TreeSnapshot;
 import com.algoviz.engine.tree.TreeStep;
+import com.algoviz.ui.animation.SpringField;
 import com.algoviz.ui.animation.Tween;
 import com.algoviz.ui.theme.FontLoader;
 import com.algoviz.ui.theme.Palette;
@@ -11,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,8 @@ import java.util.Map;
  * Draws a BST snapshot. Layout: x = inorder rank (so no two nodes ever overlap
  * and the picture reads left-to-right in sorted order), y = depth.
  * Between steps nodes slide to their new positions by id, new nodes fade in
- * and removed nodes fade out.
+ * and removed nodes fade out. Nodes can be dragged; their links pull the
+ * neighbouring nodes along and everything springs back on release.
  */
 public final class TreeCanvas extends ResizableCanvas {
 
@@ -34,20 +37,38 @@ public final class TreeCanvas extends ResizableCanvas {
     }
 
     private final Tween tween = new Tween(this::redraw);
+    private final SpringField springs = new SpringField(this::redraw);
     private TreeStep from;
     private TreeStep to;
+
+    public TreeCanvas() {
+        enableDragging(springs);
+    }
 
     public void show(TreeStep previous, TreeStep current, double millis) {
         from = previous;
         to = current;
+        updateLinks();
         updateMinSize();
         tween.start(previous == null ? 0 : millis);
     }
 
     public void clear() {
         from = to = null;
+        springs.reset();
         updateMinSize();
         redraw();
+    }
+
+    private void updateLinks() {
+        Map<Integer, Placed> placed = to == null ? Map.of() : place(to.tree());
+        List<int[]> links = new ArrayList<>();
+        for (Placed p : placed.values()) {
+            if (p.parent() != null) {
+                links.add(new int[]{p.parent().id(), p.node().id()});
+            }
+        }
+        springs.setLinks(placed.keySet(), links);
     }
 
     private void updateMinSize() {
@@ -112,6 +133,11 @@ public final class TreeCanvas extends ResizableCanvas {
             current.put(e.getKey(), start == null ? end
                     : new Pos(Tween.lerp(start.x(), end.x(), t), Tween.lerp(start.y(), end.y(), t)));
         }
+        beginHomes(1, r + 4, r * 1.3);
+        current.replaceAll((id, p) -> {
+            rememberHome(id, p.x(), p.y());
+            return new Pos(p.x() + springs.dx(id), p.y() + springs.dy(id));
+        });
 
         // Edges of nodes that are disappearing fade out.
         for (Placed p : fromPlaced.values()) {
@@ -175,43 +201,34 @@ public final class TreeCanvas extends ResizableCanvas {
         Color fill = Palette.BG_3;
         Color stroke = Palette.NEUTRAL_LIGHT;
         Color text = Palette.TEXT;
-        Color glow = null;
         if (h != null) {
             switch (h) {
                 case CURRENT -> {
                     stroke = Palette.CYAN;
-                    fill = Color.web("#173a48");
-                    glow = Palette.CYAN;
+                    fill = Palette.tint(Palette.CYAN);
                 }
                 case PATH -> {
                     stroke = Palette.INDIGO;
-                    fill = Color.web("#1f2350");
+                    fill = Palette.tint(Palette.INDIGO);
                 }
                 case FOUND, INSERTED -> {
                     stroke = Palette.GREEN;
-                    fill = Color.web("#14402f");
-                    glow = Palette.GREEN;
+                    fill = Palette.tint(Palette.GREEN);
                 }
                 case DELETE_TARGET -> {
                     stroke = Palette.CORAL;
-                    fill = Color.web("#4a1f27");
-                    glow = Palette.CORAL;
+                    fill = Palette.tint(Palette.CORAL);
                 }
                 case SUCCESSOR -> {
                     stroke = Palette.AMBER;
-                    fill = Color.web("#46351a");
-                    glow = Palette.AMBER;
+                    fill = Palette.tint(Palette.AMBER);
                 }
                 case VISITED -> {
                     stroke = Palette.withAlpha(Palette.GREEN, 0.8);
-                    fill = Color.web("#163329");
-                    text = Color.web("#9cf0c9");
+                    fill = Palette.BG_3.interpolate(Palette.GREEN, 0.12);
+                    text = Palette.GREEN;
                 }
             }
-        }
-        if (glow != null) {
-            gc.setFill(Palette.withAlpha(glow, 0.18 * alpha));
-            gc.fillOval(x - r - 6, y - r - 6, 2 * r + 12, 2 * r + 12);
         }
         gc.setFill(Palette.withAlpha(fill, alpha));
         gc.fillOval(x - r, y - r, 2 * r, 2 * r);

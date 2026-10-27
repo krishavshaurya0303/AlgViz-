@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\Krishav Shaurya\\Downloads\\AlgoViz\\AlgoViz\\docs\\architecture\\candidate.json",
+    "sha256": "a32e50b70ff18148f98f591dd8df5d6576dd6fbd399cd2c6e1a567736610b687",
+    "bytes": 7382
+  },
+  "artifact": {
+    "path": "C:\\Users\\Krishav Shaurya\\Downloads\\AlgoViz\\AlgoViz\\docs\\architecture\\algoviz-architecture.html",
+    "sha256": "5e46e19447c6b8e27c526014712fc69d941d7da0898792a5bbf600fcd40eb09b",
+    "bytes": 856910
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\Krishav Shaurya\\Downloads\\AlgoViz\\AlgoViz\\docs\\architecture\\algoviz-architecture.finalize.json",
+    "summaryReceipt": "C:\\Users\\Krishav Shaurya\\Downloads\\AlgoViz\\AlgoViz\\docs\\architecture\\algoviz-architecture.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\Krishav Shaurya\\Downloads\\AlgoViz\\AlgoViz\\docs\\architecture\\algoviz-architecture.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-27T19:28:21.205Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 7454,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}

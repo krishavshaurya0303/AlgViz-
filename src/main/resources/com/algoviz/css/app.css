@@ -5,27 +5,27 @@
    ===================================================================== */
 .root {
     /* surfaces */
-    -av-bg-0: #0a0e18;
-    -av-bg-1: #0f1422;
-    -av-bg-2: #141a2b;
-    -av-bg-3: #1a2135;
-    -av-bg-4: #222a42;
-    -av-border: #222a40;
-    -av-border-strong: #2f3956;
+    -av-bg-0: #1b1916;
+    -av-bg-1: #201d1a;
+    -av-bg-2: #25221e;
+    -av-bg-3: #2c2824;
+    -av-bg-4: #36312b;
+    -av-border: #38332c;
+    -av-border-strong: #4d463d;
 
     /* text */
-    -av-text: #e6e9f2;
-    -av-text-2: #a6aec4;
-    -av-text-3: #6d7693;
+    -av-text: #ece4d4;
+    -av-text-2: #b8ad9b;
+    -av-text-3: #857b6c;
 
     /* accents */
-    -av-indigo: #6c72ff;
-    -av-violet: #9b7bff;
-    -av-blue: #4c8dff;
-    -av-cyan: #38d6e8;
-    -av-green: #3ddc97;
-    -av-amber: #ffb547;
-    -av-coral: #ff6b6b;
+    -av-indigo: #c8553d;
+    -av-violet: #a88aa6;
+    -av-blue: #7f9cc0;
+    -av-cyan: #86b4c9;
+    -av-green: #8fb573;
+    -av-amber: #d9a441;
+    -av-coral: #e07a62;
 
     -fx-font-family: "Inter", "Segoe UI", "Helvetica Neue", "Liberation Sans", sans-serif;
     -fx-font-size: 13px;
@@ -33,17 +33,17 @@
     -fx-background-color: -av-bg-0;
 
     /* defaults inherited by built-in controls */
-    -fx-base: #1a2135;
+    -fx-base: #2c2824;
     -fx-background: -av-bg-0;
     -fx-control-inner-background: -av-bg-3;
     -fx-accent: -av-indigo;
     -fx-focus-color: -av-cyan;
-    -fx-faint-focus-color: rgba(56, 214, 232, 0.18);
+    -fx-faint-focus-color: rgba(134,180,201, 0.18);
     -fx-selection-bar: -av-indigo;
-    -fx-selection-bar-non-focused: #3a3f8f;
+    -fx-selection-bar-non-focused: #5a3a30;
     -fx-text-base-color: -av-text;
     -fx-text-background-color: -av-text;
-    -fx-prompt-text-fill: #7a83a1;
+    -fx-prompt-text-fill: -av-text-3;
 }
 
 .label, .text {
@@ -86,7 +86,7 @@
 
 .nav-item {
     -fx-background-color: transparent;
-    -fx-background-radius: 8;
+    -fx-background-radius: 3;
     -fx-text-fill: -av-text-2;
     -fx-font-size: 13px;
     -fx-alignment: center-left;
@@ -106,19 +106,19 @@
 .nav-item:hover .icon-stroke { -fx-stroke: -av-text-2; }
 
 .nav-item:selected {
-    -fx-background-color: linear-gradient(to right, rgba(108,114,255,0.22), rgba(108,114,255,0.06));
+    -fx-background-color: rgba(200,85,61,0.22);
     -fx-text-fill: -av-text;
     -fx-border-color: transparent transparent transparent -av-indigo;
     -fx-border-width: 0 0 0 2;
-    -fx-border-radius: 8;
+    -fx-border-radius: 3;
 }
 
-.nav-item:selected .icon-stroke { -fx-stroke: #a9adff; }
+.nav-item:selected .icon-stroke { -fx-stroke: derive(-av-indigo, 40%); }
 
 .nav-item:focus-visible {
     -fx-border-color: -av-cyan;
     -fx-border-width: 1;
-    -fx-border-radius: 8;
+    -fx-border-radius: 3;
 }
 
 .sidebar-footer {
@@ -168,8 +168,8 @@
     -fx-max-height: 30;
     -fx-background-color: -av-bg-2;
     -fx-border-color: -av-border;
-    -fx-border-radius: 999;
-    -fx-background-radius: 999;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
     -fx-padding: 5 12 5 10;
     -fx-spacing: 8;
     -fx-alignment: center;
@@ -199,13 +199,13 @@
 
 .toast {
     -fx-background-color: -av-bg-3;
-    -fx-background-radius: 10;
+    -fx-background-radius: 3;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 10;
+    -fx-border-radius: 3;
     -fx-padding: 10 14 10 12;
     -fx-spacing: 10;
     -fx-alignment: center-left;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 18, 0.2, 0, 6);
+    -fx-effect: null;
     -fx-max-width: 380;
 }
 
@@ -226,12 +226,12 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #2a3350;
-    -fx-background-radius: 6;
+    -fx-background-color: -av-border-strong;
+    -fx-background-radius: 2;
     -fx-background-insets: 2;
 }
 
-.scroll-bar .thumb:hover { -fx-background-color: #3a4566; }
+.scroll-bar .thumb:hover { -fx-background-color: -av-text-3; }
 
 .scroll-bar .increment-button, .scroll-bar .decrement-button {
     -fx-padding: 0;
@@ -259,5 +259,5 @@
 }
 
 .split-pane > .split-pane-divider:hover {
-    -fx-background-color: rgba(108,114,255,0.25);
+    -fx-background-color: rgba(200,85,61,0.25);
 }

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "f5950a79-515e-4e70-9f08-d69c451e9de2",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\Krishav Shaurya\\Downloads\\AlgoViz\\AlgoViz\\docs\\architecture\\candidate.json",
+  "output": "C:\\Users\\Krishav Shaurya\\Downloads\\AlgoViz\\AlgoViz\\docs\\architecture\\algoviz-architecture.html",
+  "specification": {
+    "sha256": "a32e50b70ff18148f98f591dd8df5d6576dd6fbd399cd2c6e1a567736610b687",
+    "bytes": 7382
+  },
+  "artifact": {
+    "sha256": "5e46e19447c6b8e27c526014712fc69d941d7da0898792a5bbf600fcd40eb09b",
+    "bytes": 856910
+  }
+}

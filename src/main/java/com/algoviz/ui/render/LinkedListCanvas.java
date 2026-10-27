@@ -3,6 +3,7 @@ package com.algoviz.ui.render;
 import com.algoviz.engine.linkedlist.ListHighlight;
 import com.algoviz.engine.linkedlist.ListSnapshot;
 import com.algoviz.engine.linkedlist.ListStep;
+import com.algoviz.ui.animation.SpringField;
 import com.algoviz.ui.animation.Tween;
 import com.algoviz.ui.theme.FontLoader;
 import com.algoviz.ui.theme.Palette;
@@ -11,14 +12,20 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Draws the real pointer structure of a {@link ListSnapshot}: each node is a
  * value box plus a next-pointer box, and every arrow is drawn from the actual
  * next id — so during reversal the arrows visibly turn around. A slash in the
  * next box means null. Nodes not yet (or no longer) linked are drawn raised.
+ * Nodes can be dragged; the next pointers pull their neighbours along and
+ * everything springs back on release.
  */
 public final class LinkedListCanvas extends ResizableCanvas {
 
@@ -35,15 +42,35 @@ public final class LinkedListCanvas extends ResizableCanvas {
     }
 
     private final Tween tween = new Tween(this::redraw);
+    private final SpringField springs = new SpringField(this::redraw);
     private ListStep from;
     private ListStep to;
+
+    public LinkedListCanvas() {
+        enableDragging(springs);
+    }
 
     public void show(ListStep previous, ListStep current, double millis) {
         from = previous;
         to = current;
+        updateLinks();
         int n = current == null ? 0 : current.snapshot().nodes().size();
         setMinWidth(neededWidth(n) * MIN_SCALE);
         tween.start(previous == null ? 0 : millis);
+    }
+
+    private void updateLinks() {
+        Set<Integer> ids = new HashSet<>();
+        List<int[]> links = new ArrayList<>();
+        if (to != null) {
+            for (ListSnapshot.NodeView n : to.snapshot().nodes()) {
+                ids.add(n.id());
+                if (n.nextId() != -1) {
+                    links.add(new int[]{n.id(), n.nextId()});
+                }
+            }
+        }
+        springs.setLinks(ids, links);
     }
 
     private static double neededWidth(int n) {
@@ -83,15 +110,20 @@ public final class LinkedListCanvas extends ResizableCanvas {
             Pos start = fromPos.get(id);
             pos.put(id, start == null ? p : new Pos(Tween.lerp(start.x(), p.x(), t), Tween.lerp(start.y(), p.y(), t)));
         });
+        beginHomes(scale, NODE_W / 2 * scale, NODE_H * scale);
+        pos.replaceAll((id, p) -> {
+            rememberHome(id, offsetX + (p.x() + NODE_W / 2) * scale, (p.y() + NODE_H / 2) * scale);
+            return new Pos(p.x() + springs.dx(id), p.y() + springs.dy(id));
+        });
 
         // head pointer box
         double headX = PAD;
         double headY = rowY + 6;
         gc.setFill(Palette.BG_3);
-        gc.fillRoundRect(headX, headY, HEAD_W, NODE_H - 12, 8, 8);
+        gc.fillRoundRect(headX, headY, HEAD_W, NODE_H - 12, 3, 3);
         gc.setStroke(s.headChanged() ? Palette.AMBER : Palette.BORDER_STRONG);
         gc.setLineWidth(1.4);
-        gc.strokeRoundRect(headX, headY, HEAD_W, NODE_H - 12, 8, 8);
+        gc.strokeRoundRect(headX, headY, HEAD_W, NODE_H - 12, 3, 3);
         gc.setFill(Palette.TEXT);
         gc.setFont(FontLoader.mono(12));
         gc.setTextAlign(TextAlignment.CENTER);
@@ -158,45 +190,37 @@ public final class LinkedListCanvas extends ResizableCanvas {
                           double alpha) {
         Color stroke = Palette.NEUTRAL_LIGHT;
         Color fill = Palette.BG_3;
-        Color glow = null;
         if (h != null) {
             switch (h) {
                 case CURRENT -> {
                     stroke = Palette.CYAN;
-                    fill = Color.web("#173a48");
-                    glow = Palette.CYAN;
+                    fill = Palette.tint(Palette.CYAN);
                 }
                 case VISITED -> {
-                    stroke = Palette.withAlpha(Palette.INDIGO, 0.9);
-                    fill = Color.web("#1d2147");
+                    stroke = Palette.withAlpha(Palette.BLUE, 0.9);
+                    fill = Palette.tint(Palette.BLUE);
                 }
                 case FOUND -> {
                     stroke = Palette.GREEN;
-                    fill = Color.web("#14402f");
-                    glow = Palette.GREEN;
+                    fill = Palette.tint(Palette.GREEN);
                 }
                 case NEW -> {
                     stroke = Palette.GREEN;
-                    fill = Color.web("#163329");
+                    fill = Palette.BG_3.interpolate(Palette.GREEN, 0.12);
                 }
                 case REMOVING -> {
                     stroke = Palette.CORAL;
-                    fill = Color.web("#4a1f27");
-                    glow = Palette.CORAL;
+                    fill = Palette.tint(Palette.CORAL);
                 }
             }
         }
-        if (glow != null) {
-            gc.setFill(Palette.withAlpha(glow, 0.16 * alpha));
-            gc.fillRoundRect(x - 6, y - 6, NODE_W + 12, NODE_H + 12, 16, 16);
-        }
         gc.setFill(Palette.withAlpha(fill, alpha));
-        gc.fillRoundRect(x, y, NODE_W, NODE_H, 10, 10);
+        gc.fillRoundRect(x, y, NODE_W, NODE_H, 4, 4);
         gc.setFill(Palette.withAlpha(Palette.BG_1, alpha));
-        gc.fillRoundRect(x + VALUE_W, y + 1, NODE_W - VALUE_W - 1, NODE_H - 2, 9, 9);
+        gc.fillRoundRect(x + VALUE_W, y + 1, NODE_W - VALUE_W - 1, NODE_H - 2, 3, 3);
         gc.setStroke(Palette.withAlpha(stroke, alpha));
         gc.setLineWidth(1.8);
-        gc.strokeRoundRect(x, y, NODE_W, NODE_H, 10, 10);
+        gc.strokeRoundRect(x, y, NODE_W, NODE_H, 4, 4);
         gc.setLineWidth(1);
         gc.strokeLine(x + VALUE_W, y + 4, x + VALUE_W, y + NODE_H - 4);
 
@@ -266,7 +290,9 @@ public final class LinkedListCanvas extends ResizableCanvas {
 
     private void drawPointers(GraphicsContext gc, ListSnapshot s, Map<Integer, Pos> pos, double rowY) {
         Map<Integer, Integer> stack = new HashMap<>();
-        double nullX = PAD + HEAD_W + GAP + s.nodes().size() * (NODE_W + GAP) + 10;
+        // Null pointers are listed above the head box: arrows and raised nodes never reach that corner,
+        // and it is always inside the canvas (the space right of the last node is too narrow).
+        double nullX = PAD;
         int nullRow = 0;
         gc.setFont(FontLoader.mono(11));
         gc.setTextBaseline(VPos.CENTER);
@@ -285,9 +311,9 @@ public final class LinkedListCanvas extends ResizableCanvas {
             if (e.getValue() == -1) {
                 String text = name + " = null";
                 double w2 = text.length() * 7 + 16;
-                double y = rowY - 34 + nullRow * 24;
+                double y = rowY - 22 - nullRow * 24;
                 gc.setFill(Palette.withAlpha(c, 0.15));
-                gc.fillRoundRect(nullX, y - 10, w2, 20, 10, 10);
+                gc.fillRoundRect(nullX, y - 10, w2, 20, 3, 3);
                 gc.setFill(c);
                 gc.fillText(text, nullX + w2 / 2, y);
                 nullRow++;
@@ -308,7 +334,7 @@ public final class LinkedListCanvas extends ResizableCanvas {
                 arrowHead(gc, cx, top - 10, cx, p.y() + NODE_H + 4, 6);
             }
             gc.setFill(Palette.withAlpha(c, 0.15));
-            gc.fillRoundRect(cx - tw / 2, top - 10, tw, 20, 10, 10);
+            gc.fillRoundRect(cx - tw / 2, top - 10, tw, 20, 3, 3);
             gc.setFill(c);
             gc.fillText(name, cx, top);
         }

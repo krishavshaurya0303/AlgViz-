@@ -86,9 +86,9 @@ public final class SortingCanvas extends ResizableCanvas {
         if (to.hasRange()) {
             double x0 = PAD_X + to.rangeLo() * slot;
             double x1 = PAD_X + (to.rangeHi() + 1) * slot;
-            gc.setFill(Palette.withAlpha(Palette.INDIGO, 0.07));
-            gc.fillRoundRect(x0, top - 10, x1 - x0, chartBottom - top + 10, 10, 10);
-            gc.setStroke(Palette.withAlpha(Palette.INDIGO, 0.35));
+            gc.setFill(Palette.withAlpha(Palette.TEXT, 0.035));
+            gc.fillRoundRect(x0, top - 10, x1 - x0, chartBottom - top + 10, 3, 3);
+            gc.setStroke(Palette.withAlpha(Palette.TEXT_3, 0.6));
             gc.setLineWidth(1);
             gc.strokeLine(x0 + 4, top - 10, x1 - 4, top - 10);
         }
@@ -142,7 +142,7 @@ public final class SortingCanvas extends ResizableCanvas {
             boolean ghost = isGap(i) && to.isHolding();
             boolean dim = to.hasRange() && (i < to.rangeLo() || i > to.rangeHi()) && !to.isSorted(i);
             double alpha = dim ? 0.38 : 1;
-            double radius = Math.min(6, barW * 0.35);
+            double radius = Math.min(2, barW * 0.2);
             if (ghost) {
                 gc.setLineDashes(4, 3);
                 gc.setStroke(Palette.withAlpha(Palette.CYAN, 0.8));
@@ -154,8 +154,6 @@ public final class SortingCanvas extends ResizableCanvas {
             } else {
                 gc.setFill(Palette.withAlpha(fill, alpha));
                 gc.fillRoundRect(x, barTop, barW, barH, radius, radius);
-                gc.setFill(Palette.withAlpha(Color.WHITE, 0.10 * alpha));
-                gc.fillRoundRect(x, barTop, barW, Math.min(barH, 3), radius, radius);
             }
             if (showValues) {
                 gc.setFont(valueFont);

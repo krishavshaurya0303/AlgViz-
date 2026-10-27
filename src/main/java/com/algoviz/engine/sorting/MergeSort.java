@@ -37,8 +37,8 @@ public final class MergeSort extends SortingAlgorithm {
                     "    i = lo, j = mid + 1, k = lo",
                     "    while i <= mid and j <= hi:",
                     "        if temp[i] <= temp[j]: a[k++] = temp[i++]",
-                    "        else: a[k++] = temp[j++]",
-                    "    copy any remaining temp elements into a"),
+                    "        else:                  a[k++] = temp[j++]",
+                    "    copy the leftover temp elements into a"),
             "O(n log n)", "O(n log n)", "O(n log n)", "O(n)", true, false, null,
             "Needs an O(n) auxiliary buffer (shown below the bars) plus O(log n) recursion stack.");
 

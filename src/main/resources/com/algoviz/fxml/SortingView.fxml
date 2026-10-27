@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.algoviz.ui.component.ComplexityCard?>
+<?import com.algoviz.ui.component.ExplanationCard?>
+<?import com.algoviz.ui.component.Legend?>
+<?import com.algoviz.ui.component.MetricsPanel?>
+<?import com.algoviz.ui.component.PlaybackBar?>
+<?import com.algoviz.ui.component.PseudocodePanel?>
+<?import com.algoviz.ui.render.SortingCanvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.algoviz.controller.SortingController" styleClass="module-root">
+
+    <!-- Input toolbar -->
+    <HBox fx:id="toolbar" styleClass="toolbar-row">
+        <VBox spacing="4">
+            <Label text="Algorithm" styleClass="field-label"/>
+            <ComboBox fx:id="algorithmBox" prefWidth="170"/>
+        </VBox>
+        <VBox spacing="4">
+            <Label text="Order" styleClass="field-label"/>
+            <ComboBox fx:id="orderBox" prefWidth="130"/>
+        </VBox>
+        <VBox spacing="4">
+            <Label fx:id="sizeLabel" text="Size" styleClass="field-label"/>
+            <Slider fx:id="sizeSlider" prefWidth="140"/>
+        </VBox>
+        <VBox spacing="4">
+            <Label text="Pattern" styleClass="field-label"/>
+            <ComboBox fx:id="patternBox" prefWidth="140"/>
+        </VBox>
+        <VBox spacing="4" alignment="BOTTOM_LEFT">
+            <Label text=" " styleClass="field-label"/>
+            <Button fx:id="generateButton" text="Generate new array" onAction="#generate"/>
+        </VBox>
+        <Region styleClass="separator-v" translateY="9"/>
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Custom values (comma or space separated)" styleClass="field-label"/>
+            <HBox spacing="8">
+                <TextField fx:id="customField" promptText="e.g. 38, 12, 7, 25, 7, 41" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="applyButton" text="Use values" onAction="#applyCustom"/>
+            </HBox>
+        </VBox>
+    </HBox>
+    <Label fx:id="inputMessage" styleClass="inline-message"/>
+
+    <SplitPane fx:id="split" VBox.vgrow="ALWAYS" dividerPositions="0.7">
+        <VBox spacing="12" minWidth="520">
+            <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
+                <SortingCanvas fx:id="canvas"/>
+                <Legend fx:id="legend" StackPane.alignment="TOP_LEFT">
+                    <StackPane.margin><javafx.geometry.Insets top="12" left="12"/></StackPane.margin>
+                </Legend>
+            </StackPane>
+            <PlaybackBar fx:id="playbackBar"/>
+        </VBox>
+        <ScrollPane fitToWidth="true" minWidth="340" hbarPolicy="NEVER">
+            <VBox styleClass="side-panel">
+                <ExplanationCard fx:id="explanationCard"/>
+                <MetricsPanel fx:id="metricsPanel"/>
+                <Label fx:id="buildNote" styleClass="note-text"/>
+                <VBox styleClass="card">
+                    <Label text="PSEUDOCODE" styleClass="card-title"/>
+                    <PseudocodePanel fx:id="pseudocodePanel"/>
+                    <Label fx:id="orderNote" styleClass="note-text"/>
+                </VBox>
+                <ComplexityCard fx:id="complexityCard"/>
+                <VBox styleClass="card">
+                    <Label text="ABOUT THIS ALGORITHM" styleClass="card-title"/>
+                    <Label fx:id="aboutLabel" styleClass="doc-text" wrapText="true"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </SplitPane>
+</VBox>

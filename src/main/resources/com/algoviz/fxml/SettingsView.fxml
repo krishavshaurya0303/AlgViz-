@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.algoviz.controller.SettingsController" fitToWidth="true" hbarPolicy="NEVER">
+    <VBox styleClass="module-root" maxWidth="860">
+        <VBox styleClass="card" spacing="0">
+            <Label text="PLAYBACK" styleClass="card-title"/>
+            <HBox styleClass="settings-row">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Default speed" styleClass="settings-name"/>
+                    <Label text="Steps per second when a module opens. Each module's speed slider also updates this." styleClass="settings-desc"/>
+                </VBox>
+                <Slider fx:id="speedSlider" prefWidth="200"/>
+                <Label fx:id="speedValue" styleClass="metric-value" minWidth="70"/>
+            </HBox>
+            <HBox styleClass="settings-row">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Animate transitions" styleClass="settings-name"/>
+                    <Label text="Slide bars and nodes between steps. Turn off to reduce motion — every step is then shown instantly." styleClass="settings-desc"/>
+                </VBox>
+                <CheckBox fx:id="animateBox"/>
+            </HBox>
+        </VBox>
+
+        <VBox styleClass="card" spacing="0">
+            <Label text="DEFAULTS" styleClass="card-title"/>
+            <HBox styleClass="settings-row">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Default array size" styleClass="settings-name"/>
+                    <Label fx:id="sizeDesc" styleClass="settings-desc"/>
+                </VBox>
+                <Spinner fx:id="sizeSpinner" prefWidth="110" editable="true"/>
+            </HBox>
+            <HBox styleClass="settings-row">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Start module" styleClass="settings-name"/>
+                    <Label text="The screen shown when AlgoViz starts." styleClass="settings-desc"/>
+                </VBox>
+                <ComboBox fx:id="startBox" prefWidth="200"/>
+            </HBox>
+            <HBox styleClass="settings-row">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Show distances in Dijkstra" styleClass="settings-name"/>
+                    <Label text="Print each cell's best known distance on the Graph Explorer grid (when cells are large enough)." styleClass="settings-desc"/>
+                </VBox>
+                <CheckBox fx:id="distancesBox"/>
+            </HBox>
+        </VBox>
+
+        <VBox styleClass="card" spacing="0">
+            <Label text="DATA" styleClass="card-title"/>
+            <HBox styleClass="settings-row">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Recent activity" styleClass="settings-name"/>
+                    <Label fx:id="activityDesc" styleClass="settings-desc"/>
+                </VBox>
+                <Button fx:id="clearActivityButton" text="Clear" onAction="#clearActivity"/>
+            </HBox>
+            <HBox styleClass="settings-row">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Reset settings" styleClass="settings-name"/>
+                    <Label text="Restore every preference above to its default value." styleClass="settings-desc"/>
+                </VBox>
+                <Button text="Reset to defaults" styleClass="danger" onAction="#resetSettings"/>
+            </HBox>
+            <VBox spacing="2" style="-fx-padding: 12 0 0 0;">
+                <Label text="Settings file" styleClass="settings-name"/>
+                <Label fx:id="fileLabel" styleClass="settings-desc"/>
+            </VBox>
+        </VBox>
+        <Label text="AlgoViz has a single dark theme and no sound effects, so there are no settings for them." styleClass="note-text"/>
+    </VBox>
+</ScrollPane>

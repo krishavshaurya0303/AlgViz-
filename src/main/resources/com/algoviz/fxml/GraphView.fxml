@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.algoviz.ui.component.ComplexityCard?>
+<?import com.algoviz.ui.component.ExplanationCard?>
+<?import com.algoviz.ui.component.Legend?>
+<?import com.algoviz.ui.component.MetricsPanel?>
+<?import com.algoviz.ui.component.PlaybackBar?>
+<?import com.algoviz.ui.component.PseudocodePanel?>
+<?import com.algoviz.ui.render.GridCanvas?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.algoviz.controller.GraphController" styleClass="module-root">
+
+    <HBox fx:id="toolbar" styleClass="toolbar-row">
+        <VBox spacing="4">
+            <Label text="Algorithm" styleClass="field-label"/>
+            <ComboBox fx:id="algorithmBox" prefWidth="190"/>
+        </VBox>
+        <VBox spacing="4">
+            <Label text="Draw tool (left-click / drag · right-click erases)" styleClass="field-label"/>
+            <HBox fx:id="toolGroup" styleClass="segmented">
+                <ToggleButton fx:id="wallTool" text="Wall"/>
+                <ToggleButton fx:id="weightTool" text="Weight ×5"/>
+                <ToggleButton fx:id="eraseTool" text="Erase"/>
+                <ToggleButton fx:id="startTool" text="Move start"/>
+                <ToggleButton fx:id="targetTool" text="Move target"/>
+            </HBox>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <VBox spacing="4">
+            <Label text="Board" styleClass="field-label"/>
+            <HBox spacing="8">
+                <Button fx:id="mazeButton" text="Random walls" onAction="#randomWalls"/>
+                <Button fx:id="weightsButton" text="Walls + weights" onAction="#randomWeighted"/>
+                <Button fx:id="clearButton" text="Clear board" onAction="#clearBoard"/>
+            </HBox>
+        </VBox>
+    </HBox>
+    <Label fx:id="inputMessage" styleClass="inline-message"/>
+
+    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.7">
+        <VBox spacing="12" minWidth="520">
+            <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
+                <GridCanvas fx:id="canvas"/>
+                <Legend fx:id="legend" StackPane.alignment="TOP_LEFT">
+                    <StackPane.margin><Insets top="10" left="12"/></StackPane.margin>
+                </Legend>
+                <Label fx:id="banner" StackPane.alignment="BOTTOM_CENTER" styleClass="chip" visible="false">
+                    <StackPane.margin><Insets bottom="12"/></StackPane.margin>
+                </Label>
+            </StackPane>
+            <PlaybackBar fx:id="playbackBar"/>
+        </VBox>
+        <ScrollPane fitToWidth="true" minWidth="340" hbarPolicy="NEVER">
+            <VBox styleClass="side-panel">
+                <ExplanationCard fx:id="explanationCard"/>
+                <MetricsPanel fx:id="metricsPanel"/>
+                <VBox styleClass="card">
+                    <Label text="PSEUDOCODE" styleClass="card-title"/>
+                    <PseudocodePanel fx:id="pseudocodePanel"/>
+                </VBox>
+                <ComplexityCard fx:id="complexityCard"/>
+                <VBox styleClass="card">
+                    <Label text="GRID RULES" styleClass="card-title"/>
+                    <Label fx:id="rulesLabel" styleClass="doc-text" wrapText="true"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </SplitPane>
+</VBox>

@@ -35,6 +35,13 @@
             <version>${javafx.version}</version>
         </dependency>
 
+        <!-- Test scope only: used by the screenshot harness to write PNG files. -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

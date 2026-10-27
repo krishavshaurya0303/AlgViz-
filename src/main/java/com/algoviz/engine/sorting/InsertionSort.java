@@ -30,7 +30,7 @@ public final class InsertionSort extends SortingAlgorithm {
                     "    key = a[i]",
                     "    j = i - 1",
                     "    while j >= 0 and a[j] > key:",
-                    "        a[j + 1] = a[j]      // shift right",
+                    "        a[j + 1] = a[j]   (shift right)",
                     "        j = j - 1",
                     "    a[j + 1] = key"),
             "O(n)", "O(n²)", "O(n²)", "O(1)", true, true, null,

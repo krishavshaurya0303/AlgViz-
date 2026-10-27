@@ -4,6 +4,8 @@ import java.util.List;
 
 /** Operations offered by the Tree Visualizer, each with its own pseudocode. */
 public enum TreeOperation {
+    /** Not an operation: a single snapshot of the current tree (initial view, sample, clear). */
+    VIEW("Tree", List.of()),
     INSERT("Insert", List.of(
             "if root is null: root = new Node(v); return",
             "current = root",

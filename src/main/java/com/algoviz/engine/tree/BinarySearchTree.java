@@ -111,6 +111,13 @@ public final class BinarySearchTree {
 
     // ------------------------------------------------------ traced operations
 
+    /** A one-step trace showing the tree as it is now (used after sample/clear and on first show). */
+    public ExecutionTrace<TreeStep> currentState(String explanation) {
+        Recorder r = new Recorder(TreeOperation.VIEW);
+        r.record(-1, explanation, root == null ? StepStatus.INFO : StepStatus.SUCCESS);
+        return r.trace();
+    }
+
     public ExecutionTrace<TreeStep> insert(int value) {
         Recorder r = new Recorder(TreeOperation.INSERT);
         r.record(-1, "Insert " + value + ". Start at the root and compare at each node.", StepStatus.INFO);
@@ -273,7 +280,7 @@ public final class BinarySearchTree {
     }
 
     public ExecutionTrace<TreeStep> traverse(TreeOperation order) {
-        if (!order.isTraversal()) {
+        if (order == null || !order.isTraversal()) {
             throw new IllegalArgumentException(order + " is not a traversal");
         }
         Recorder r = new Recorder(order);
@@ -382,7 +389,7 @@ public final class BinarySearchTree {
             this.operation = operation;
             if (operation.isTraversal()) {
                 counter.track(MetricType.NODES_VISITED);
-            } else {
+            } else if (operation != TreeOperation.VIEW) {
                 counter.track(MetricType.COMPARISONS);
             }
         }

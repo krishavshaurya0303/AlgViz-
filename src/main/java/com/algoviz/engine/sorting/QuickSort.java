@@ -13,7 +13,7 @@ public final class QuickSort extends SortingAlgorithm {
     private static final int L_PIVOT = 5;
     private static final int L_COMPARE = 8;
     private static final int L_SWAP = 9;
-    private static final int L_PLACE_PIVOT = 10;
+    private static final int L_PLACE_PIVOT = 11;
 
     private static final AlgorithmMetadata METADATA = new AlgorithmMetadata(
             "quick-sort", "Quick Sort", AlgorithmCategory.SORTING,
@@ -34,8 +34,9 @@ public final class QuickSort extends SortingAlgorithm {
                     "    i = lo",
                     "    for j = lo to hi - 1:",
                     "        if a[j] <= pivot:",
-                    "            swap(a[i], a[j]) if i != j; i = i + 1",
-                    "    swap(a[i], a[hi]) if i != hi",
+                    "            if i != j: swap(a[i], a[j])",
+                    "            i = i + 1",
+                    "    if i != hi: swap(a[i], a[hi])",
                     "    return i"),
             "O(n log n)", "O(n log n)", "O(n²)", "O(log n) average, O(n) worst", false, true, null,
             "With the last element as pivot, already-sorted input triggers the O(n²) worst case.");

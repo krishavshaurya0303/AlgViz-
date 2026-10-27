@@ -30,7 +30,7 @@ public final class AppConfig {
     public static final int TREE_MAX_VALUE = 999;
 
     // Linked List Lab
-    public static final int LIST_MAX_NODES = 12;
+    public static final int LIST_MAX_NODES = 10;
     public static final int LIST_MIN_VALUE = -999;
     public static final int LIST_MAX_VALUE = 999;
 

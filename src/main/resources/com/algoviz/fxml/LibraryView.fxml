@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.algoviz.controller.LibraryController" styleClass="module-root" spacing="18">
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" minWidth="250" prefWidth="250">
+        <VBox fx:id="entryList" styleClass="library-list"/>
+    </ScrollPane>
+    <ScrollPane fx:id="detailScroll" fitToWidth="true" hbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+        <VBox fx:id="detail" spacing="12" maxWidth="900">
+            <padding><javafx.geometry.Insets right="18" bottom="24"/></padding>
+        </VBox>
+    </ScrollPane>
+</HBox>

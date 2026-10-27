@@ -51,13 +51,13 @@ public enum ListOperation {
     REVERSE("Reverse", "O(n)", List.of(
             "prev = null; current = head",
             "while current is not null:",
-            "    next = current.next      // save the rest of the list",
-            "    current.next = prev      // redirect the pointer",
-            "    prev = current           // advance prev",
-            "    current = next           // advance current",
+            "    next = current.next  // save",
+            "    current.next = prev  // flip",
+            "    prev = current",
+            "    current = next",
             "head = prev")),
     CLEAR("Clear", "O(1)", List.of(
-            "head = null   // nodes become unreachable and are garbage-collected"));
+            "head = null   // nodes become garbage"));
 
     private final String label;
     private final String time;

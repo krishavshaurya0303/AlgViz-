@@ -62,6 +62,13 @@ public final class SinglyLinkedList {
 
     // ------------------------------------------------------- traced operations
 
+    /** A one-step trace showing the list as it is now. */
+    public ExecutionTrace<ListStep> currentState(ListOperation context, String explanation) {
+        Recorder r = new Recorder(context);
+        r.record(-1, explanation, StepStatus.INFO);
+        return r.trace();
+    }
+
     public ExecutionTrace<ListStep> insertAtHead(int value) {
         Recorder r = new Recorder(ListOperation.INSERT_HEAD);
         r.record(-1, "Insert " + value + " at the head. This needs no traversal.", StepStatus.INFO);

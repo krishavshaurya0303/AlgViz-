@@ -266,9 +266,6 @@ public final class TreeController extends VisualizerController<TreeStep> {
 
     @Override
     public void onShow(NavigationRequest request) {
-        if ("demo".equals(request.action())) {
-            sample();
-        }
     }
 
     @Override

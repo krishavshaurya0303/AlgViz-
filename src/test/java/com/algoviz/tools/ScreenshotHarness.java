@@ -35,7 +35,8 @@ import java.util.Deque;
  * Developer tool (not shipped): launches the real application and executes a
  * small script of UI actions, saving screenshots. Used to verify the UI under Xvfb.
  * Commands: nav:TEXT | click:TEXT | type:PROMPT_SUBSTRING=VALUE | combo:INDEX=ITEM | key:CODE
- *           | wait:MS | shot:FILE | size:WxH | press:X,Y | move:X,Y | release  (mouse, scene coordinates)
+ *           | wait:MS | shot:FILE | size:WxH | press:X,Y | move:X,Y | release | hoverat:X,Y  (mouse, scene coordinates)
+ *           | enter:TEXT  (pointer enters a button)
  */
 public final class ScreenshotHarness extends Application {
 
@@ -125,6 +126,21 @@ public final class ScreenshotHarness extends Application {
                             Double.parseDouble(xy[0]), Double.parseDouble(xy[1]));
                 }
                 case "release" -> pointer(MouseEvent.MOUSE_RELEASED, lastX, lastY);
+                case "hoverat" -> {
+                    String[] xy = arg.split(",");
+                    pointer(MouseEvent.MOUSE_MOVED, Double.parseDouble(xy[0]), Double.parseDouble(xy[1]));
+                }
+                case "enter" -> {
+                    ButtonBase b = find(arg);
+                    if (b == null) {
+                        System.err.println("NOT FOUND: " + arg);
+                    } else {
+                        Point2D mid = b.localToScene(b.getWidth() / 2, b.getHeight() / 2);
+                        b.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, mid.getX(), mid.getY(), mid.getX(), mid.getY(),
+                                MouseButton.NONE, 0, false, false, false, false, false, false, false, false, false,
+                                false, null));
+                    }
+                }
                 case "wait" -> delay = Double.parseDouble(arg);
                 case "size" -> {
                     String[] wh = arg.split("x");

@@ -161,8 +161,10 @@ public final class TreeCanvas extends ResizableCanvas {
             boolean onPath = hp != null && hc != null && hp != TreeHighlight.VISITED;
             boolean isNew = !fromPlaced.containsKey(p.node().id()) && from != null;
             double alpha = isNew ? t : 1;
-            gc.setStroke(Palette.withAlpha(onPath ? Palette.INDIGO : Palette.BORDER_STRONG, alpha));
-            gc.setLineWidth(onPath ? 2.4 : 1.6);
+            double hv = Math.max(hoverOf(p.parent().id()), hoverOf(p.node().id()));
+            Color edge = onPath ? Palette.INDIGO : Palette.BORDER_STRONG.interpolate(Palette.TEXT_2, hv);
+            gc.setStroke(Palette.withAlpha(edge, alpha));
+            gc.setLineWidth((onPath ? 2.4 : 1.6) + hv * 0.6);
             double dx = b.x() - a.x();
             double dy = b.y() - a.y();
             double len = Math.max(1, Math.hypot(dx, dy));
@@ -182,8 +184,15 @@ public final class TreeCanvas extends ResizableCanvas {
             Pos pos = current.get(node.id());
             boolean isNew = from != null && !fromPlaced.containsKey(node.id());
             double scale = isNew ? 0.4 + 0.6 * t : 1;
-            drawNode(gc, pos.x(), pos.y(), r * scale, String.valueOf(node.value()), to.highlightOf(node.id()),
+            double hv = hoverOf(node.id());
+            double nodeR = r * scale * (1 + 0.14 * hv);
+            drawNode(gc, pos.x(), pos.y(), nodeR, String.valueOf(node.value()), to.highlightOf(node.id()),
                     isNew ? t : 1);
+            if (hv > 0) {
+                gc.setStroke(Palette.withAlpha(Palette.TEXT, 0.55 * hv));
+                gc.setLineWidth(1);
+                gc.strokeOval(pos.x() - nodeR - 4, pos.y() - nodeR - 4, 2 * nodeR + 8, 2 * nodeR + 8);
+            }
         }
         // Mark the root.
         Pos rootPos = to.tree().isEmpty() ? null : current.get(to.tree().root().id());

@@ -154,7 +154,9 @@ public final class LinkedListCanvas extends ResizableCanvas {
             boolean changed = s.changedLink() == n.id();
             double sx = a.x() + VALUE_W + (NODE_W - VALUE_W) / 2;
             double sy = a.y() + NODE_H / 2;
-            drawArrow(gc, sx, sy, b.x(), b.y() + NODE_H / 2, changed ? Palette.AMBER : Palette.TEXT_2, changed);
+            double hv = Math.max(hoverOf(n.id()), hoverOf(n.nextId()));
+            drawArrow(gc, sx, sy, b.x(), b.y() + NODE_H / 2, changed ? Palette.AMBER : Palette.TEXT_2.interpolate(Palette.TEXT, hv),
+                    changed || hv > 0.5);
         }
 
         // nodes
@@ -163,7 +165,13 @@ public final class LinkedListCanvas extends ResizableCanvas {
             ListSnapshot.NodeView n = s.nodes().get(i);
             Pos p = pos.get(n.id());
             boolean appearing = from != null && !fromPos.containsKey(n.id());
-            drawNode(gc, p.x(), p.y(), n, s.highlights().get(n.id()), appearing ? t : 1);
+            double hv = hoverOf(n.id());
+            drawNode(gc, p.x(), p.y() - 3 * hv, n, s.highlights().get(n.id()), appearing ? t : 1);
+            if (hv > 0) {
+                gc.setStroke(Palette.withAlpha(Palette.TEXT, 0.55 * hv));
+                gc.setLineWidth(1);
+                gc.strokeRoundRect(p.x() - 4, p.y() - 3 * hv - 4, NODE_W + 8, NODE_H + 8, 6, 6);
+            }
             if (i == last && n.nextId() == -1 && !n.detached()) {
                 gc.setFill(Palette.TEXT_3);
                 gc.setFont(FontLoader.mono(11));

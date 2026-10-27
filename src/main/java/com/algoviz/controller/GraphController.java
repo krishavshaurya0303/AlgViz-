@@ -277,10 +277,7 @@ public final class GraphController extends VisualizerController<GraphStep> {
                 updateAlgorithmInfo();
             });
         }
-        if ("demo".equals(request.action())) {
-            grid.randomize(random, 0.26, 0);
-            rebuild();
-        } else if (request.algorithmId() != null) {
+        if (request.algorithmId() != null) {
             rebuild();
         }
     }

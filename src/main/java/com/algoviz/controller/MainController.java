@@ -3,6 +3,7 @@ package com.algoviz.controller;
 import com.algoviz.config.AppConfig;
 import com.algoviz.model.ModuleId;
 import com.algoviz.model.StepStatus;
+import com.algoviz.ui.animation.HoverMotion;
 import com.algoviz.ui.component.BrandMark;
 import com.algoviz.ui.component.IconType;
 import com.algoviz.ui.component.Icons;
@@ -132,6 +133,7 @@ public final class MainController {
         notifications.setMaxSize(420, javafx.scene.layout.Region.USE_PREF_SIZE);
         notifications.setPickOnBounds(false);
         scene.addEventFilter(KeyEvent.KEY_PRESSED, this::onKey);
+        HoverMotion.install(scene, () -> context.settings().animateTransitions());
     }
 
     public void openStartModule() {

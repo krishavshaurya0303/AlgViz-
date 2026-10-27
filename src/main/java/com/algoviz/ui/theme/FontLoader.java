@@ -8,15 +8,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Loads the bundled Inter (UI) and JetBrains Mono (code) fonts, both licensed
- * under the SIL Open Font License. If loading fails, CSS falls back to system fonts.
+ * Loads the bundled Atkinson Hyperlegible (UI; chosen for legibility on a projector)
+ * and IBM Plex Mono (code) fonts, both licensed under the SIL Open Font License
+ * (license texts sit next to the font files). If loading fails, CSS falls back to system fonts.
  */
 public final class FontLoader {
 
     private static final Logger LOG = Logger.getLogger(FontLoader.class.getName());
     private static final String[] FONTS = {
-            "Inter-Regular.otf", "Inter-Medium.otf", "Inter-SemiBold.otf", "Inter-Bold.otf",
-            "JetBrainsMono-Regular.ttf", "JetBrainsMono-Medium.ttf"
+            "AtkinsonHyperlegible-Regular.ttf", "AtkinsonHyperlegible-Bold.ttf",
+            "IBMPlexMono-Regular.ttf", "IBMPlexMono-Medium.ttf"
     };
 
     private FontLoader() {
@@ -41,14 +42,14 @@ public final class FontLoader {
 
     /** Monospace font for canvas labels. */
     public static Font mono(double size) {
-        return Font.font("JetBrains Mono", size);
+        return Font.font("IBM Plex Mono", size);
     }
 
     public static Font ui(double size) {
-        return Font.font("Inter", size);
+        return Font.font("Atkinson Hyperlegible", size);
     }
 
     public static Font uiBold(double size) {
-        return Font.font("Inter", javafx.scene.text.FontWeight.BOLD, size);
+        return Font.font("Atkinson Hyperlegible", javafx.scene.text.FontWeight.BOLD, size);
     }
 }

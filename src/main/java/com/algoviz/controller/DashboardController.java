@@ -33,7 +33,6 @@ public final class DashboardController extends StaticPageController {
     @FXML private HBox continueCard;
     @FXML private Label continueText;
     @FXML private GridPane moduleGrid;
-    @FXML private VBox quickActions;
     @FXML private VBox exploreList;
     @FXML private FlowPane footerChips;
 
@@ -69,15 +68,6 @@ public final class DashboardController extends StaticPageController {
         moduleGrid.add(moduleCard(ModuleId.LINKED_LIST, IconType.LINKED_LIST, "linkedlist",
                 "Follow head, current, prev and next as nodes are linked, unlinked and reversed.",
                 List.of("Insert", "Delete", "Search", "Reverse")), 1, 1);
-
-        quick("Sort 12 random numbers with Quick Sort", "See the pivot partition the array",
-                ModuleId.SORTING, NavigationRequest.action("quick-sort", "demo"));
-        quick("Find a path through random walls with BFS", "Watch the frontier grow layer by layer",
-                ModuleId.GRAPH, NavigationRequest.action("bfs", "demo"));
-        quick("Build a sample binary search tree", "Then search, delete or traverse it",
-                ModuleId.TREE, NavigationRequest.action(null, "demo"));
-        quick("Reverse a linked list", "Every next pointer turns around, one by one",
-                ModuleId.LINKED_LIST, NavigationRequest.action(null, "demo"));
 
         explore(IconType.STEP_BACK, "True step backward",
                 "Each step is an immutable snapshot, so going back restores the exact array, highlights and counters.");
@@ -136,28 +126,6 @@ public final class DashboardController extends StaticPageController {
         });
         card.setMaxWidth(Double.MAX_VALUE);
         return card;
-    }
-
-    private void quick(String title, String text, ModuleId module, NavigationRequest request) {
-        Label t = new Label(title);
-        t.getStyleClass().add("qa-title");
-        Label d = new Label(text);
-        d.getStyleClass().add("qa-text");
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        StackPane play = new StackPane(Icons.create(IconType.PLAY, 12));
-        HBox row = new HBox(play, new VBox(2, t, d), spacer, Icons.create(IconType.ARROW_RIGHT, 14));
-        row.getStyleClass().add("quick-action");
-        row.setFocusTraversable(true);
-        row.setAccessibleText(title);
-        row.setOnMouseClicked(e -> context.navigate(module, request));
-        row.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.SPACE) {
-                context.navigate(module, request);
-                e.consume();
-            }
-        });
-        quickActions.getChildren().add(row);
     }
 
     private void explore(IconType icon, String title, String text) {
@@ -222,7 +190,7 @@ public final class DashboardController extends StaticPageController {
 
     @Override
     public String helpText() {
-        return "Pick a module from the sidebar or a card below. Quick-start items open a module with a prepared "
-                + "example ready to step through. Your last opened module appears under Continue learning.";
+        return "Pick a module from the sidebar or a card below. Your last opened module appears under "
+                + "Continue learning.";
     }
 }

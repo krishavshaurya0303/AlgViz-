@@ -43,22 +43,13 @@
             <GridPane fx:id="moduleGrid" hgap="14" vgap="14"/>
         </VBox>
 
-        <HBox spacing="18">
-            <VBox spacing="12" HBox.hgrow="ALWAYS">
-                <VBox spacing="2">
-                    <Label text="Quick start" styleClass="section-title"/>
-                    <Label text="One click opens a module and runs a prepared example." styleClass="section-sub"/>
-                </VBox>
-                <VBox fx:id="quickActions" spacing="8"/>
+        <VBox spacing="12">
+            <VBox spacing="2">
+                <Label text="What you can explore" styleClass="section-title"/>
+                <Label text="Every animation is generated from the algorithm's own execution." styleClass="section-sub"/>
             </VBox>
-            <VBox spacing="12" HBox.hgrow="ALWAYS" prefWidth="420">
-                <VBox spacing="2">
-                    <Label text="What you can explore" styleClass="section-title"/>
-                    <Label text="Every animation is generated from the algorithm's own execution." styleClass="section-sub"/>
-                </VBox>
-                <VBox styleClass="card" spacing="12" fx:id="exploreList"/>
-            </VBox>
-        </HBox>
+            <VBox styleClass="card" spacing="12" fx:id="exploreList"/>
+        </VBox>
         <FlowPane fx:id="footerChips" hgap="8" vgap="8"/>
     </VBox>
 </ScrollPane>

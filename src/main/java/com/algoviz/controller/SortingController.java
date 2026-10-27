@@ -296,14 +296,7 @@ public final class SortingController extends VisualizerController<SortStep> {
                 updateAlgorithmInfo();
             });
         }
-        if ("demo".equals(request.action())) {
-            patternBox.getSelectionModel().select(Pattern.RANDOM);
-            if ((int) Math.round(sizeSlider.getValue()) == 12) {
-                generate();
-            } else {
-                sizeSlider.setValue(12);
-            }
-        } else if (request.algorithmId() != null) {
+        if (request.algorithmId() != null) {
             rebuild();
         }
     }

@@ -106,22 +106,6 @@
 .module-icon.tree { -fx-background-color: -av-green; }
 .module-icon.linkedlist { -fx-background-color: -av-violet; }
 
-.quick-action {
-    -fx-background-color: -av-bg-2;
-    -fx-background-radius: 3;
-    -fx-border-color: -av-border;
-    -fx-border-radius: 3;
-    -fx-padding: 12 14 12 14;
-    -fx-spacing: 12;
-    -fx-alignment: center-left;
-    -fx-cursor: hand;
-}
-
-.quick-action:hover { -fx-background-color: -av-bg-3; -fx-border-color: -av-border-strong; }
-.quick-action:focus-visible { -fx-border-color: -av-cyan; }
-.quick-action .qa-title { -fx-font-size: 13px; -fx-text-fill: -av-text; }
-.quick-action .qa-text { -fx-font-size: 11.5px; -fx-text-fill: -av-text-3; }
-
 .continue-card {
     -fx-background-color: rgba(143,181,115,0.10);
     -fx-background-radius: 3;
@@ -133,7 +117,7 @@
 }
 
 .summary-number {
-    -fx-font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    -fx-font-family: "IBM Plex Mono", "Consolas", "DejaVu Sans Mono", monospace;
     -fx-font-size: 22px;
     -fx-text-fill: -av-text;
 }
@@ -201,7 +185,7 @@
 }
 
 .doc-step-no {
-    -fx-font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    -fx-font-family: "IBM Plex Mono", "Consolas", "DejaVu Sans Mono", monospace;
     -fx-font-size: 11px;
     -fx-text-fill: derive(-av-indigo, 40%);
     -fx-background-color: rgba(200,85,61,0.16);
@@ -223,7 +207,7 @@
 }
 
 .table-cell-mono {
-    -fx-font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    -fx-font-family: "IBM Plex Mono", "Consolas", "DejaVu Sans Mono", monospace;
     -fx-font-size: 12px;
     -fx-text-fill: -av-text;
 }

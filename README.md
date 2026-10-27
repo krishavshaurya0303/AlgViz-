@@ -27,7 +27,7 @@ sequences that are not connected to real code.
 
 | Module | What it does |
 |---|---|
-| **Dashboard** | Welcome, entry points to every module, quick-start demos, honest summary, *Continue learning* (only if you really opened a module before). |
+| **Dashboard** | Welcome, entry points to every module, honest summary, *Continue learning* (only if you really opened a module before). |
 | **Sorting Studio** | Bubble, Selection, Insertion, Merge, Quick Sort. Ascending/descending. Size 2–150, patterns (random, nearly sorted, reversed, sorted, few unique), custom input with validation. Merge Sort shows its temporary buffer; Insertion Sort lifts the key out and shows shifts; Quick Sort shows pivot and `i` boundary; Selection Sort shows the current minimum. |
 | **Graph Explorer** | 19 × 35 grid, 4-directional movement. Draw/erase walls and weighted cells (cost 5), move start/target. BFS, DFS, Dijkstra. Frontier, visited, current node, final path, Dijkstra distances, explicit *No path found* state. |
 | **Tree Visualizer** | Standard (unbalanced) BST: insert, search, delete (leaf / one child / two children with inorder successor), inorder, preorder, postorder, level-order, sample tree, clear. Duplicates rejected. |
@@ -51,7 +51,7 @@ user advances every step by hand. Keyboard: `←`, `→`, `Ctrl+1…7`, `F1`.
 
 * Java 17+ (built and tested on OpenJDK 21), JavaFX 21.0.5 (controls, FXML), custom CSS
 * Maven 3.9, JUnit 5
-* Bundled fonts: Inter and JetBrains Mono (SIL Open Font License, see `src/main/resources/com/algoviz/fonts/`)
+* Bundled fonts: Atkinson Hyperlegible and IBM Plex Mono (SIL Open Font License, see `src/main/resources/com/algoviz/fonts/`)
 * No database, no network access, no accounts
 
 ## 5. Architecture overview

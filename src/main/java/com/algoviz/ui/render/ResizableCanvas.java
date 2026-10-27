@@ -1,6 +1,7 @@
 package com.algoviz.ui.render;
 
 import com.algoviz.ui.animation.SpringField;
+import javafx.animation.AnimationTimer;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -68,10 +69,15 @@ public abstract class ResizableCanvas extends Region {
      */
     protected final void enableDragging(SpringField field) {
         this.springs = field;
-        setOnMouseMoved(e -> setCursor(nodeAt(e.getX(), e.getY()) != null ? Cursor.OPEN_HAND : Cursor.DEFAULT));
+        setOnMouseMoved(e -> {
+            Integer id = nodeAt(e.getX(), e.getY());
+            setCursor(id != null ? Cursor.OPEN_HAND : Cursor.DEFAULT);
+            setHovered(id);
+        });
         setOnMouseExited(e -> {
             if (!springs.isGrabbing()) {
                 setCursor(Cursor.DEFAULT);
+                setHovered(null);
             }
         });
         setOnMousePressed(e -> {
@@ -101,12 +107,63 @@ public abstract class ResizableCanvas extends Region {
             if (springs.isGrabbing()) {
                 springs.release();
                 grabbedId = null;
-                setCursor(nodeAt(e.getX(), e.getY()) != null ? Cursor.OPEN_HAND : Cursor.DEFAULT);
+                Integer id = nodeAt(e.getX(), e.getY());
+                setCursor(id != null ? Cursor.OPEN_HAND : Cursor.DEFAULT);
+                setHovered(id);
             }
         });
     }
 
     private Integer grabbedId;
+
+    // Hover: the node under the pointer eases to 1, every other node eases back to 0.
+    private Integer hoveredId;
+    private final Map<Integer, Double> hover = new HashMap<>();
+    private AnimationTimer hoverTimer;
+    private long hoverLast;
+
+    /** How strongly node {@code id} is hovered right now, from 0 to 1 (eased over ~150 ms). */
+    protected final double hoverOf(int id) {
+        return hover.getOrDefault(id, 0.0);
+    }
+
+    private void setHovered(Integer id) {
+        if (java.util.Objects.equals(id, hoveredId)) {
+            return;
+        }
+        hoveredId = id;
+        if (hoverTimer == null) {
+            hoverTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    double dt = hoverLast == 0 ? 1.0 / 60 : (now - hoverLast) / 1e9;
+                    hoverLast = now;
+                    double k = Math.min(1, dt * 14);
+                    if (hoveredId != null) {
+                        hover.putIfAbsent(hoveredId, 0.0);
+                    }
+                    boolean moving = false;
+                    for (Map.Entry<Integer, Double> h : hover.entrySet()) {
+                        double target = h.getKey().equals(hoveredId) ? 1 : 0;
+                        double v = h.getValue() + (target - h.getValue()) * k;
+                        if (Math.abs(target - v) < 0.01) {
+                            v = target;
+                        } else {
+                            moving = true;
+                        }
+                        h.setValue(v);
+                    }
+                    hover.values().removeIf(v -> v == 0);
+                    redraw();
+                    if (!moving) {
+                        stop();
+                        hoverLast = 0;
+                    }
+                }
+            };
+        }
+        hoverTimer.start();
+    }
 
     /** Called at the start of each frame by subclasses that support dragging. */
     protected final void beginHomes(double scale, double radius, double bodyRadius) {

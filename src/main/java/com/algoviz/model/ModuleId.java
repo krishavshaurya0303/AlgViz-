@@ -2,7 +2,7 @@ package com.algoviz.model;
 
 /** The screens reachable from the navigation sidebar. */
 public enum ModuleId {
-    DASHBOARD("Dashboard", "Overview and quick start", "DashboardView.fxml"),
+    DASHBOARD("Dashboard", "Overview of the four visualizers", "DashboardView.fxml"),
     SORTING("Sorting Studio", "Compare, swap and merge — watch five sorting algorithms work", "SortingView.fxml"),
     GRAPH("Graph Explorer", "Breadth-first, depth-first and Dijkstra on an editable grid", "GraphView.fxml"),
     TREE("Tree Visualizer", "Binary search tree insertion, search, deletion and traversals", "TreeView.fxml"),

@@ -279,10 +279,6 @@ public final class LinkedListController extends VisualizerController<ListStep> {
 
     @Override
     public void onShow(NavigationRequest request) {
-        if ("demo".equals(request.action())) {
-            sample();
-            run(list.reverse());
-        }
     }
 
     @Override

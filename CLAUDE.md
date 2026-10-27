@@ -68,7 +68,7 @@ Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and 
   - `BackgroundRunner`: JavaFX Task plus a ticket so only the newest result is delivered.
 - `ui/render/`: `ResizableCanvas` base plus `SortingCanvas`, `GridCanvas`, `TreeCanvas` (x = inorder rank, y = depth), `LinkedListCanvas`.
 - `ui/component/`: `PlaybackBar`, `MetricsPanel`, `PseudocodePanel`, `ExplanationCard`, `ComplexityCard`, `Legend`, `EmptyState`, `NotificationCenter`, `Icons`/`IconType` (custom SVG paths), `BrandMark`.
-- `ui/theme/`: `Palette` (mirrors the CSS tokens), `FontLoader` (bundled Inter and JetBrains Mono, both OFL).
+- `ui/theme/`: `Palette` (mirrors the CSS tokens), `FontLoader` (bundled Atkinson Hyperlegible and IBM Plex Mono, both OFL).
 - Resources:
   - `resources/com/algoviz/fxml/*.fxml`: 8 views.
   - `css/app.css`: design tokens, defined as looked-up colours in `.root`.

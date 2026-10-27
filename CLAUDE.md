@@ -8,7 +8,7 @@ It records the full history and every decision from the original cloud session t
 - Purpose: college DSA + Java OOP project, to be demoed to a Head of Department and defended in a viva.
 - Wants replies that are strict, blunt, concise and complete.
 - When teaching: one small idea at a time, with ASCII traces before code, one question at a time.
-- Machine now: **Windows laptop, Java 27 installed**. The project lives in `Documents\AlgoViz`. The app has been confirmed to open there via `run-windows.bat`.
+- Machine now: **Windows laptop, Java 27 installed**. The working copy is `Downloads\AlgoViz\AlgoViz` (an older unzipped copy sits in `Documents\AlgoViz`; don't edit it). The app has been confirmed to open via `run-windows.bat`.
 - The original build happened in a Linux cloud container (OpenJDK 21, Maven 3.9.11, Xvfb).
 
 ## What AlgoViz is
@@ -31,7 +31,7 @@ mvnw.cmd test                    # run all tests (the UI smoke test is skipped w
 mvnw.cmd package                 # also builds target/algoviz-1.0.0-app.jar (platform-specific fat jar)
 ```
 On Linux a headless UI test run is `xvfb-run -a mvn test`.
-Last verified result: **1086 tests, 0 failures**. That run was on Linux/JDK 21 and has not yet been repeated on Windows/Java 27.
+Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and on Windows/Java 27 (2026-10-27: 1086 run, 0 failures, 1 skipped = `UiSmokeTest`, no DISPLAY). The stack trace printed during `SettingsServiceTest` is the intentional "Could not read settings" path, not a failure.
 
 ## Architecture (where things are)
 `src/main/java/com/algoviz/`
@@ -108,16 +108,19 @@ Last verified result: **1086 tests, 0 failures**. That run was on Linux/JDK 21 a
 4. Sent screenshots (`docs/screenshots/`). Explained that a cloud session cannot run on the laptop.
 5. Added the Maven Wrapper (`mvnw`, `mvnw.cmd`, `.mvn/`) and launchers (`run-windows.bat`, `run-mac-linux.sh`). Sent `AlgoViz.zip`. User unzipped it to `Documents\AlgoViz` on Windows and the app opened (Java 27).
 6. User is moving to a local session on the laptop. This file was written as the handoff.
+7. Local session (2026-10-27): ran the suite on Windows/Java 27 (all pass). winget is broken on the laptop, so Git for Windows 2.56.0.4 was installed from the official GitHub release. The working copy was attached to the remote with `git init` + fetch + `git reset origin/<branch>`.
 
 ## Known limitations / possible next work
 - AVL (or Red-Black) tree with rotation animation.
 - A* in the Graph Explorer; adjustable grid size and weight value.
 - Light theme.
 - jpackage Windows installer.
-- Re-run `mvnw.cmd test` on Windows/Java 27 to confirm the suite there. On Windows, `UiSmokeTest` is skipped unless a `DISPLAY` env var is set; it can be enabled by removing `@EnabledIfEnvironmentVariable`.
+- On Windows, `UiSmokeTest` is skipped unless a `DISPLAY` env var is set; it can be enabled by removing `@EnabledIfEnvironmentVariable`.
 - The JavaFX 21 + Java 27 combination works for launching. If issues appear, bump `javafx.version` in `pom.xml`.
 
 ## Git
 - The original remote branch is `claude/algoviz-javafx-dsa-qsn47c`.
-- The zip download has **no `.git` folder**. To keep history, either `git clone` the repo instead, or run `git init` and add the remote.
+- Remote: `origin` = `https://github.com/krishavshaurya0303/AlgViz-.git`. The local branch `claude/algoviz-javafx-dsa-qsn47c` tracks `origin/claude/algoviz-javafx-dsa-qsn47c`, with `core.autocrlf true`.
+- Git lives at `C:\Program Files\Git\cmd`. Shells opened before the install may need `$env:Path = "C:\Program Files\Git\cmd;$env:Path"`.
+- Push only when the user says so. The first push opens a GitHub sign-in window for the user.
 - Commit messages so far end with a `Co-Authored-By` line.

@@ -212,6 +212,9 @@ mvn -q compile
 
 ## 12. Running
 
+**Easiest:** install a JDK 17+ (e.g. from https://adoptium.net), then double-click `run-windows.bat`
+(Windows) or run `./run-mac-linux.sh` (macOS/Linux). Maven is not needed: the bundled Maven Wrapper downloads it.
+
 ```bash
 mvn javafx:run                       # recommended
 # or build a self-contained jar for the current platform:

@@ -35,8 +35,8 @@ sequences that are not connected to real code.
 | **Algorithm Library** | Summary, use cases, how it works, pseudocode, best/average/worst complexity, stability, in-place status, operation tables, "Open in visualizer". |
 | **Settings** | Default speed, animate transitions (reduced motion), default array size, start module, Dijkstra distances, clear recent activity, reset. Saved to `~/.algoviz/settings.properties`. |
 
-Shared execution controls in every visualizer: **Play / Pause / Resume, Step forward, Step backward, Jump to end,
-Reset, seek slider, speed slider (0.5–60 steps/s)**. Keyboard: `Space`, `←`, `→`, `R`, `End`, `Ctrl+1…7`, `F1`.
+Shared execution controls in every visualizer: **Previous step and Next step**. There is no automatic playback; the
+user advances every step by hand. Keyboard: `←`, `→`, `Ctrl+1…7`, `F1`.
 
 | | |
 |---|---|
@@ -245,7 +245,7 @@ Latest run (OpenJDK 21, Linux, under Xvfb): **1086 tests, 0 failures, 0 errors, 
 | `PlaybackControllerTest` | 15 | Pause stops ticks, resume, finish, replay, step forward/back restore identical snapshots and metrics, repeated round trips, reset clears time, paused time excluded (fake clock), generation invalidation, seek, listeners. |
 | `SettingsServiceTest` | 4 | Defaults, round trip, malformed values, unreadable/unwritable file. |
 | `AlgorithmCatalogTest`, `ValidationUtilsTest` | 5 | Catalog completeness and stability facts; input parsing and range errors. |
-| `UiSmokeTest` | 1 | Launches the real app, opens every module, drives play/pause/step/reset/end via the UI, validates inline errors, runs tree/list/graph operations, fails on any FX-thread exception. |
+| `UiSmokeTest` | 1 | Launches the real app, opens every module, drives Previous/Next stepping via the UI, validates inline errors, runs tree/list/graph operations, fails on any FX-thread exception. |
 
 ## 14. Limitations and future work
 

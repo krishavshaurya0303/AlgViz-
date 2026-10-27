@@ -223,6 +223,6 @@ public final class DashboardController extends StaticPageController {
     @Override
     public String helpText() {
         return "Pick a module from the sidebar or a card below. Quick-start items open a module with a prepared "
-                + "example already playing. Your last opened module appears under Continue learning.";
+                + "example ready to step through. Your last opened module appears under Continue learning.";
     }
 }

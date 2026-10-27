@@ -251,8 +251,7 @@ public final class MainController {
         }
         body.getChildren().add(new Label("Keyboard shortcuts"));
         String[][] keys = {
-                {"Space", "Play / pause"}, {"→", "Step forward"}, {"←", "Step backward"},
-                {"R", "Reset to the initial state"}, {"End", "Jump to the final step"},
+                {"→", "Next step"}, {"←", "Previous step"},
                 {"Ctrl+1 … 7", "Switch module"}, {"F1", "This help"}};
         for (String[] k : keys) {
             Label key = new Label(k[0]);

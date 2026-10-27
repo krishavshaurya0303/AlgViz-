@@ -103,8 +103,7 @@ public final class TreeController extends VisualizerController<TreeStep> {
 
         metricsPanel.configure(List.of(MetricType.COMPARISONS, MetricType.NODES_VISITED,
                         MetricType.NODE_COUNT, MetricType.TREE_HEIGHT),
-                List.of(new String[]{STEP, "Position in the recorded steps of the current operation."},
-                        new String[]{ELAPSED, "Wall-clock time spent in Play mode (paused time excluded)."}));
+                List.<String[]>of(new String[]{STEP, "Position in the recorded steps of the current operation."}));
 
         AlgorithmMetadata bst = context.catalog().binarySearchTree();
         complexityCard.showOperations(bst.operations(), "Average", "Worst", bst.complexityNote());
@@ -218,13 +217,14 @@ public final class TreeController extends VisualizerController<TreeStep> {
         }
     }
 
-    private void load(ExecutionTrace<TreeStep> trace, boolean play) {
-        if (play && trace.size() > 1) {
-            driver.loadAndPlay(trace);
+    /** {@code stepThrough}: start at step 0 so the user walks the operation with Next; otherwise show the end state. */
+    private void load(ExecutionTrace<TreeStep> trace, boolean stepThrough) {
+        if (stepThrough && trace.size() > 1) {
+            driver.load(trace);
         } else {
             driver.loadAtEnd(trace);
         }
-        if (trace.last().status() == StepStatus.FAILURE && play) {
+        if (trace.last().status() == StepStatus.FAILURE && stepThrough) {
             message(trace.last().explanation(), true);
         }
     }

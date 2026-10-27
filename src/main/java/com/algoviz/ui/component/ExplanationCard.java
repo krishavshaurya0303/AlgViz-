@@ -24,7 +24,7 @@ public final class ExplanationCard extends HBox {
         VBox body = new VBox(6, title, text);
         HBox.setHgrow(body, Priority.ALWAYS);
         getChildren().addAll(accent, body);
-        show("Choose an algorithm and press Play.", StepStatus.INFO);
+        show("Choose an algorithm and press Next (→).", StepStatus.INFO);
     }
 
     public void setTitle(String value) {

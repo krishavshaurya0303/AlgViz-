@@ -91,8 +91,7 @@ public final class LinkedListController extends VisualizerController<ListStep> {
 
         metricsPanel.configure(List.of(MetricType.NODES_VISITED, MetricType.COMPARISONS,
                         MetricType.POINTER_CHANGES, MetricType.NODE_COUNT),
-                List.of(new String[]{STEP, "Position in the recorded steps of the current operation."},
-                        new String[]{ELAPSED, "Wall-clock time spent in Play mode (paused time excluded)."}));
+                List.<String[]>of(new String[]{STEP, "Position in the recorded steps of the current operation."}));
 
         aboutLabel.setText("Each node stores a value and a next pointer. The list is reached only through head, "
                 + "so getting to index i means following i pointers. Inserting and deleting never shift elements; "
@@ -248,9 +247,10 @@ public final class LinkedListController extends VisualizerController<ListStep> {
         load(trace, true);
     }
 
-    private void load(ExecutionTrace<ListStep> trace, boolean play) {
-        if (play && trace.size() > 1) {
-            driver.loadAndPlay(trace);
+    /** {@code stepThrough}: start at step 0 so the user walks the operation with Next; otherwise show the end state. */
+    private void load(ExecutionTrace<ListStep> trace, boolean stepThrough) {
+        if (stepThrough && trace.size() > 1) {
+            driver.load(trace);
         } else {
             driver.loadAtEnd(trace);
         }

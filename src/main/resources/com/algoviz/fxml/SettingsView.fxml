@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -15,15 +14,7 @@
             fx:controller="com.algoviz.controller.SettingsController" fitToWidth="true" hbarPolicy="NEVER">
     <VBox styleClass="module-root" maxWidth="860">
         <VBox styleClass="card" spacing="0">
-            <Label text="PLAYBACK" styleClass="card-title"/>
-            <HBox styleClass="settings-row">
-                <VBox spacing="2" HBox.hgrow="ALWAYS">
-                    <Label text="Default speed" styleClass="settings-name"/>
-                    <Label text="Steps per second when a module opens. Each module's speed slider also updates this." styleClass="settings-desc"/>
-                </VBox>
-                <Slider fx:id="speedSlider" prefWidth="200"/>
-                <Label fx:id="speedValue" styleClass="metric-value" minWidth="70"/>
-            </HBox>
+            <Label text="ANIMATION" styleClass="card-title"/>
             <HBox styleClass="settings-row">
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
                     <Label text="Animate transitions" styleClass="settings-name"/>

@@ -17,7 +17,7 @@
                 <Label text="INTERACTIVE DATA STRUCTURES &amp; ALGORITHMS" styleClass="hero-kicker"/>
                 <Label text="See what your algorithm is really doing." styleClass="hero-title" wrapText="true"/>
                 <Label styleClass="hero-text" wrapText="true"
-                       text="AlgoViz runs real implementations and records every comparison, swap, visit and pointer change. Play them back, pause, step backward, and read why each step happens — with the matching line of pseudocode highlighted."/>
+                       text="AlgoViz runs real implementations and records every comparison, swap, visit and pointer change. Step through them forward and backward, and read why each step happens — with the matching line of pseudocode highlighted."/>
                 <HBox spacing="10">
                     <Button fx:id="startButton" text="Start visualizing" styleClass="primary" onAction="#startVisualizing"/>
                     <Button fx:id="libraryButton" text="Browse the algorithm library" onAction="#openLibrary"/>

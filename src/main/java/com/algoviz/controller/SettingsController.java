@@ -11,19 +11,15 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.util.StringConverter;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 /** Settings screen. Every change is validated by {@link UserSettings} and saved immediately. */
 public final class SettingsController extends StaticPageController {
 
-    @FXML private Slider speedSlider;
-    @FXML private Label speedValue;
     @FXML private CheckBox animateBox;
     @FXML private Spinner<Integer> sizeSpinner;
     @FXML private Label sizeDesc;
@@ -42,16 +38,6 @@ public final class SettingsController extends StaticPageController {
 
     @FXML
     private void initialize() {
-        speedSlider.setMin(AppConfig.SPEED_MIN);
-        speedSlider.setMax(AppConfig.SPEED_MAX);
-        speedSlider.valueProperty().addListener((o, a, v) -> {
-            double rounded = v.doubleValue() < 10 ? Math.round(v.doubleValue() * 2) / 2.0 : Math.round(v.doubleValue());
-            speedValue.setText(String.format(Locale.ROOT, "%.1f/s", rounded));
-            if (!loading) {
-                context.settings().setPlaybackSpeed(rounded);
-                save();
-            }
-        });
         animateBox.selectedProperty().addListener((o, a, v) -> {
             if (!loading) {
                 context.settings().setAnimateTransitions(v);
@@ -121,8 +107,6 @@ public final class SettingsController extends StaticPageController {
     public void onShow(NavigationRequest request) {
         loading = true;
         UserSettings s = context.settings();
-        speedSlider.setValue(s.playbackSpeed());
-        speedValue.setText(String.format(Locale.ROOT, "%.1f/s", s.playbackSpeed()));
         animateBox.setSelected(s.animateTransitions());
         sizeSpinner.getValueFactory().setValue(s.defaultArraySize());
         startBox.setValue(s.startModule());
@@ -153,12 +137,12 @@ public final class SettingsController extends StaticPageController {
 
     @FXML
     private void resetSettings() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Speed, defaults and the start module will be reset.",
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Defaults and the start module will be reset.",
                 ButtonType.CANCEL, ButtonType.OK);
         confirm.setTitle("Reset settings");
         confirm.setHeaderText("Reset all settings to their defaults?");
-        confirm.getDialogPane().getStylesheets().addAll(speedSlider.getScene().getStylesheets());
-        confirm.initOwner(speedSlider.getScene().getWindow());
+        confirm.getDialogPane().getStylesheets().addAll(animateBox.getScene().getStylesheets());
+        confirm.initOwner(animateBox.getScene().getWindow());
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             context.settings().resetPreferences();
             save();

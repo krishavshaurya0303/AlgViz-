@@ -8,7 +8,7 @@ public enum ModuleId {
     TREE("Tree Visualizer", "Binary search tree insertion, search, deletion and traversals", "TreeView.fxml"),
     LINKED_LIST("Linked List Lab", "Pointers, nodes and links in a singly linked list", "LinkedListView.fxml"),
     LIBRARY("Algorithm Library", "Explanations, pseudocode and complexity for every algorithm", "LibraryView.fxml"),
-    SETTINGS("Settings", "Playback, defaults and preferences", "SettingsView.fxml");
+    SETTINGS("Settings", "Animation, defaults and preferences", "SettingsView.fxml");
 
     private final String title;
     private final String subtitle;

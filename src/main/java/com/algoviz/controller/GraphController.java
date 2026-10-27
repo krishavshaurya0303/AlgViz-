@@ -2,7 +2,6 @@ package com.algoviz.controller;
 
 import com.algoviz.config.AppConfig;
 import com.algoviz.engine.ExecutionTrace;
-import com.algoviz.engine.PlaybackState;
 import com.algoviz.engine.graph.GraphSearchAlgorithm;
 import com.algoviz.engine.graph.GraphStep;
 import com.algoviz.engine.graph.GridGraph;
@@ -55,7 +54,6 @@ public final class GraphController extends VisualizerController<GraphStep> {
     private final Random random = new Random();
     /** For wall/weight dragging: true = painting, false = erasing (decided on press). */
     private boolean paintValue;
-    private boolean playWhenReady;
 
     public GraphController(AppContext context) {
         super(context);
@@ -104,9 +102,7 @@ public final class GraphController extends VisualizerController<GraphStep> {
 
         metricsPanel.configure(List.of(MetricType.NODES_EXPLORED, MetricType.FRONTIER_SIZE,
                         MetricType.PATH_LENGTH, MetricType.PATH_COST),
-                List.of(new String[]{STEP, "Position in the recorded sequence of steps."},
-                        new String[]{ELAPSED, "Wall-clock time spent in Play mode (paused time excluded). "
-                                + "Not a performance measurement."}));
+                List.<String[]>of(new String[]{STEP, "Position in the recorded sequence of steps."}));
 
         rulesLabel.setText("Movement is 4-directional: up, right, down, left — no diagonals, so walls can never "
                 + "be cut through at corners. Entering a normal cell costs 1 and a weighted cell costs "
@@ -163,9 +159,6 @@ public final class GraphController extends VisualizerController<GraphStep> {
     // ------------------------------------------------------------ editing
 
     private void onCell(int row, int col, MouseButton button, boolean dragging) {
-        if (isPlaying()) {
-            return;
-        }
         int node = grid.index(row, col);
         Tool t = button == MouseButton.SECONDARY ? Tool.ERASE : tool();
         boolean changed;
@@ -246,10 +239,6 @@ public final class GraphController extends VisualizerController<GraphStep> {
 
     private void onTraceReady(ExecutionTrace<GraphStep> trace) {
         driver.load(trace);
-        if (playWhenReady) {
-            playWhenReady = false;
-            driver.play();
-        }
     }
 
     // ---------------------------------------------------------- rendering
@@ -277,18 +266,6 @@ public final class GraphController extends VisualizerController<GraphStep> {
         }
     }
 
-    @Override
-    protected void onStateChanged(PlaybackState state) {
-        boolean playing = state == PlaybackState.PLAYING;
-        toolbar.setDisable(playing);
-        canvas.setEditable(!playing);
-        if (playing) {
-            showMessage("Pause playback to edit the grid. Editing restarts the run.", false);
-        } else if (inputMessage.getText().startsWith("Pause playback")) {
-            showMessage("", false);
-        }
-    }
-
     // ------------------------------------------------------------- module
 
     @Override
@@ -301,7 +278,6 @@ public final class GraphController extends VisualizerController<GraphStep> {
             });
         }
         if ("demo".equals(request.action())) {
-            playWhenReady = true;
             grid.randomize(random, 0.26, 0);
             rebuild();
         } else if (request.algorithmId() != null) {
@@ -321,7 +297,7 @@ public final class GraphController extends VisualizerController<GraphStep> {
     @Override
     public String helpText() {
         return "Draw walls by clicking or dragging on the grid (right-click erases). Use the tool buttons to place "
-                + "weighted cells or move the start (S) and target (T). Press Play to watch the search: teal cells "
+                + "weighted cells or move the start (S) and target (T). Press Next (→) to step through the search: teal cells "
                 + "wait in the frontier, indigo cells have been visited, the amber cell is being expanded, and the "
                 + "green cells form the final path. Dijkstra shows each cell's best known distance. Editing the grid "
                 + "restarts the run.";

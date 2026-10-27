@@ -14,7 +14,7 @@ It records the full history and every decision from the original cloud session t
 ## What AlgoViz is
 A JavaFX desktop app (Java 17+ target, JavaFX 21.0.5, Maven, JUnit 5) that visualizes DSA by running **real
 instrumented implementations** that record every operation as an immutable snapshot ("step"). The UI plays
-the steps back with play/pause/step back/step forward/reset/seek/speed, highlights the matching pseudocode line,
+the steps back with Previous/Next step buttons only (Play, speed, reset, jump-to-end and seek were removed on 2026-10-27 at the owner's request; the engine still supports them), highlights the matching pseudocode line,
 explains each step in plain English, and shows counters.
 
 Modules: Dashboard, Sorting Studio (Bubble/Selection/Insertion/Merge/Quick), Graph Explorer (BFS/DFS/Dijkstra
@@ -94,7 +94,8 @@ Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and 
 - `Timeline.playFromStart()` writes `rate`, so the ticker's rate must NOT be bound. A listener on speed sets it instead.
 - Nav and card focus rings use `:focus-visible`. Using `:focused` caused a double-selected look.
 - Long pseudocode lines wrapped badly. They were shortened and the side panel widened (`minWidth 340`, divider at 0.7).
-- In tests and the harness, matching buttons by tooltip prefix "Play" also hits the Settings nav tooltip ("Playback, …"). Use `.play-button` instead.
+- In tests, find step buttons by `.step-forward-button` / `.step-back-button`, not by loose tooltip prefixes.
+- On Windows, `UiSmokeTest` must set `javafx.cachedir` to the real home. Otherwise JavaFX's locked DLLs in the @TempDir home make cleanup fail. Run it with `$env:DISPLAY=':0'`.
 - `SettingsServiceTest`: `Files.move` replaces an *empty* directory, so the unwritable-file test uses a non-empty directory.
 
 ## Session history (chronological)

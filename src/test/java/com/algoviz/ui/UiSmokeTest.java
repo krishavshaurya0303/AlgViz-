@@ -42,6 +42,9 @@ class UiSmokeTest {
     @BeforeAll
     static void launch() throws Exception {
         oldHome = System.getProperty("user.home");
+        // JavaFX extracts its native libraries under user.home; Windows keeps them locked, which
+        // would make the temp-dir cleanup fail. Keep that cache in the real home.
+        System.setProperty("javafx.cachedir", Path.of(oldHome, ".openjfx", "cache").toString());
         System.setProperty("user.home", home.toString()); // keep the real settings file untouched
         CompletableFuture<Void> started = new CompletableFuture<>();
         Platform.startup(() -> {
@@ -103,16 +106,19 @@ class UiSmokeTest {
         assertTrue(found, "control not found or disabled: " + textOrTooltip);
     }
 
-    /** Fires the visible play/pause button. */
-    private static void togglePlay() throws Exception {
+    /** Presses the visible Next button until it disables itself at the final step. */
+    private static void stepToEnd() throws Exception {
         fx(() -> {
-            for (Node n : scene.getRoot().lookupAll(".play-button")) {
+            for (Node n : scene.getRoot().lookupAll(".step-forward-button")) {
                 if (showing(n)) {
-                    ((ButtonBase) n).fire();
+                    ButtonBase next = (ButtonBase) n;
+                    for (int guard = 0; !next.isDisabled() && guard < 100_000; guard++) {
+                        next.fire();
+                    }
                     return null;
                 }
             }
-            throw new AssertionError("play button not found");
+            throw new AssertionError("next button not found");
         });
     }
 
@@ -148,7 +154,7 @@ class UiSmokeTest {
     }
 
     @Test
-    void everyModuleOpensAndPlaybackWorks() throws Exception {
+    void everyModuleOpensAndSteppingWorks() throws Exception {
         assertEquals("Dashboard", headerTitle());
         for (String m : new String[]{"Graph Explorer", "Tree Visualizer", "Linked List Lab", "Algorithm Library",
                 "Settings", "Sorting Studio"}) {
@@ -156,23 +162,17 @@ class UiSmokeTest {
             assertEquals(m, headerTitle());
         }
 
-        // Sorting: trace is built in the background, then play / pause / step / reset through the bar.
+        // Sorting: trace is built in the background, then step forward / backward through the bar.
         waitMs(800);
         assertTrue(stepLabel().startsWith("Step 0 / "), stepLabel());
-        click("Step forward");
-        click("Step forward");
+        click("Next step");
+        click("Next step");
         assertTrue(stepLabel().startsWith("Step 2 / "));
-        click("Step backward");
+        click("Previous step");
         assertTrue(stepLabel().startsWith("Step 1 / "));
-        togglePlay();
-        waitMs(900);
-        togglePlay();
-        String paused = stepLabel();
         waitMs(700);
-        assertEquals(paused, stepLabel(), "pause must stop playback");
-        click("Reset");
-        assertTrue(stepLabel().startsWith("Step 0 / "));
-        click("Jump to the final step");
+        assertTrue(stepLabel().startsWith("Step 1 / "), "nothing may advance without a click");
+        stepToEnd();
         String s = stepLabel();
         String[] parts = s.replace("Step ", "").split(" / ");
         assertEquals(parts[1], parts[0]);
@@ -195,22 +195,22 @@ class UiSmokeTest {
         click("Insert");
         type("e.g. 42", "3");
         click("Insert");
-        click("Jump to the final step");
-        click("Step backward");
+        stepToEnd();
+        click("Previous step");
         assertNotNull(stepLabel());
 
         // Linked list: sample, reverse, finish.
         click("Linked List Lab");
         click("Sample");
         click("Reverse");
-        click("Jump to the final step");
+        stepToEnd();
         assertTrue(fx(() -> ((Label) scene.getRoot().lookup(".explanation-text")).getText()).startsWith("The list is reversed"));
 
         // Graph: clear board and run to the end.
         click("Graph Explorer");
         click("Clear board");
         waitMs(500);
-        click("Jump to the final step");
+        stepToEnd();
         assertTrue(fx(() -> ((Label) scene.getRoot().lookup(".explanation-text")).getText()).startsWith("Path found"));
 
         click("Dashboard");

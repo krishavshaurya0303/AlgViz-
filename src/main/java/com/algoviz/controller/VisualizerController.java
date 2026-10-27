@@ -11,7 +11,6 @@ import com.algoviz.ui.component.Legend;
 import com.algoviz.ui.component.MetricsPanel;
 import com.algoviz.ui.component.PlaybackBar;
 import com.algoviz.ui.component.PseudocodePanel;
-import com.algoviz.util.ComplexityUtils;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -32,7 +31,6 @@ import javafx.scene.input.KeyEvent;
 public abstract class VisualizerController<S extends ExecutionStep> implements ModuleController {
 
     protected static final String STEP = "Step";
-    protected static final String ELAPSED = "Elapsed";
 
     protected final AppContext context;
     protected final FxPlaybackDriver<S> driver = new FxPlaybackDriver<>();
@@ -53,13 +51,8 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
 
     /** Subclasses call this from their initialize() after configuring their own components. */
     protected final void initPlayback() {
-        driver.speedProperty().set(context.settings().playbackSpeed());
         playbackBar.bind(driver);
         driver.addChangeListener(this::onPlaybackChanged);
-        driver.elapsedProperty().addListener((o, a, v) ->
-                metricsPanel.setExtra(ELAPSED, ComplexityUtils.formatElapsed(v.longValue())));
-        // Remember the user's preferred speed.
-        driver.speedProperty().addListener((o, a, v) -> context.settings().setPlaybackSpeed(v.doubleValue()));
     }
 
     private void onPlaybackChanged(S previous, S current, PlaybackState state) {
@@ -72,34 +65,28 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
             metricsPanel.show(null);
             metricsPanel.setExtra(STEP, "—");
         }
-        metricsPanel.setExtra(ELAPSED, ComplexityUtils.formatElapsed(driver.elapsedProperty().get()));
         if (previous != current) {
             render(previous, current, transitionMillis());
         }
         updateStatus(state, current);
-        onStateChanged(state);
     }
 
     /** Draws a step. {@code previous} is the step shown before (for transitions) and may be null. */
     protected abstract void render(S previous, S current, double millis);
-
-    /** Hook for subclasses, e.g. to disable inputs while playing. */
-    protected void onStateChanged(PlaybackState state) {
-    }
 
     protected double transitionMillis() {
         return context.settings().animateTransitions() ? driver.transitionMillis() : 0;
     }
 
     private void updateStatus(PlaybackState state, S current) {
-        String text = state.label();
+        // Mid-run positions are PAUSED in the engine; with manual stepping only, call that "Stepping".
+        String text = state == PlaybackState.PAUSED ? "Stepping" : state.label();
         if (driver.hasTrace()) {
             text += "  ·  step " + driver.indexProperty().get() + " / " + Math.max(0, driver.sizeProperty().get() - 1);
         }
         status.set(text);
         StepStatus t = switch (state) {
-            case PLAYING -> StepStatus.ACTIVE;
-            case PAUSED -> StepStatus.WARNING;
+            case PLAYING, PAUSED -> StepStatus.ACTIVE;
             case FINISHED -> current != null && current.status() == StepStatus.FAILURE
                     ? StepStatus.FAILURE : StepStatus.SUCCESS;
             default -> StepStatus.INFO;
@@ -107,16 +94,7 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
         tone.set(t);
     }
 
-    protected boolean isPlaying() {
-        return driver.state() == PlaybackState.PLAYING;
-    }
-
     // ------------------------------------------------------- ModuleController
-
-    @Override
-    public void applySettings() {
-        driver.speedProperty().set(context.settings().playbackSpeed());
-    }
 
     @Override
     public void onHide() {
@@ -136,27 +114,12 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     @Override
     public boolean handleKey(KeyEvent e) {
         switch (e.getCode()) {
-            case SPACE -> {
-                if (!driver.hasTrace()) {
-                    return false;
-                }
-                if (!driver.isPlaying()) {
-                    beforePlay();
-                }
-                driver.togglePlayPause();
-            }
             case RIGHT -> driver.stepForward();
             case LEFT -> driver.stepBackward();
-            case R, HOME -> driver.reset();
-            case END -> driver.skipToEnd();
             default -> {
                 return false;
             }
         }
         return true;
-    }
-
-    /** Called before playback starts from the keyboard or the play button. */
-    protected void beforePlay() {
     }
 }

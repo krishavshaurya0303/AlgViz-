@@ -2,7 +2,6 @@ package com.algoviz.controller;
 
 import com.algoviz.config.AppConfig;
 import com.algoviz.engine.ExecutionTrace;
-import com.algoviz.engine.PlaybackState;
 import com.algoviz.engine.sorting.InsertionSort;
 import com.algoviz.engine.sorting.MergeSort;
 import com.algoviz.engine.sorting.SortInput;
@@ -73,7 +72,6 @@ public final class SortingController extends VisualizerController<SortStep> {
 
     private final Random random = new Random();
     private int[] input = new int[0];
-    private boolean playWhenReady;
 
     public SortingController(AppContext context) {
         super(context);
@@ -139,9 +137,7 @@ public final class SortingController extends VisualizerController<SortStep> {
                 .item(Palette.GREEN, "Final position");
 
         metricsPanel.configure(List.of(MetricType.COMPARISONS, MetricType.SWAPS, MetricType.WRITES),
-                List.of(new String[]{STEP, "Position in the recorded sequence of steps."},
-                        new String[]{ELAPSED, "Wall-clock time spent in Play mode, measured with a monotonic clock. "
-                                + "Paused time is excluded. This is animation time, not algorithm performance."}));
+                List.<String[]>of(new String[]{STEP, "Position in the recorded sequence of steps."}));
 
         algorithmBox.setOnAction(e -> {
             updateAlgorithmInfo();
@@ -276,10 +272,6 @@ public final class SortingController extends VisualizerController<SortStep> {
 
     private void onTraceReady(ExecutionTrace<SortStep> trace) {
         driver.load(trace);
-        if (playWhenReady) {
-            playWhenReady = false;
-            driver.play();
-        }
         buildNote.setText(trace.size() + " steps recorded in " + ComplexityUtils.formatBuildTime(trace.buildNanos())
                 + " (includes snapshot recording — not a performance benchmark).");
     }
@@ -294,18 +286,6 @@ public final class SortingController extends VisualizerController<SortStep> {
         canvas.show(previous, current, millis);
     }
 
-    @Override
-    protected void onStateChanged(PlaybackState state) {
-        boolean playing = state == PlaybackState.PLAYING;
-        toolbar.setDisable(playing);
-        if (playing) {
-            inputMessage.getStyleClass().removeAll("error", "success");
-            inputMessage.setText("Pause playback to change the algorithm or the input.");
-        } else if (inputMessage.getText().startsWith("Pause playback")) {
-            inputMessage.setText("");
-        }
-    }
-
     // ------------------------------------------------------------- module
 
     @Override
@@ -317,7 +297,6 @@ public final class SortingController extends VisualizerController<SortStep> {
             });
         }
         if ("demo".equals(request.action())) {
-            playWhenReady = true;
             patternBox.getSelectionModel().select(Pattern.RANDOM);
             if ((int) Math.round(sizeSlider.getValue()) == 12) {
                 generate();
@@ -340,7 +319,7 @@ public final class SortingController extends VisualizerController<SortStep> {
 
     @Override
     public String helpText() {
-        return "Choose an algorithm, an order and an input, then press Play. Every bar is one array element. "
+        return "Choose an algorithm, an order and an input, then press Next (→) to step through. Every bar is one array element. "
                 + "Coral bars are being compared, amber bars are being swapped or written, and green bars have "
                 + "reached their final position. Step backward restores the exact earlier state, including the "
                 + "counters. Merge Sort shows its temporary buffer below the array; Insertion Sort lifts the key "

@@ -77,20 +77,6 @@
     -fx-min-height: 34;
 }
 
-.button.play-button {
-    -fx-background-color: linear-gradient(to bottom, #7479ff, #5b61f0);
-    -fx-border-color: #7f84ff;
-    -fx-background-radius: 999;
-    -fx-border-radius: 999;
-    -fx-min-width: 42;
-    -fx-min-height: 42;
-    -fx-padding: 9;
-}
-
-.button.play-button:hover { -fx-background-color: linear-gradient(to bottom, #8388ff, #676cf5); }
-.button.play-button .icon-fill { -fx-fill: white; }
-.button.play-button:focused { -fx-border-color: -av-cyan; -fx-border-width: 2; }
-
 /* segmented toggle group */
 .segmented {
     -fx-background-color: -av-bg-2;
@@ -307,13 +293,6 @@
     -fx-font-size: 11.5px;
     -fx-text-fill: -av-text-2;
     -fx-min-width: 96;
-}
-
-.playback-bar .speed-label {
-    -fx-font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-    -fx-font-size: 11.5px;
-    -fx-text-fill: -av-text-2;
-    -fx-min-width: 58;
 }
 
 /* ------------------------------------------------------------ explanation */

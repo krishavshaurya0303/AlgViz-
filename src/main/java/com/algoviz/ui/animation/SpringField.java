@@ -30,7 +30,7 @@ public final class SpringField {
     /** Pull along a link towards the neighbour's displacement (1/s²). */
     static final double LINK_K = 100;
     /** Velocity damping (1/s); below critical, so nodes overshoot slightly and settle. */
-    static final double DAMPING = 10;
+    static final double DAMPING = 13;
     /** Push between two nodes that come closer than their minimum distance (1/s²). */
     static final double REPEL_K = 900;
     private static final double MAX_DT = 1.0 / 240;
@@ -50,6 +50,12 @@ public final class SpringField {
     private final Map<Integer, double[]> homes = new HashMap<>();
     private double minDistance;
     private Integer grabbed;
+    /** Last drag position and time, to give a released node the speed it was thrown with. */
+    private double lastDx;
+    private double lastDy;
+    private long lastDragNanos;
+    private double throwVx;
+    private double throwVy;
     private AnimationTimer timer;
     private long lastNanos;
 
@@ -95,6 +101,9 @@ public final class SpringField {
     /** Pins node {@code id} so that it is drawn {@code (dx, dy)} away from its layout position. */
     public void grab(int id, double dx, double dy) {
         grabbed = id;
+        lastDragNanos = 0;
+        throwVx = 0;
+        throwVy = 0;
         drag(dx, dy);
     }
 
@@ -103,6 +112,16 @@ public final class SpringField {
             return;
         }
         Body b = bodies.computeIfAbsent(grabbed, k -> new Body());
+        long now = System.nanoTime();
+        if (lastDragNanos != 0 && now > lastDragNanos) {
+            double dt = (now - lastDragNanos) / 1e9;
+            // smoothed so one jittery mouse event does not decide the throw
+            throwVx = 0.6 * throwVx + 0.4 * (dx - lastDx) / dt;
+            throwVy = 0.6 * throwVy + 0.4 * (dy - lastDy) / dt;
+        }
+        lastDx = dx;
+        lastDy = dy;
+        lastDragNanos = now;
         b.dx = dx;
         b.dy = dy;
         b.vx = 0;
@@ -110,7 +129,14 @@ public final class SpringField {
         wake();
     }
 
+    /** Lets go of the grabbed node; it keeps the speed it was moving at and springs home from there. */
     public void release() {
+        Body b = grabbed == null ? null : bodies.get(grabbed);
+        if (b != null && System.nanoTime() - lastDragNanos < 80_000_000L) {
+            double max = 2500; // px/s; a hard flick should not fling the node off the canvas
+            b.vx = Math.max(-max, Math.min(max, throwVx));
+            b.vy = Math.max(-max, Math.min(max, throwVy));
+        }
         grabbed = null;
         wake();
     }

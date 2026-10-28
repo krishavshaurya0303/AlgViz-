@@ -31,7 +31,7 @@
 
 .hero-kicker {
     -fx-font-size: 11.5px;
-    -fx-text-fill: derive(-av-indigo, 40%);
+    -fx-text-fill: -av-accent-ink;
     -fx-font-weight: bold;
 }
 
@@ -107,9 +107,9 @@
 .module-icon.linkedlist { -fx-background-color: -av-violet; }
 
 .continue-card {
-    -fx-background-color: rgba(143,181,115,0.10);
+    -fx-background-color: rgba(78,138,94,0.10);
     -fx-background-radius: 3;
-    -fx-border-color: rgba(143,181,115,0.35);
+    -fx-border-color: rgba(78,138,94,0.35);
     -fx-border-radius: 3;
     -fx-padding: 14 18 14 18;
     -fx-spacing: 14;
@@ -154,7 +154,7 @@
 }
 
 .library-item:hover { -fx-background-color: -av-bg-3; -fx-text-fill: -av-text; }
-.library-item:selected { -fx-background-color: rgba(200,85,61,0.2); -fx-text-fill: -av-text; }
+.library-item:selected { -fx-background-color: rgba(254,130,84,0.2); -fx-text-fill: -av-text; }
 .library-item:focus-visible { -fx-border-color: -av-cyan; -fx-border-radius: 2; }
 
 .doc-title {
@@ -187,8 +187,8 @@
 .doc-step-no {
     -fx-font-family: "IBM Plex Mono", "Consolas", "DejaVu Sans Mono", monospace;
     -fx-font-size: 11px;
-    -fx-text-fill: derive(-av-indigo, 40%);
-    -fx-background-color: rgba(200,85,61,0.16);
+    -fx-text-fill: -av-accent-ink;
+    -fx-background-color: rgba(254,130,84,0.16);
     -fx-background-radius: 3;
     -fx-min-width: 22;
     -fx-min-height: 22;
@@ -231,3 +231,14 @@
     -fx-text-fill: -av-text-3;
     -fx-wrap-text: true;
 }
+
+/* ---- de-slop pass (interface-design skill) ---- */
+
+/* The hero is type on the page, not a framed box. */
+.hero { -fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 18 4 26 4; }
+.hero-title { -fx-font-size: 36px; }
+/* Module icons are plain line icons, not coloured tiles. */
+.module-icon.sorting, .module-icon.graph, .module-icon.tree, .module-icon.linkedlist {
+    -fx-background-color: transparent; -fx-border-color: -av-border-strong; -fx-border-radius: 3;
+}
+.module-icon .icon-stroke { -fx-stroke: -av-text-2; }

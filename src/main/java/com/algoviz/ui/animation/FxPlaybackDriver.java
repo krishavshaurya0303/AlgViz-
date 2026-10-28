@@ -167,7 +167,7 @@ public final class FxPlaybackDriver<S extends ExecutionStep> {
 
     /** Suggested duration of the visual transition between two steps. */
     public double transitionMillis() {
-        return Math.min(320, 0.75 * 1000 / Math.max(0.5, speed.get()));
+        return Math.min(240, 0.75 * 1000 / Math.max(0.5, speed.get()));
     }
 
     public ReadOnlyObjectProperty<PlaybackState> stateProperty() {

@@ -2,6 +2,7 @@
 
 <?import com.algoviz.ui.component.ExplanationCard?>
 <?import com.algoviz.ui.component.Legend?>
+<?import com.algoviz.ui.component.MemoryView?>
 <?import com.algoviz.ui.component.MetricsPanel?>
 <?import com.algoviz.ui.component.PlaybackBar?>
 <?import com.algoviz.ui.component.PseudocodePanel?>
@@ -64,7 +65,7 @@
     </HBox>
     <Label fx:id="inputMessage" styleClass="inline-message"/>
 
-    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.7">
+    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.75">
         <VBox spacing="12" minWidth="520">
             <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
                 <ScrollPane fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER">
@@ -75,6 +76,7 @@
                 </Legend>
                 <VBox fx:id="emptyHolder" StackPane.alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"/>
             </StackPane>
+            <MemoryView fx:id="memoryView"/>
             <PlaybackBar fx:id="playbackBar"/>
         </VBox>
         <ScrollPane fitToWidth="true" minWidth="340" hbarPolicy="NEVER">
@@ -82,7 +84,7 @@
                 <ExplanationCard fx:id="explanationCard"/>
                 <MetricsPanel fx:id="metricsPanel"/>
                 <VBox styleClass="card">
-                    <Label fx:id="codeTitle" text="PSEUDOCODE" styleClass="card-title"/>
+                    <Label fx:id="codeTitle" text="Pseudocode" styleClass="card-title"/>
                     <PseudocodePanel fx:id="pseudocodePanel"/>
                 </VBox>
             </VBox>

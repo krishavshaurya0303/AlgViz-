@@ -47,7 +47,7 @@ public final class LibraryController extends StaticPageController {
         for (AlgorithmMetadata m : all) {
             if (m.category() != lastCategory) {
                 lastCategory = m.category();
-                Label g = new Label(m.category().displayName().toUpperCase());
+                Label g = new Label(m.category().displayName());
                 g.getStyleClass().add("library-group");
                 entryList.getChildren().add(g);
             }
@@ -116,7 +116,7 @@ public final class LibraryController extends StaticPageController {
         detail.getChildren().add(section("WHEN IS IT USEFUL?"));
         detail.getChildren().add(text(m.whenUseful()));
 
-        detail.getChildren().add(section("HOW IT WORKS"));
+        detail.getChildren().add(section("How it works"));
         VBox steps = new VBox(8);
         for (int i = 0; i < m.howItWorks().size(); i++) {
             Label no = new Label(String.valueOf(i + 1));
@@ -129,7 +129,7 @@ public final class LibraryController extends StaticPageController {
         }
         detail.getChildren().add(steps);
 
-        detail.getChildren().add(section("PSEUDOCODE"));
+        detail.getChildren().add(section("Pseudocode"));
         PseudocodePanel code = new PseudocodePanel();
         code.setCode(m.pseudocode());
         detail.getChildren().add(code);

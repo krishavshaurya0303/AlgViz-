@@ -2,7 +2,10 @@ package com.algoviz.controller;
 
 import com.algoviz.config.AppConfig;
 import com.algoviz.engine.ExecutionTrace;
+import com.algoviz.engine.memory.MemoryLayout;
+import com.algoviz.engine.memory.MemoryModel;
 import com.algoviz.engine.tree.BinarySearchTree;
+import com.algoviz.engine.tree.TreeSnapshot;
 import com.algoviz.engine.tree.TreeOperation;
 import com.algoviz.engine.tree.TreeStep;
 import com.algoviz.model.AlgorithmMetadata;
@@ -31,7 +34,10 @@ import javafx.util.StringConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -237,6 +243,34 @@ public final class TreeController extends VisualizerController<TreeStep> {
         }
     }
 
+    @Override
+    protected MemoryLayout memoryLayout(ExecutionTrace<TreeStep> trace, int index, MemoryModel model) {
+        Map<Integer, Integer> seen = new HashMap<>();
+        for (int i = 0; i < index; i++) {
+            trace.get(i).tree().inorder().forEach(n -> seen.put(n.id(), n.value()));
+        }
+        TreeStep cur = trace.get(index);
+        TreeStep prev = index > 0 ? trace.get(index - 1) : null;
+        return MemoryLayout.ofTree(cur.tree(), prev == null ? null : prev.tree(), stackOf(cur),
+                prev == null ? null : stackOf(prev), seen, model);
+    }
+
+    /** The operation's variables: root, plus whichever node is being examined, deleted or used as successor. */
+    private static Map<String, Integer> stackOf(TreeStep step) {
+        Map<String, Integer> vars = new LinkedHashMap<>();
+        TreeSnapshot.Node root = step.tree().root();
+        vars.put("root", root == null ? -1 : root.id());
+        step.highlights().forEach((id, h) -> {
+            switch (h) {
+                case CURRENT -> vars.put("current", id);
+                case DELETE_TARGET -> vars.put("target", id);
+                case SUCCESSOR -> vars.put("successor", id);
+                default -> { }
+            }
+        });
+        return vars;
+    }
+
     // ------------------------------------------------------------ rendering
 
     @Override
@@ -251,7 +285,7 @@ public final class TreeController extends VisualizerController<TreeStep> {
         if (op != shownCode && op != TreeOperation.VIEW) {
             shownCode = op;
             pseudocodePanel.setCode(op.pseudocode());
-            codeTitle.setText("PSEUDOCODE · " + op.label().toUpperCase());
+            codeTitle.setText("Pseudocode for " + op.label().toLowerCase());
         }
         if (op.isTraversal() && !current.output().isEmpty()) {
             outputTitle.setText(op.label() + " output");

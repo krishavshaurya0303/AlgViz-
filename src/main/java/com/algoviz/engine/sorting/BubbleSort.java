@@ -30,7 +30,7 @@ public final class BubbleSort extends SortingAlgorithm {
                     "        if a[j] > a[j + 1]:",
                     "            swap(a[j], a[j + 1])",
                     "            swapped = true",
-                    "    a[n - pass - 1] is now in its final place",
+                    "    a[n - pass - 1] is now final",
                     "    if not swapped: stop early"),
             "O(n)", "O(n²)", "O(n²)", "O(1)", true, true, null,
             "Best case O(n) applies to an already-sorted array thanks to the early exit.");

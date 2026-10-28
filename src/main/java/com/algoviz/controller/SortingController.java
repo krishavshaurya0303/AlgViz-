@@ -130,7 +130,7 @@ public final class SortingController extends VisualizerController<SortStep> {
         customField.textProperty().addListener((o, a, v) -> customField.getStyleClass().remove("invalid"));
 
         legend.item(Palette.NEUTRAL, "Unsorted")
-                .item(Palette.CORAL, "Comparing")
+                .item(Palette.INDIGO, "Comparing")
                 .item(Palette.AMBER, "Swap / write")
                 .item(Palette.VIOLET, "Pivot")
                 .item(Palette.CYAN, "Minimum / key")

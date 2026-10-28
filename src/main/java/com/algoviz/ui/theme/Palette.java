@@ -13,40 +13,40 @@ import javafx.scene.paint.Color;
  */
 public final class Palette {
 
-    public static final Color BG_0 = Color.web("#1b1916");
-    public static final Color BG_1 = Color.web("#201d1a");
-    public static final Color BG_2 = Color.web("#25221e");
-    public static final Color BG_3 = Color.web("#2c2824");
-    public static final Color BG_4 = Color.web("#36312b");
-    public static final Color BORDER = Color.web("#38332c");
-    public static final Color BORDER_STRONG = Color.web("#4d463d");
+    public static final Color BG_0 = Color.web("#eadfc8");
+    public static final Color BG_1 = Color.web("#f3ebda");
+    public static final Color BG_2 = Color.web("#f3ebda");
+    public static final Color BG_3 = Color.web("#e4d8bf");
+    public static final Color BG_4 = Color.web("#d9cbad");
+    public static final Color BORDER = Color.web("#c4b598");
+    public static final Color BORDER_STRONG = Color.web("#3f5a62");
 
-    public static final Color TEXT = Color.web("#ece4d4");
-    public static final Color TEXT_2 = Color.web("#b8ad9b");
-    public static final Color TEXT_3 = Color.web("#857b6c");
+    public static final Color TEXT = Color.web("#2b3f45");
+    public static final Color TEXT_2 = Color.web("#4a5b60");
+    public static final Color TEXT_3 = Color.web("#58666b");
 
     /** The single UI accent: brick red. */
-    public static final Color INDIGO = Color.web("#c8553d");
-    public static final Color VIOLET = Color.web("#a88aa6");
-    public static final Color BLUE = Color.web("#7f9cc0");
+    public static final Color INDIGO = Color.web("#fe8254");
+    public static final Color VIOLET = Color.web("#9c5b86");
+    public static final Color BLUE = Color.web("#4a6f9a");
     /** "Current element": blue ink. */
-    public static final Color CYAN = Color.web("#86b4c9");
-    public static final Color GREEN = Color.web("#8fb573");
-    public static final Color AMBER = Color.web("#d9a441");
-    public static final Color CORAL = Color.web("#e07a62");
+    public static final Color CYAN = Color.web("#3f7f93");
+    public static final Color GREEN = Color.web("#4e8a5e");
+    public static final Color AMBER = Color.web("#c98a12");
+    public static final Color CORAL = Color.web("#b5452e");
 
     /** Neutral bar / node colour. */
-    public static final Color NEUTRAL = Color.web("#6b6255");
-    public static final Color NEUTRAL_LIGHT = Color.web("#8a7f6f");
+    public static final Color NEUTRAL = Color.web("#8a989c");
+    public static final Color NEUTRAL_LIGHT = Color.web("#5f7176");
 
     // Graph explorer cell colours
-    public static final Color CELL_EMPTY = Color.web("#221f1b");
-    public static final Color CELL_LINE = Color.web("#2d2924");
-    public static final Color CELL_WALL = Color.web("#4a4339");
-    public static final Color CELL_WALL_TOP = Color.web("#5c5447");
-    public static final Color CELL_WEIGHT = Color.web("#3d3122");
-    public static final Color CELL_FRONTIER = Color.web("#4b7182");
-    public static final Color CELL_VISITED = Color.web("#46506a");
+    public static final Color CELL_EMPTY = Color.web("#f3ebda");
+    public static final Color CELL_LINE = Color.web("#e4d8bf");
+    public static final Color CELL_WALL = Color.web("#3f5a62");
+    public static final Color CELL_WALL_TOP = Color.web("#557780");
+    public static final Color CELL_WEIGHT = Color.web("#ead2a2");
+    public static final Color CELL_FRONTIER = Color.web("#a9cad4");
+    public static final Color CELL_VISITED = Color.web("#d5ddd6");
     public static final Color CELL_PATH = GREEN;
 
     private Palette() {

@@ -166,12 +166,21 @@ public final class LinkedListCanvas extends ResizableCanvas {
             Pos p = pos.get(n.id());
             boolean appearing = from != null && !fromPos.containsKey(n.id());
             double hv = hoverOf(n.id());
-            drawNode(gc, p.x(), p.y() - 3 * hv, n, s.highlights().get(n.id()), appearing ? t : 1);
+            // Hover magnifies the node about its centre.
+            double grow = 1 + 0.14 * hv;
+            double cx = p.x() + NODE_W / 2;
+            double cy = p.y() + NODE_H / 2;
+            gc.save();
+            gc.translate(cx, cy);
+            gc.scale(grow, grow);
+            gc.translate(-cx, -cy);
+            drawNode(gc, p.x(), p.y(), n, s.highlights().get(n.id()), appearing ? t : 1);
             if (hv > 0) {
                 gc.setStroke(Palette.withAlpha(Palette.TEXT, 0.55 * hv));
                 gc.setLineWidth(1);
-                gc.strokeRoundRect(p.x() - 4, p.y() - 3 * hv - 4, NODE_W + 8, NODE_H + 8, 6, 6);
+                gc.strokeRoundRect(p.x() - 4, p.y() - 4, NODE_W + 8, NODE_H + 8, 6, 6);
             }
+            gc.restore();
             if (i == last && n.nextId() == -1 && !n.detached()) {
                 gc.setFill(Palette.TEXT_3);
                 gc.setFont(FontLoader.mono(11));
@@ -322,7 +331,7 @@ public final class LinkedListCanvas extends ResizableCanvas {
                 double y = rowY - 22 - nullRow * 24;
                 gc.setFill(Palette.withAlpha(c, 0.15));
                 gc.fillRoundRect(nullX, y - 10, w2, 20, 3, 3);
-                gc.setFill(c);
+                gc.setFill(ink(c));
                 gc.fillText(text, nullX + w2 / 2, y);
                 nullRow++;
                 continue;
@@ -343,8 +352,13 @@ public final class LinkedListCanvas extends ResizableCanvas {
             }
             gc.setFill(Palette.withAlpha(c, 0.15));
             gc.fillRoundRect(cx - tw / 2, top - 10, tw, 20, 3, 3);
-            gc.setFill(c);
+            gc.setFill(ink(c));
             gc.fillText(name, cx, top);
         }
+    }
+
+    /** A role colour pulled towards the ink colour, so pointer labels stay readable on their pale tint. */
+    private static Color ink(Color c) {
+        return c.interpolate(Palette.TEXT, 0.65);
     }
 }

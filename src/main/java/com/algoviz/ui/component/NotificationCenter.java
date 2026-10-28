@@ -1,9 +1,12 @@
 package com.algoviz.ui.component;
 
 import com.algoviz.model.StepStatus;
+import com.algoviz.ui.animation.Easing;
 import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -37,11 +40,18 @@ public final class NotificationCenter extends VBox {
         }
         getChildren().add(toast);
 
-        FadeTransition in = new FadeTransition(Duration.millis(160), toast);
-        in.setFromValue(0);
-        in.setToValue(1);
+        // Enter: rise 8px while fading in (ease-out). Exit: a quicker fade, so it never lingers.
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(200), toast);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.setInterpolator(Easing.OUT);
+        TranslateTransition rise = new TranslateTransition(Duration.millis(200), toast);
+        rise.setFromY(8);
+        rise.setToY(0);
+        rise.setInterpolator(Easing.OUT);
+        ParallelTransition in = new ParallelTransition(fadeIn, rise);
         PauseTransition hold = new PauseTransition(Duration.seconds(tone == StepStatus.FAILURE ? 5 : 3.2));
-        FadeTransition out = new FadeTransition(Duration.millis(260), toast);
+        FadeTransition out = new FadeTransition(Duration.millis(150), toast);
         out.setToValue(0);
         SequentialTransition seq = new SequentialTransition(in, hold, out);
         seq.setOnFinished(e -> getChildren().remove(toast));

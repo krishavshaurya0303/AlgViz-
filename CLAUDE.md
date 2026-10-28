@@ -31,7 +31,7 @@ mvnw.cmd test                    # run all tests (the UI smoke test is skipped w
 mvnw.cmd package                 # also builds target/algoviz-1.0.0-app.jar (platform-specific fat jar)
 ```
 On Linux a headless UI test run is `xvfb-run -a mvn test`.
-Last verified result: **1090 tests, 0 failures, 0 skipped** (Windows/Java 27 with `$env:DISPLAY=':0'`, 2026-10-28). The stack trace printed during `SettingsServiceTest` is the intentional "Could not read settings" path, not a failure.
+Last verified result: **1097 tests, 0 failures, 0 skipped** (Windows/Java 27 with `$env:DISPLAY=':0'`, 2026-10-28). The stack trace printed during `SettingsServiceTest` is the intentional "Could not read settings" path, not a failure.
 
 ## Architecture (where things are)
 `src/main/java/com/algoviz/`
@@ -67,7 +67,8 @@ Last verified result: **1090 tests, 0 failures, 0 skipped** (Windows/Java 27 wit
   - `Tween`: AnimationTimer-based easing.
   - `BackgroundRunner`: JavaFX Task plus a ticket so only the newest result is delivered.
   - `SpringField`: spring physics for draggable tree/list nodes (displacement from layout home; home, link and repulsion forces; tested in `SpringFieldTest`). `ResizableCanvas.enableDragging` wires the mouse; canvases call `beginHomes`/`rememberHome` each frame and read `hoverOf(id)` for hover effects.
-  - `HoverMotion`: scene-wide mouse filter easing translate/scale for `.button`, `.toggle-button`, `.nav-item`, `.module-card`, `.library-item`. Disabled when Settings → Animate transitions is off.
+  - `HoverMotion`: scene-wide filter; hover lifts buttons 1.5px, slides nav 4px and library rows 3px, raises module cards 3px (150 ms in / 200 ms out); press scales to 0.97 (100 ms) and back (160 ms). The owner chose to keep hover motion even though the Emil skill advises against it. `Easing.OUT` = spline(0.23,1,0.32,1), `Easing.IN_OUT` = spline(0.77,0,0.175,1); `Tween` uses IN_OUT, step transitions are capped at 240 ms, keyboard module switches are not animated. `SpringField` keeps the throw velocity on release.
+- `engine/memory/`: `MemoryModel` (C malloc/free or JAVA new/GC; illustrative addresses `0x1a40 + (id-1)*stride`, stride 0x20 list / 0x30 tree) and `MemoryLayout` (stack vars + heap blocks with NEW / FREED / GARBAGE states). `ui/component/MemoryView` shows it on the Tree and Linked List screens; `VisualizerController.memoryLayout(trace, index, model)` is the hook. Settings `memory.model` and `memory.visible` persist the toggle and Hide/Show.
 - `ui/render/`: `ResizableCanvas` base plus `SortingCanvas`, `GridCanvas`, `TreeCanvas` (x = inorder rank, y = depth), `LinkedListCanvas`.
 - `ui/component/`: `PlaybackBar`, `MetricsPanel`, `PseudocodePanel`, `ExplanationCard`, `ComplexityCard`, `Legend`, `EmptyState`, `NotificationCenter`, `Icons`/`IconType` (custom SVG paths), `BrandMark`.
 - `ui/theme/`: `Palette` (mirrors the CSS tokens), `FontLoader` (bundled Atkinson Hyperlegible and IBM Plex Mono, both OFL).
@@ -121,6 +122,8 @@ Last verified result: **1090 tests, 0 failures, 0 skipped** (Windows/Java 27 wit
    - Dark paper theme; draggable spring-physics nodes; Atkinson Hyperlegible + IBM Plex Mono; hover animations; dashboard Quick start (and the "demo" navigation action) removed.
    - README, VIVA.md and screenshots refreshed.
    - Owner learned the Git loop and pushed `bb856f3` and `c88684b` himself.
+   - Dynamic memory view (C / Java toggle) on Tree and Linked List.
+   - Anthropic frontend-design skill tried and dropped (owner disliked the chalkboard plan). Emil Kowalski skills installed (emil-design-eng, apple-design, animate, improve/review/find animations, break-ui); used to retune easings and add spring momentum (hover motion was briefly removed, then restored at the owner's request).
 
 ## Known limitations / possible next work
 - AVL (or Red-Black) tree with rotation animation.

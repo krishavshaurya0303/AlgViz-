@@ -26,7 +26,8 @@ import java.util.Map;
  */
 public final class TreeCanvas extends ResizableCanvas {
 
-    private static final double MIN_SPACING = 34;
+    /** The tree always fits the visible area; spacing and node size shrink for big trees instead of scrolling. */
+    private static final double MIN_SPACING = 10;
     private static final double MAX_SPACING = 72;
     private static final double PAD = 30;
 
@@ -49,14 +50,12 @@ public final class TreeCanvas extends ResizableCanvas {
         from = previous;
         to = current;
         updateLinks();
-        updateMinSize();
         tween.start(previous == null ? 0 : millis);
     }
 
     public void clear() {
         from = to = null;
         springs.reset();
-        updateMinSize();
         redraw();
     }
 
@@ -71,11 +70,14 @@ public final class TreeCanvas extends ResizableCanvas {
         springs.setLinks(placed.keySet(), links);
     }
 
-    private void updateMinSize() {
-        int n = to == null ? 0 : to.tree().size();
-        int height = to == null ? 0 : Math.max(0, to.tree().height());
-        setMinWidth(n * MIN_SPACING + 2 * PAD);
-        setMinHeight((height + 1) * 58 + 2 * PAD);
+    /** Horizontal distance between neighbouring ranks so that {@code n} nodes fit in width {@code w}. */
+    private static double spacing(double w, int n) {
+        return Math.max(MIN_SPACING, Math.min(MAX_SPACING, (w - 2 * PAD) / Math.max(1, n)));
+    }
+
+    /** Vertical distance between levels so that a tree of this height fits in {@code h}. */
+    private static double level(double h, int height) {
+        return Math.max(24, Math.min(92, (h - 2 * PAD - 20) / Math.max(1, height)));
     }
 
     private static Map<Integer, Placed> place(TreeSnapshot snap) {
@@ -101,11 +103,11 @@ public final class TreeCanvas extends ResizableCanvas {
         if (n == 0) {
             return out;
         }
-        double spacing = Math.max(MIN_SPACING, Math.min(MAX_SPACING, (w - 2 * PAD) / n));
+        double spacing = spacing(w, n);
         double totalW = spacing * n;
         double left = Math.max(PAD, (w - totalW) / 2);
         int height = Math.max(1, snap.height());
-        double level = Math.max(58, Math.min(92, (h - 2 * PAD - 20) / height));
+        double level = level(h, height);
         for (Placed p : placed.values()) {
             out.put(p.node().id(), new Pos(left + p.rank() * spacing + spacing / 2, PAD + 18 + p.depth() * level));
         }
@@ -123,8 +125,9 @@ public final class TreeCanvas extends ResizableCanvas {
         Map<Integer, Placed> fromPlaced = from == null ? Map.of() : place(from.tree());
         Map<Integer, Pos> fromPos = from == null ? Map.of() : pixels(from.tree(), fromPlaced, w, h);
         int n = Math.max(1, to.tree().size());
-        double spacing = Math.max(MIN_SPACING, Math.min(MAX_SPACING, (w - 2 * PAD) / n));
-        double r = Math.max(12, Math.min(19, spacing * 0.40));
+        double spacing = spacing(w, n);
+        double level = level(h, Math.max(1, to.tree().height()));
+        double r = Math.max(5, Math.min(19, Math.min(spacing * 0.40, level * 0.32)));
 
         Map<Integer, Pos> current = new HashMap<>();
         for (Map.Entry<Integer, Pos> e : toPos.entrySet()) {
@@ -185,7 +188,7 @@ public final class TreeCanvas extends ResizableCanvas {
             boolean isNew = from != null && !fromPlaced.containsKey(node.id());
             double scale = isNew ? 0.4 + 0.6 * t : 1;
             double hv = hoverOf(node.id());
-            double nodeR = r * scale * (1 + 0.14 * hv);
+            double nodeR = r * scale * (1 + 0.18 * hv);
             drawNode(gc, pos.x(), pos.y(), nodeR, String.valueOf(node.value()), to.highlightOf(node.id()),
                     isNew ? t : 1);
             if (hv > 0) {

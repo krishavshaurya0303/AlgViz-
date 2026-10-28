@@ -14,7 +14,7 @@
             fx:controller="com.algoviz.controller.SettingsController" fitToWidth="true" hbarPolicy="NEVER">
     <VBox styleClass="module-root" maxWidth="860">
         <VBox styleClass="card" spacing="0">
-            <Label text="ANIMATION" styleClass="card-title"/>
+            <Label text="Animation" styleClass="card-title"/>
             <HBox styleClass="settings-row">
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
                     <Label text="Animate transitions" styleClass="settings-name"/>
@@ -25,7 +25,7 @@
         </VBox>
 
         <VBox styleClass="card" spacing="0">
-            <Label text="DEFAULTS" styleClass="card-title"/>
+            <Label text="Defaults" styleClass="card-title"/>
             <HBox styleClass="settings-row">
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
                     <Label text="Default array size" styleClass="settings-name"/>
@@ -50,7 +50,7 @@
         </VBox>
 
         <VBox styleClass="card" spacing="0">
-            <Label text="DATA" styleClass="card-title"/>
+            <Label text="Data" styleClass="card-title"/>
             <HBox styleClass="settings-row">
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
                     <Label text="Recent activity" styleClass="settings-name"/>
@@ -70,6 +70,6 @@
                 <Label fx:id="fileLabel" styleClass="settings-desc"/>
             </VBox>
         </VBox>
-        <Label text="AlgoViz has a single dark theme and no sound effects, so there are no settings for them." styleClass="note-text"/>
+        <Label text="AlgoViz has a single light theme and no sound effects, so there are no settings for them." styleClass="note-text"/>
     </VBox>
 </ScrollPane>

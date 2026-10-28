@@ -16,7 +16,7 @@ public final class Icons {
         p.setContent(type.path());
         p.getStyleClass().add(type.filled() ? "icon-fill" : "icon-stroke");
         if (!type.filled()) {
-            p.setStrokeWidth(1.9);
+            p.setStrokeWidth(1.6);
         }
         double scale = size / 24.0;
         p.setScaleX(scale);

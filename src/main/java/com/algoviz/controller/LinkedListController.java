@@ -3,8 +3,11 @@ package com.algoviz.controller;
 import com.algoviz.config.AppConfig;
 import com.algoviz.engine.ExecutionTrace;
 import com.algoviz.engine.linkedlist.ListOperation;
+import com.algoviz.engine.linkedlist.ListSnapshot;
 import com.algoviz.engine.linkedlist.ListStep;
 import com.algoviz.engine.linkedlist.SinglyLinkedList;
+import com.algoviz.engine.memory.MemoryLayout;
+import com.algoviz.engine.memory.MemoryModel;
 import com.algoviz.model.MetricType;
 import com.algoviz.model.ModuleId;
 import com.algoviz.model.StepStatus;
@@ -25,7 +28,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /** Linked List Lab: list operations with explicit pointer visualization. */
@@ -258,6 +263,16 @@ public final class LinkedListController extends VisualizerController<ListStep> {
         }
     }
 
+    @Override
+    protected MemoryLayout memoryLayout(ExecutionTrace<ListStep> trace, int index, MemoryModel model) {
+        Map<Integer, Integer> seen = new HashMap<>();
+        for (int i = 0; i < index; i++) {
+            trace.get(i).snapshot().nodes().forEach(n -> seen.put(n.id(), n.value()));
+        }
+        ListSnapshot prev = index > 0 ? trace.get(index - 1).snapshot() : null;
+        return MemoryLayout.ofList(trace.get(index).snapshot(), prev, seen, model);
+    }
+
     // ------------------------------------------------------------ rendering
 
     @Override
@@ -271,7 +286,7 @@ public final class LinkedListController extends VisualizerController<ListStep> {
         if (op != shownCode) {
             shownCode = op;
             pseudocodePanel.setCode(op.pseudocode());
-            codeTitle.setText("PSEUDOCODE · " + op.label().toUpperCase());
+            codeTitle.setText("Pseudocode for " + op.label().toLowerCase());
         }
     }
 

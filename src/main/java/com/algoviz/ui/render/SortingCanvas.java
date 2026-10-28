@@ -126,6 +126,7 @@ public final class SortingCanvas extends ResizableCanvas {
 
         for (int i = 0; i < n; i++) {
             double value;
+            double lift = 0;
             double x = PAD_X + i * slot + (slot - barW) / 2;
             if (i == swapA || i == swapB) {
                 int other = i == swapA ? swapB : swapA;
@@ -133,12 +134,17 @@ public final class SortingCanvas extends ResizableCanvas {
                 double fromX = PAD_X + other * slot + (slot - barW) / 2;
                 x = Tween.lerp(fromX, x, t);
                 value = to.valueAt(i);
+                // Both bars are picked up slightly while they trade places and set down at the end,
+                // so a swap reads as an exchange rather than two bars sliding through each other.
+                lift = -Math.sin(Math.PI * t) * Math.min(8, slot * 0.3);
             } else {
                 value = from == null ? to.valueAt(i) : Tween.lerp(from.valueAt(i), to.valueAt(i), t);
             }
-            double barTop = value >= 0 ? zeroY - value / range * chartH : zeroY;
+            double barTop = (value >= 0 ? zeroY - value / range * chartH : zeroY) + lift;
             double barH = Math.max(2, Math.abs(value) / range * chartH);
-            Color fill = colorFor(i);
+            // Role colours cross-fade with the motion instead of snapping on the first frame.
+            Color fill = from == null || from == to || t >= 1 ? colorFor(to, i)
+                    : colorFor(from, i).interpolate(colorFor(to, i), t);
             boolean ghost = isGap(i) && to.isHolding();
             boolean dim = to.hasRange() && (i < to.rangeLo() || i > to.rangeHi()) && !to.isSorted(i);
             double alpha = dim ? 0.38 : 1;
@@ -154,6 +160,12 @@ public final class SortingCanvas extends ResizableCanvas {
             } else {
                 gc.setFill(Palette.withAlpha(fill, alpha));
                 gc.fillRoundRect(x, barTop, barW, barH, radius, radius);
+                if (lift != 0) {
+                    // A canvas-coloured edge keeps the two moving bars distinct where they overlap.
+                    gc.setStroke(Palette.BG_1);
+                    gc.setLineWidth(1.5);
+                    gc.strokeRoundRect(x, barTop, barW, barH, radius, radius);
+                }
             }
             if (showValues) {
                 gc.setFont(valueFont);
@@ -194,14 +206,14 @@ public final class SortingCanvas extends ResizableCanvas {
         return false;
     }
 
-    private Color colorFor(int i) {
-        if (to.type() == SortEventType.DONE) {
+    private Color colorFor(SortStep step, int i) {
+        if (step.type() == SortEventType.DONE) {
             return Palette.GREEN;
         }
-        if (i == to.first() || i == to.second()) {
-            switch (to.type()) {
+        if (i == step.first() || i == step.second()) {
+            switch (step.type()) {
                 case COMPARE:
-                    return Palette.CORAL;
+                    return Palette.INDIGO;
                 case SWAP:
                 case WRITE:
                     return Palette.AMBER;
@@ -211,7 +223,7 @@ public final class SortingCanvas extends ResizableCanvas {
                     break;
             }
         }
-        for (SortMarker m : to.markers()) {
+        for (SortMarker m : step.markers()) {
             if (m.index() == i) {
                 if (m.role() == MarkerRole.PIVOT) {
                     return Palette.VIOLET;
@@ -221,10 +233,10 @@ public final class SortingCanvas extends ResizableCanvas {
                 }
             }
         }
-        if (to.isSorted(i)) {
+        if (step.isSorted(i)) {
             return Palette.withAlpha(Palette.GREEN, 0.78);
         }
-        if (to.type() == SortEventType.NOTE && (i == to.first() || i == to.second())) {
+        if (step.type() == SortEventType.NOTE && (i == step.first() || i == step.second())) {
             return Palette.NEUTRAL_LIGHT;
         }
         return Palette.NEUTRAL;

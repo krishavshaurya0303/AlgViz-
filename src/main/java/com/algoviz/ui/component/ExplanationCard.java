@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 /** "What's happening" card: the current step's explanation, tinted by its status. */
 public final class ExplanationCard extends HBox {
 
-    private final Label title = new Label("WHAT'S HAPPENING");
+    private final Label title = new Label("What's happening");
     private final Label text = new Label();
 
     public ExplanationCard() {
@@ -28,7 +28,7 @@ public final class ExplanationCard extends HBox {
     }
 
     public void setTitle(String value) {
-        title.setText(value.toUpperCase());
+        title.setText(value);
     }
 
     public void show(String explanation, StepStatus status) {

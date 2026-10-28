@@ -5,27 +5,30 @@
    ===================================================================== */
 .root {
     /* surfaces */
-    -av-bg-0: #1b1916;
-    -av-bg-1: #201d1a;
-    -av-bg-2: #25221e;
-    -av-bg-3: #2c2824;
-    -av-bg-4: #36312b;
-    -av-border: #38332c;
-    -av-border-strong: #4d463d;
+    -av-bg-0: #eadfc8;
+    -av-bg-1: #f3ebda;
+    -av-bg-2: #f3ebda;
+    -av-bg-3: #e4d8bf;
+    -av-bg-4: #d9cbad;
+    -av-border: #c4b598;
+    -av-border-strong: #3f5a62;
 
     /* text */
-    -av-text: #ece4d4;
-    -av-text-2: #b8ad9b;
-    -av-text-3: #857b6c;
+    -av-text: #2b3f45;
+    -av-text-2: #4a5b60;
+    -av-text-3: #58666b;
 
     /* accents */
-    -av-indigo: #c8553d;
-    -av-violet: #a88aa6;
-    -av-blue: #7f9cc0;
-    -av-cyan: #86b4c9;
-    -av-green: #8fb573;
-    -av-amber: #d9a441;
-    -av-coral: #e07a62;
+    -av-indigo: #fe8254;
+    -av-violet: #9c5b86;
+    -av-blue: #4a6f9a;
+    -av-cyan: #3f7f93;
+    -av-green: #4e8a5e;
+    -av-amber: #c98a12;
+    -av-coral: #b5452e;
+    -av-accent-ink: #a8441f; /* accent-coloured text: peach itself is too light on paper */
+    -av-steel: #3f5a62;
+    -av-paper: #eadfc8;
 
     -fx-font-family: "Atkinson Hyperlegible", "Segoe UI", "Helvetica Neue", "Liberation Sans", sans-serif;
     -fx-font-size: 13px;
@@ -33,14 +36,14 @@
     -fx-background-color: -av-bg-0;
 
     /* defaults inherited by built-in controls */
-    -fx-base: #2c2824;
+    -fx-base: #e4d8bf;
     -fx-background: -av-bg-0;
     -fx-control-inner-background: -av-bg-3;
     -fx-accent: -av-indigo;
     -fx-focus-color: -av-cyan;
-    -fx-faint-focus-color: rgba(134,180,201, 0.18);
+    -fx-faint-focus-color: rgba(63,127,147, 0.18);
     -fx-selection-bar: -av-indigo;
-    -fx-selection-bar-non-focused: #5a3a30;
+    -fx-selection-bar-non-focused: #efc9b6;
     -fx-text-base-color: -av-text;
     -fx-text-background-color: -av-text;
     -fx-prompt-text-fill: -av-text-3;
@@ -106,14 +109,14 @@
 .nav-item:hover .icon-stroke { -fx-stroke: -av-text-2; }
 
 .nav-item:selected {
-    -fx-background-color: rgba(200,85,61,0.22);
+    -fx-background-color: rgba(254,130,84,0.22);
     -fx-text-fill: -av-text;
     -fx-border-color: transparent transparent transparent -av-indigo;
     -fx-border-width: 0 0 0 2;
     -fx-border-radius: 3;
 }
 
-.nav-item:selected .icon-stroke { -fx-stroke: derive(-av-indigo, 40%); }
+.nav-item:selected .icon-stroke { -fx-stroke: -av-accent-ink; }
 
 .nav-item:focus-visible {
     -fx-border-color: -av-cyan;
@@ -259,5 +262,22 @@
 }
 
 .split-pane > .split-pane-divider:hover {
-    -fx-background-color: rgba(200,85,61,0.25);
+    -fx-background-color: rgba(254,130,84,0.25);
 }
+
+/* ---- de-slop pass (interface-design skill) ---- */
+
+.nav-section { -fx-font-size: 11.5px; -fx-text-fill: -av-text-3; }
+
+/* ---- Peach and Steel: the sidebar is a steel band with paper text ---- */
+.sidebar { -fx-background-color: -av-steel; -fx-border-color: transparent; }
+.brand-name { -fx-text-fill: -av-paper; }
+.brand-sub, .nav-section, .sidebar-footer .label { -fx-text-fill: #c6d2d3; }
+.nav-item { -fx-text-fill: #e3d8c2; -fx-background-radius: 10; }
+.nav-item .icon-stroke { -fx-stroke: #c6d2d3; }
+.nav-item:hover { -fx-background-color: rgba(234,223,200,0.12); -fx-text-fill: -av-paper; }
+.nav-item:hover .icon-stroke { -fx-stroke: -av-paper; }
+.nav-item:selected { -fx-background-color: -av-indigo; -fx-text-fill: -av-text; -fx-font-weight: bold; -fx-border-color: transparent; -fx-border-width: 0; }
+.nav-item:selected .icon-stroke { -fx-stroke: -av-text; }
+.nav-item:focus-visible { -fx-border-color: -av-indigo; -fx-border-radius: 10; }
+.sidebar-footer { -fx-border-color: rgba(234,223,200,0.2) transparent transparent transparent; }

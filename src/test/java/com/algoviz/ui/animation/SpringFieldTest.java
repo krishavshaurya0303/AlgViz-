@@ -58,6 +58,19 @@ class SpringFieldTest {
     }
 
     @Test
+    void releasedNodeKeepsTheSpeedItWasThrownWith() throws InterruptedException {
+        SpringField f = chain();
+        f.grab(1, 0, 0);
+        for (int x = 20; x <= 60; x += 20) {
+            Thread.sleep(10);
+            f.drag(x, 0);
+        }
+        f.release();
+        f.step(1.0 / 120);
+        assertTrue(f.dx(1) > 60, "a node thrown to the right keeps moving right for a moment: " + f.dx(1));
+    }
+
+    @Test
     void removedNodesAreForgotten() {
         SpringField f = chain();
         f.grab(3, 50, 0);

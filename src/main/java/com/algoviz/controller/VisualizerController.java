@@ -1,13 +1,17 @@
 package com.algoviz.controller;
 
 import com.algoviz.engine.ExecutionStep;
+import com.algoviz.engine.ExecutionTrace;
 import com.algoviz.engine.PlaybackState;
+import com.algoviz.engine.memory.MemoryLayout;
+import com.algoviz.engine.memory.MemoryModel;
 import com.algoviz.model.StepStatus;
 import com.algoviz.ui.animation.BackgroundRunner;
 import com.algoviz.ui.animation.FxPlaybackDriver;
 import com.algoviz.ui.component.ComplexityCard;
 import com.algoviz.ui.component.ExplanationCard;
 import com.algoviz.ui.component.Legend;
+import com.algoviz.ui.component.MemoryView;
 import com.algoviz.ui.component.MetricsPanel;
 import com.algoviz.ui.component.PlaybackBar;
 import com.algoviz.ui.component.PseudocodePanel;
@@ -44,6 +48,8 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     @FXML protected MetricsPanel metricsPanel;
     @FXML protected ComplexityCard complexityCard;
     @FXML protected Legend legend;
+    /** Optional: present only on screens whose data structure lives in dynamic memory. */
+    @FXML protected MemoryView memoryView;
 
     protected VisualizerController(AppContext context) {
         this.context = context;
@@ -53,6 +59,37 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     protected final void initPlayback() {
         playbackBar.bind(driver);
         driver.addChangeListener(this::onPlaybackChanged);
+        if (memoryView != null) {
+            memoryView.modelProperty().set(MemoryModel.parse(context.settings().memoryModel()));
+            memoryView.modelProperty().addListener((o, a, v) -> {
+                context.settings().setMemoryModel(v.name());
+                context.saveSettings();
+                refreshMemory();
+            });
+            memoryView.expandedProperty().set(context.settings().showMemory());
+            memoryView.expandedProperty().addListener((o, a, v) -> {
+                context.settings().setShowMemory(v);
+                context.saveSettings();
+            });
+        }
+    }
+
+    /** Rebuilds the memory view for the step on screen. */
+    private void refreshMemory() {
+        if (memoryView == null) {
+            return;
+        }
+        ExecutionTrace<S> trace = driver.controller().trace();
+        memoryView.show(trace == null ? null : memoryLayout(trace, driver.indexProperty().get(), memoryView.model()));
+    }
+
+    /**
+     * Memory picture of step {@code index} of {@code trace}; screens with a memory view override this.
+     * The whole trace is passed so the layout can compare with the step before and remember
+     * nodes that disappeared earlier in the operation.
+     */
+    protected MemoryLayout memoryLayout(ExecutionTrace<S> trace, int index, MemoryModel model) {
+        return null;
     }
 
     private void onPlaybackChanged(S previous, S current, PlaybackState state) {
@@ -68,6 +105,7 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
         if (previous != current) {
             render(previous, current, transitionMillis());
         }
+        refreshMemory();
         updateStatus(state, current);
     }
 
@@ -95,6 +133,14 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     }
 
     // ------------------------------------------------------- ModuleController
+
+    @Override
+    public void applySettings() {
+        if (memoryView != null) {
+            memoryView.modelProperty().set(MemoryModel.parse(context.settings().memoryModel()));
+            memoryView.expandedProperty().set(context.settings().showMemory());
+        }
+    }
 
     @Override
     public void onHide() {

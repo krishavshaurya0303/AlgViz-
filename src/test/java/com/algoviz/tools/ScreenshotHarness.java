@@ -37,6 +37,8 @@ import java.util.Deque;
  * Commands: nav:TEXT | click:TEXT | type:PROMPT_SUBSTRING=VALUE | combo:INDEX=ITEM | key:CODE
  *           | wait:MS | shot:FILE | size:WxH | press:X,Y | move:X,Y | release | hoverat:X,Y  (mouse, scene coordinates)
  *           | enter:TEXT  (pointer enters a button)
+ *           | enterclass:STYLECLASS  (pointer enters the first visible node with that style class)
+ *           | burst:KEY,PREFIX,N,MS  (press KEY, then save N frames MS apart as PREFIX-0.png ...)
  */
 public final class ScreenshotHarness extends Application {
 
@@ -140,6 +142,38 @@ public final class ScreenshotHarness extends Application {
                                 MouseButton.NONE, 0, false, false, false, false, false, false, false, false, false,
                                 false, null));
                     }
+                }
+                case "enterclass", "exitclass" -> {
+                    for (Node n : scene.getRoot().lookupAll("." + arg)) {
+                        if (isShowing(n)) {
+                            Point2D mid = n.localToScene(n.getLayoutBounds().getCenterX(), n.getLayoutBounds().getCenterY());
+                            n.fireEvent(new MouseEvent(op.equals("enterclass") ? MouseEvent.MOUSE_ENTERED : MouseEvent.MOUSE_EXITED,
+                                    mid.getX(), mid.getY(), mid.getX(), mid.getY(), MouseButton.NONE, 0, false, false, false,
+                                    false, false, false, false, false, false, false, null));
+                            break;
+                        }
+                    }
+                }
+                case "burst" -> {
+                    String[] a = arg.split(",");
+                    int frames = Integer.parseInt(a[2]);
+                    double gap = Double.parseDouble(a[3]);
+                    scene.getRoot().requestFocus();
+                    KeyEvent.fireEvent(scene.getRoot(), new KeyEvent(KeyEvent.KEY_PRESSED, "", "",
+                            KeyCode.valueOf(a[0]), false, false, false, false));
+                    Timeline film = new Timeline();
+                    for (int f = 0; f < frames; f++) {
+                        String file = a[1] + "-" + f + ".png";
+                        film.getKeyFrames().add(new KeyFrame(Duration.millis(f * gap + 1), e -> {
+                            try {
+                                ImageIO.write(SwingFXUtils.fromFXImage(scene.snapshot(null), null), "png", new File(file));
+                            } catch (java.io.IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        }));
+                    }
+                    film.play();
+                    delay = frames * gap + 300;
                 }
                 case "wait" -> delay = Double.parseDouble(arg);
                 case "size" -> {

@@ -24,7 +24,7 @@
     -fx-background-color: -av-bg-3;
 }
 
-.button:focused, .toggle-button:focused {
+.button:focus-visible, .toggle-button:focus-visible {
     -fx-border-color: -av-cyan;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .button.primary:pressed { -fx-background-color: derive(-av-indigo, -15%); }
-.button.primary:focused { -fx-border-color: -av-cyan; }
+.button.primary:focus-visible { -fx-border-color: -av-cyan; }
 .button.primary .icon-stroke { -fx-stroke: -av-text; }
 .button.primary .icon-fill { -fx-fill: -av-text; }
 
@@ -162,7 +162,7 @@
 }
 
 .combo-box-popup .list-view .list-cell:hover { -fx-background-color: -av-bg-4; }
-.combo-box-popup .list-view .list-cell:selected { -fx-background-color: rgba(200,85,61,0.35); }
+.combo-box-popup .list-view .list-cell:selected { -fx-background-color: rgba(254,130,84,0.35); }
 
 .spinner .text-field {
     -fx-background-color: transparent;
@@ -273,9 +273,9 @@
     -fx-text-fill: -av-text-2;
 }
 
-.chip.accent { -fx-background-color: rgba(200,85,61,0.16); -fx-border-color: rgba(200,85,61,0.45); -fx-text-fill: derive(-av-indigo, 40%); }
-.chip.success { -fx-background-color: rgba(143,181,115,0.12); -fx-border-color: rgba(143,181,115,0.4); -fx-text-fill: -av-green; }
-.chip.warning { -fx-background-color: rgba(217,164,65,0.12); -fx-border-color: rgba(217,164,65,0.4); -fx-text-fill: -av-amber; }
+.chip.accent { -fx-background-color: rgba(254,130,84,0.16); -fx-border-color: rgba(254,130,84,0.45); -fx-text-fill: -av-accent-ink; }
+.chip.success { -fx-background-color: rgba(78,138,94,0.12); -fx-border-color: rgba(78,138,94,0.4); -fx-text-fill: -av-green; }
+.chip.warning { -fx-background-color: rgba(201,138,18,0.12); -fx-border-color: rgba(201,138,18,0.4); -fx-text-fill: -av-amber; }
 
 /* ------------------------------------------------------------ playback bar */
 .playback-bar {
@@ -351,7 +351,7 @@
     -fx-text-fill: -av-text;
 }
 
-.metric-value.accent { -fx-text-fill: derive(-av-indigo, 40%); }
+.metric-value.accent { -fx-text-fill: -av-accent-ink; }
 
 /* ------------------------------------------------------------ pseudocode */
 .pseudocode {
@@ -385,7 +385,7 @@
 }
 
 .code-line.current {
-    -fx-background-color: rgba(134,180,201,0.20);
+    -fx-background-color: rgba(63,127,147,0.20);
     -fx-border-color: transparent transparent transparent -av-cyan;
     -fx-border-width: 0 0 0 2;
 }
@@ -421,7 +421,7 @@
     -fx-spacing: 14;
     -fx-alignment: center-left;
     -fx-padding: 6 12 6 12;
-    -fx-background-color: rgba(27,25,22,0.72);
+    -fx-background-color: rgba(243,235,218,0.92);
     -fx-background-radius: 3;
     -fx-border-color: -av-border;
     -fx-border-radius: 3;
@@ -521,7 +521,7 @@
 }
 
 .output-strip {
-    -fx-background-color: rgba(27,25,22,0.78);
+    -fx-background-color: rgba(243,235,218,0.94);
     -fx-background-radius: 3;
     -fx-border-color: -av-border;
     -fx-border-radius: 3;
@@ -535,3 +535,50 @@
     -fx-font-family: "IBM Plex Mono", "Consolas", "DejaVu Sans Mono", monospace;
     -fx-text-fill: -av-green;
 }
+
+/* ------------------------------------------------------------ memory view */
+.memory-view { -fx-padding: 10 14 8 14; -fx-spacing: 4; }
+.memory-heading { -fx-font-size: 12px; -fx-text-fill: -av-text-2; }
+.memory-footnote { -fx-font-size: 11px; -fx-text-fill: -av-text-3; }
+.memory-note { -fx-font-size: 12.5px; -fx-text-fill: -av-text; }
+.memory-stack { -fx-padding: 0 14 0 0; -fx-border-color: transparent -av-border transparent transparent; -fx-border-width: 0 1 0 0; }
+.memory-name { -fx-font-size: 12px; -fx-text-fill: -av-text-2; }
+.memory-value { -fx-font-family: "IBM Plex Mono", "Consolas", monospace; -fx-font-size: 12px; -fx-text-fill: -av-text; }
+.memory-value.changed { -fx-text-fill: #8a5f0a; -fx-font-weight: bold; }
+.memory-block {
+    -fx-background-color: -av-bg-1;
+    -fx-border-color: -av-border-strong;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 8 10 8 10;
+    -fx-min-width: 118;
+}
+.memory-address { -fx-font-family: "IBM Plex Mono", "Consolas", monospace; -fx-font-size: 12px; -fx-text-fill: -av-cyan; }
+.memory-state { -fx-font-size: 11px; -fx-text-fill: -av-text-3; }
+.memory-block.state-new { -fx-border-color: -av-green; }
+.memory-block.state-new .memory-state { -fx-text-fill: -av-green; }
+.memory-block.state-freed { -fx-border-color: -av-coral; -fx-border-style: segments(4, 3); -fx-opacity: 0.75; }
+.memory-block.state-freed .memory-state { -fx-text-fill: -av-coral; }
+.memory-block.state-garbage { -fx-border-style: segments(4, 3); -fx-opacity: 0.5; }
+
+/* ---- de-slop pass (interface-design skill) ---- */
+
+.card-title { -fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: -av-text-2; }
+/* The explanation is the focal text of every visualizer: bigger type, no side stripe. */
+.explanation-accent { -fx-background-color: transparent; -fx-min-width: 0; -fx-pref-width: 0; -fx-max-width: 0; }
+.explanation-card .explanation-text { -fx-font-size: 15.5px; -fx-line-spacing: 3; }
+/* Metrics read as a quiet stat row, not four boxes inside a box. */
+.metric-tile { -fx-background-color: transparent; -fx-border-color: transparent transparent -av-border transparent; -fx-padding: 6 2 8 2; }
+.metric-value { -fx-font-size: 18px; }
+
+/* ---- detail pass (make-interfaces-feel-better skill) ---- */
+/* Hit areas: at least 34px for every button, 40px for the Previous / Next pair used on every step. */
+.button, .toggle-button { -fx-min-height: 34; }
+.step-back-button, .step-forward-button { -fx-min-height: 40; -fx-padding: 8 18 8 18; }
+
+/* ---- rounded panels ---- */
+/* Boards get the largest curve; panels sit one step below; small things inside (legend, blocks) one more. */
+.canvas-card { -fx-background-radius: 14; -fx-border-radius: 14; }
+.card, .explanation-card, .playback-bar, .module-card, .continue-card { -fx-background-radius: 10; -fx-border-radius: 10; }
+.legend, .output-strip, .memory-block, .pseudocode { -fx-background-radius: 6; -fx-border-radius: 6; }
+.button, .toggle-button, .text-field, .combo-box { -fx-background-radius: 6; -fx-border-radius: 6; }

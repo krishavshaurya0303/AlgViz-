@@ -52,10 +52,9 @@ public final class Tween {
         progress = 1;
     }
 
-    /** Eased progress in [0, 1]. */
+    /** Eased progress in [0, 1] (strong ease-in-out: things moving across the screen). */
     public double eased() {
-        double t = progress;
-        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        return Easing.IN_OUT.interpolate(0.0, 1.0, progress);
     }
 
     public boolean isRunning() {

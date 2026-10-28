@@ -20,11 +20,11 @@
                     <Label text="Algorithm Visualizer" styleClass="brand-sub"/>
                 </VBox>
             </HBox>
-            <Label text="OVERVIEW" styleClass="nav-section"/>
+            <Label text="Overview" styleClass="nav-section"/>
             <VBox fx:id="navOverview" spacing="2"/>
-            <Label text="VISUALIZERS" styleClass="nav-section"/>
+            <Label text="Visualizers" styleClass="nav-section"/>
             <VBox fx:id="navModules" spacing="2"/>
-            <Label text="LEARN" styleClass="nav-section"/>
+            <Label text="Learn" styleClass="nav-section"/>
             <VBox fx:id="navLearn" spacing="2"/>
             <Region VBox.vgrow="ALWAYS"/>
             <VBox fx:id="navBottom" spacing="2"/>

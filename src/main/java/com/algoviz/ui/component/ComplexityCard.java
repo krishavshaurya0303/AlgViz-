@@ -16,7 +16,7 @@ public final class ComplexityCard extends VBox {
 
     public ComplexityCard() {
         getStyleClass().add("card");
-        Label title = new Label("THEORETICAL COMPLEXITY");
+        Label title = new Label("Theoretical complexity");
         title.getStyleClass().add("card-title");
         grid.getStyleClass().add("complexity-grid");
         note.getStyleClass().add("note-text");

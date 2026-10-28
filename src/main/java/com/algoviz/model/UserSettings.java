@@ -13,6 +13,8 @@ public final class UserSettings {
     private ModuleId startModule = ModuleId.DASHBOARD;
     private boolean animateTransitions = true;
     private boolean showGridDistances = true;
+    private String memoryModel = "C";
+    private boolean showMemory = true;
 
     // Recent activity — recorded only when the user actually opens a module.
     private ModuleId lastModule;
@@ -59,6 +61,23 @@ public final class UserSettings {
         this.showGridDistances = value;
     }
 
+    /** "C" (malloc / free) or "JAVA" (new / garbage collection) for the memory view. */
+    public String memoryModel() {
+        return memoryModel;
+    }
+
+    public void setMemoryModel(String value) {
+        this.memoryModel = "JAVA".equalsIgnoreCase(value) ? "JAVA" : "C";
+    }
+
+    public boolean showMemory() {
+        return showMemory;
+    }
+
+    public void setShowMemory(boolean value) {
+        this.showMemory = value;
+    }
+
     public ModuleId lastModule() {
         return lastModule;
     }
@@ -90,5 +109,7 @@ public final class UserSettings {
         startModule = ModuleId.DASHBOARD;
         animateTransitions = true;
         showGridDistances = true;
+        memoryModel = "C";
+        showMemory = true;
     }
 }

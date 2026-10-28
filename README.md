@@ -30,8 +30,8 @@ sequences that are not connected to real code.
 | **Dashboard** | Welcome, entry points to every module, honest summary, *Continue learning* (only if you really opened a module before). |
 | **Sorting Studio** | Bubble, Selection, Insertion, Merge, Quick Sort. Ascending/descending. Size 2–150, patterns (random, nearly sorted, reversed, sorted, few unique), custom input with validation. Merge Sort shows its temporary buffer; Insertion Sort lifts the key out and shows shifts; Quick Sort shows pivot and `i` boundary; Selection Sort shows the current minimum. |
 | **Graph Explorer** | 19 × 35 grid, 4-directional movement. Draw/erase walls and weighted cells (cost 5), move start/target. BFS, DFS, Dijkstra. Frontier, visited, current node, final path, Dijkstra distances, explicit *No path found* state. |
-| **Tree Visualizer** | Standard (unbalanced) BST: insert, search, delete (leaf / one child / two children with inorder successor), inorder, preorder, postorder, level-order, sample tree, clear. Duplicates rejected. Nodes can be dragged (see below). |
-| **Linked List Lab** | Singly linked list (head pointer only): insert head/tail/index, delete head/tail/index, search, traverse, reverse, clear. Every pointer assignment is its own step; arrows are drawn from the real `next` pointers so reversal visibly flips them. Nodes can be dragged. |
+| **Tree Visualizer** | Standard (unbalanced) BST: insert, search, delete (leaf / one child / two children with inorder successor), inorder, preorder, postorder, level-order, sample tree, clear. Duplicates rejected. Nodes can be dragged; a *Memory* panel shows the heap (see below). |
+| **Linked List Lab** | Singly linked list (head pointer only): insert head/tail/index, delete head/tail/index, search, traverse, reverse, clear. Every pointer assignment is its own step; arrows are drawn from the real `next` pointers so reversal visibly flips them. Nodes can be dragged; a *Memory* panel shows the heap. |
 | **Algorithm Library** | Summary, use cases, how it works, pseudocode, best/average/worst complexity, stability, in-place status, operation tables, "Open in visualizer". |
 | **Settings** | Animate transitions (reduced motion), default array size, start module, Dijkstra distances, clear recent activity, reset. Saved to `~/.algoviz/settings.properties`. |
 
@@ -44,8 +44,21 @@ learner's control during a demo. Other shortcuts: `Ctrl+1…7` switch module, `F
   links, nodes push each other apart, and everything springs back to the correct layout on release — the
   structure on screen is never left in a wrong state (`ui/animation/SpringField`).
 * *Hover feedback*: tree/list nodes grow slightly and their links brighten; buttons lift and press in, sidebar
-  items and library rows slide, dashboard cards rise (`ui/animation/HoverMotion`). Turning off *Animate
-  transitions* stops the control motions.
+  items and library rows slide, dashboard cards rise (`ui/animation/HoverMotion`, strong ease-out curve). Module
+  switches from the keyboard are not animated. Turning off *Animate transitions* stops the control motions.
+
+**Dynamic memory view** (Tree Visualizer, Linked List Lab). Below the drawing, a *Memory* panel shows what each
+step does in memory: the operation's variables on the **stack** (`head`, `prev`, `current`, `next`, `root` …) and every
+node as a **block on the heap** with its address and fields, so `next = 0x1a60` replaces the arrow. A toggle
+switches between two models:
+* *C: malloc / free* — a new node is `malloc(sizeof(struct node))` (16 bytes for a list node, 24 for a tree node);
+  a deleted node is `free`d and its block shown once as freed.
+* *Java: new / GC* — a new node is `new Node(v)`; a deleted node becomes unreachable and stays greyed out as
+  garbage until the operation ends, because Java has no `free`.
+
+The block that changed is highlighted and scrolled into view; changed fields turn amber. Addresses are
+illustrative (derived from node ids, stable across steps), not real machine addresses. The panel can be hidden,
+and both choices are remembered.
 
 **Look.** A single dark "ink on paper" theme: warm charcoal surfaces, paper-white text and one brick-red accent,
 flat (no gradients, glows or shadows). Fonts: Atkinson Hyperlegible for the interface — designed for legibility,
@@ -113,18 +126,19 @@ src/main/java/com/algoviz/
 │   ├── sorting/                             SortingAlgorithm (template), 5 algorithms, SortRecorder, SortStep …
 │   ├── graph/                               Graph, GridGraph, AdjacencyListGraph, GraphSearchAlgorithm, BFS, DFS, Dijkstra …
 │   ├── tree/                                BinarySearchTree, TreeNode, TreeSnapshot, TreeStep, TreeOperation …
+│   ├── memory/                              MemoryModel (C / Java), MemoryLayout (stack + heap per step)
 │   └── linkedlist/                          SinglyLinkedList, ListNode, ListSnapshot, ListStep, ListOperation …
 ├── service/                                 AlgorithmCatalog (strategy registry + docs), SettingsService (persistence)
 ├── controller/                              MainController, VisualizerController (base), StaticPageController (base),
 │                                            Dashboard/Sorting/Graph/Tree/LinkedList/Library/Settings controllers, AppContext
-├── ui/animation/                            FxPlaybackDriver, Tween, BackgroundRunner, SpringField, HoverMotion
+├── ui/animation/                            FxPlaybackDriver, Tween, BackgroundRunner, SpringField, HoverMotion, Easing
 ├── ui/component/                            PlaybackBar, MetricsPanel, PseudocodePanel, ExplanationCard, ComplexityCard,
-│                                            Legend, EmptyState, NotificationCenter, Icons, IconType, BrandMark
+│                                            Legend, EmptyState, NotificationCenter, Icons, IconType, BrandMark, MemoryView
 ├── ui/render/                               ResizableCanvas (base) + 4 canvases
 ├── ui/theme/                                Palette, FontLoader
 └── util/                                    ValidationUtils, InvalidInputException, ComplexityUtils
 src/main/resources/com/algoviz/  fxml/ (8 views) · css/ (app, components, modules) · fonts/
-src/test/java/com/algoviz/       engine/ · service/ · util/ · ui/UiSmokeTest · ui/animation/SpringFieldTest · tools/ScreenshotHarness
+src/test/java/com/algoviz/       engine/ · service/ · util/ · ui/UiSmokeTest · ui/animation/SpringFieldTest · engine/memory/MemoryLayoutTest · tools/ScreenshotHarness
 ```
 
 ## 7. Class responsibilities (key classes)
@@ -137,7 +151,10 @@ src/test/java/com/algoviz/       engine/ · service/ · util/ · ui/UiSmokeTest 
 | `PlaybackController<S>` | FX-independent state machine (EMPTY/READY/PLAYING/PAUSED/FINISHED), stopwatch, generation counter, observers. |
 | `FxPlaybackDriver<S>` | Adapts the controller to JavaFX: step commands, observable properties, change listeners for rendering. |
 | `SpringField` | Spring physics for draggable nodes: each node has a displacement from its layout position, pulled home, along links and away from other nodes. Pure arithmetic, unit-tested without JavaFX. |
-| `HoverMotion` | One scene-wide mouse filter that eases hover/press motion for buttons, sidebar items, cards and rows (JavaFX 21 CSS has no transitions). |
+| `HoverMotion` | One scene-wide mouse filter: buttons lift on hover and scale to 0.97 while pressed; sidebar items, cards and rows move on hover (JavaFX 21 CSS has no transitions). |
+| `Easing` | The two curves all UI motion uses: a strong ease-out for responses, a strong ease-in-out for on-screen movement. |
+| `MemoryLayout` / `MemoryModel` | Turn a list or tree snapshot into stack variables and heap blocks (addresses, fields, new / freed / garbage) for the C or Java model. UI-free and unit-tested. |
+| `MemoryView` | The *Memory* panel: model toggle, stack column and heap blocks; scrolls to the block that changed. |
 | `SortRecorder` | Instrumented array — every compare/swap/write goes through it, so counts and highlights are always consistent. |
 | `SortingAlgorithm` | Template method: records initial/final states; subclasses implement `sort()`. |
 | `GraphSearchAlgorithm` | Template: initial state, path reconstruction from parent pointers, "no path" outcome. |
@@ -260,7 +277,7 @@ xvfb-run -a mvn test                 # Linux headless: also runs the JavaFX UI s
 
 To include the UI smoke test on Windows, set `DISPLAY` first: in PowerShell `$env:DISPLAY=':0'; .\mvnw.cmd test`.
 
-Latest run (Java 27, Windows 11, with `DISPLAY` set): **1090 tests, 0 failures, 0 errors, 0 skipped.**
+Latest run (Java 27, Windows 11, with `DISPLAY` set): **1097 tests, 0 failures, 0 errors, 0 skipped.**
 
 | Suite | Tests | What is verified |
 |---|---|---|
@@ -272,7 +289,8 @@ Latest run (Java 27, Windows 11, with `DISPLAY` set): **1090 tests, 0 failures, 
 | `PlaybackControllerTest` | 15 | Pause stops ticks, resume, finish, replay, step forward/back restore identical snapshots and metrics, repeated round trips, reset clears time, paused time excluded (fake clock), generation invalidation, seek, listeners. |
 | `SettingsServiceTest` | 4 | Defaults, round trip, malformed values, unreadable/unwritable file. |
 | `AlgorithmCatalogTest`, `ValidationUtilsTest` | 5 | Catalog completeness and stability facts; input parsing and range errors. |
-| `SpringFieldTest` | 4 | Dragged node stays under the cursor, neighbours follow less with distance, everything returns home after release, removed nodes are forgotten. |
+| `SpringFieldTest` | 5 | Dragged node stays under the cursor, neighbours follow less with distance, a thrown node keeps its speed, everything returns home after release, removed nodes are forgotten. |
+| `MemoryLayoutTest` | 6 | Stable distinct addresses, a new node is marked allocated, changed `next` is marked, C frees a removed block only in its step, Java keeps it as garbage, one tree insert = one malloc and one delete = one free. |
 | `UiSmokeTest` | 1 | Launches the real app, opens every module, drives Previous/Next stepping via the UI, validates inline errors, runs tree/list/graph operations, fails on any FX-thread exception. |
 
 ## 14. Limitations and future work

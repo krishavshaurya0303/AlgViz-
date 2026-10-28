@@ -14,7 +14,6 @@
         <!-- Hero -->
         <HBox styleClass="hero" spacing="30">
             <VBox spacing="14" HBox.hgrow="ALWAYS">
-                <Label text="INTERACTIVE DATA STRUCTURES &amp; ALGORITHMS" styleClass="hero-kicker"/>
                 <Label text="See what your algorithm is really doing." styleClass="hero-title" wrapText="true"/>
                 <Label styleClass="hero-text" wrapText="true"
                        text="AlgoViz runs real implementations and records every comparison, swap, visit and pointer change. Step through them forward and backward, and read why each step happens — with the matching line of pseudocode highlighted."/>
@@ -29,7 +28,7 @@
         <!-- Continue learning: only present when real recent activity exists -->
         <HBox fx:id="continueCard" styleClass="continue-card" managed="false" visible="false">
             <VBox spacing="2" HBox.hgrow="ALWAYS">
-                <Label text="CONTINUE LEARNING" styleClass="card-title"/>
+                <Label text="Continue learning" styleClass="card-title"/>
                 <Label fx:id="continueText" styleClass="settings-name" wrapText="true"/>
             </VBox>
             <Button fx:id="continueButton" text="Continue" styleClass="primary" onAction="#continueLearning"/>

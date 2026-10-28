@@ -12,7 +12,7 @@ of the CSS/FXML separation and needs manual repainting for animation. Our dark t
 ### 2. Why MVC?
 To keep algorithm logic testable and independent from the screen. **Model**: `engine/**`, `model/**`
 (no JavaFX imports). **View**: FXML + CSS + `ui/render` canvases. **Controller**: `controller/*Controller`.
-Because the engine is UI-free, 1089 of the 1090 tests run without starting JavaFX (only `UiSmokeTest` needs it).
+Because the engine is UI-free, 1096 of the 1097 tests run without starting JavaFX (only `UiSmokeTest` needs it).
 
 ### 3. What is the Strategy pattern here?
 `engine/Algorithm.java` is the strategy interface (`run(I input) → ExecutionTrace<S>`). `BubbleSort`,
@@ -83,7 +83,7 @@ delete degrade from O(log n) to O(n) (`BinarySearchTreeTest.heightAndDegenerateT
 (AVL, Red-Black) fix this with rotations; AlgoViz deliberately labels its tree as a standard BST.
 
 ### 13. What tests verify correctness?
-1090 JUnit 5 tests (see README §13). Highlights: every sort on 50 inputs × 2 orders vs `Arrays.sort`, plus the
+1097 JUnit 5 tests (see README §13). Highlights: every sort on 50 inputs × 2 orders vs `Arrays.sort`, plus the
 invariant "never marked sorted early"; BFS/Dijkstra optimality vs independent reference implementations on
 random grids; 2000 random BST operations vs `java.util.TreeSet`; linked-list link integrity after every
 operation; playback step consistency with a fake clock; spring physics for draggable nodes; and a UI smoke test
@@ -101,6 +101,18 @@ frame, three forces act on the displacement: a spring back home, springs along e
 displacement (so a dragged node pulls its neighbours like a rope), and a push away from nodes that come too close;
 damping makes it settle. On release every displacement decays to 0, so the BST stays in sorted order and the list
 in link order. The physics is plain arithmetic and is unit-tested without JavaFX (`SpringFieldTest`).
+
+### 16. How does the memory view relate to dynamic memory allocation?
+Every node is created at run time, so it lives on the **heap**; the operation's variables (`head`, `prev`,
+`current`, `root` …) live on the **stack** and only hold addresses. `engine/memory/MemoryLayout` works this out
+from each step's snapshot: a node that is new in this step was just allocated, a node that is gone was released.
+* **C model**: `malloc(sizeof(struct node))` reserves 16 bytes (int data + padding + 8-byte pointer) for a list
+  node, 24 for a tree node; deleting calls `free(p)`, which returns the block to the allocator. Forgetting `free`
+  would be a memory leak; using `p` after `free` would be a dangling pointer.
+* **Java model**: `new Node(v)` creates the object; a variable holds a *reference*. Java has no `free`: a node
+  that no variable can reach any more is garbage, and the garbage collector reclaims it later. So leaks of this
+  kind cannot happen, but you do not control *when* memory is released.
+The addresses are illustrative (stable per node id), because Java never exposes real addresses.
 
 ### Bonus: how are metrics kept honest?
 Counters are incremented only inside recorders at the moment the operation happens; each `MetricType` has a

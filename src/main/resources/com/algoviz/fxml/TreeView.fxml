@@ -3,6 +3,7 @@
 <?import com.algoviz.ui.component.ComplexityCard?>
 <?import com.algoviz.ui.component.ExplanationCard?>
 <?import com.algoviz.ui.component.Legend?>
+<?import com.algoviz.ui.component.MemoryView?>
 <?import com.algoviz.ui.component.MetricsPanel?>
 <?import com.algoviz.ui.component.PlaybackBar?>
 <?import com.algoviz.ui.component.PseudocodePanel?>
@@ -54,10 +55,10 @@
     </HBox>
     <Label fx:id="inputMessage" styleClass="inline-message"/>
 
-    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.7">
+    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.75">
         <VBox spacing="12" minWidth="520">
             <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
-                <ScrollPane fx:id="canvasScroll" fitToWidth="true" fitToHeight="true">
+                <ScrollPane fx:id="canvasScroll" fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER">
                     <padding><Insets top="44"/></padding>
                     <TreeCanvas fx:id="canvas"/>
                 </ScrollPane>
@@ -72,6 +73,7 @@
                 </HBox>
                 <VBox fx:id="emptyHolder" StackPane.alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"/>
             </StackPane>
+            <MemoryView fx:id="memoryView"/>
             <PlaybackBar fx:id="playbackBar"/>
         </VBox>
         <ScrollPane fitToWidth="true" minWidth="340" hbarPolicy="NEVER">
@@ -79,12 +81,12 @@
                 <ExplanationCard fx:id="explanationCard"/>
                 <MetricsPanel fx:id="metricsPanel"/>
                 <VBox styleClass="card">
-                    <Label fx:id="codeTitle" text="PSEUDOCODE" styleClass="card-title"/>
+                    <Label fx:id="codeTitle" text="Pseudocode" styleClass="card-title"/>
                     <PseudocodePanel fx:id="pseudocodePanel"/>
                 </VBox>
                 <ComplexityCard fx:id="complexityCard"/>
                 <VBox styleClass="card">
-                    <Label text="ABOUT THIS TREE" styleClass="card-title"/>
+                    <Label text="About this tree" styleClass="card-title"/>
                     <Label fx:id="aboutLabel" styleClass="doc-text" wrapText="true"/>
                 </VBox>
             </VBox>

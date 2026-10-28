@@ -49,7 +49,7 @@
     </HBox>
     <Label fx:id="inputMessage" styleClass="inline-message"/>
 
-    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.7">
+    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.75">
         <VBox spacing="12" minWidth="520">
             <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
                 <GridCanvas fx:id="canvas"/>
@@ -67,12 +67,12 @@
                 <ExplanationCard fx:id="explanationCard"/>
                 <MetricsPanel fx:id="metricsPanel"/>
                 <VBox styleClass="card">
-                    <Label text="PSEUDOCODE" styleClass="card-title"/>
+                    <Label text="Pseudocode" styleClass="card-title"/>
                     <PseudocodePanel fx:id="pseudocodePanel"/>
                 </VBox>
                 <ComplexityCard fx:id="complexityCard"/>
                 <VBox styleClass="card">
-                    <Label text="GRID RULES" styleClass="card-title"/>
+                    <Label text="Grid rules" styleClass="card-title"/>
                     <Label fx:id="rulesLabel" styleClass="doc-text" wrapText="true"/>
                 </VBox>
             </VBox>

@@ -55,7 +55,7 @@
     </HBox>
     <Label fx:id="inputMessage" styleClass="inline-message"/>
 
-    <SplitPane fx:id="split" VBox.vgrow="ALWAYS" dividerPositions="0.7">
+    <SplitPane fx:id="split" VBox.vgrow="ALWAYS" dividerPositions="0.75">
         <VBox spacing="12" minWidth="520">
             <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
                 <SortingCanvas fx:id="canvas"/>
@@ -71,13 +71,13 @@
                 <MetricsPanel fx:id="metricsPanel"/>
                 <Label fx:id="buildNote" styleClass="note-text"/>
                 <VBox styleClass="card">
-                    <Label text="PSEUDOCODE" styleClass="card-title"/>
+                    <Label text="Pseudocode" styleClass="card-title"/>
                     <PseudocodePanel fx:id="pseudocodePanel"/>
                     <Label fx:id="orderNote" styleClass="note-text"/>
                 </VBox>
                 <ComplexityCard fx:id="complexityCard"/>
                 <VBox styleClass="card">
-                    <Label text="ABOUT THIS ALGORITHM" styleClass="card-title"/>
+                    <Label text="About this algorithm" styleClass="card-title"/>
                     <Label fx:id="aboutLabel" styleClass="doc-text" wrapText="true"/>
                 </VBox>
             </VBox>

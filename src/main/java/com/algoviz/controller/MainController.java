@@ -3,6 +3,7 @@ package com.algoviz.controller;
 import com.algoviz.config.AppConfig;
 import com.algoviz.model.ModuleId;
 import com.algoviz.model.StepStatus;
+import com.algoviz.ui.animation.Easing;
 import com.algoviz.ui.animation.HoverMotion;
 import com.algoviz.ui.component.BrandMark;
 import com.algoviz.ui.component.IconType;
@@ -54,6 +55,8 @@ public final class MainController {
     private final ToggleGroup navGroup = new ToggleGroup();
     private final NotificationCenter notifications = new NotificationCenter();
     private ModuleId current;
+    /** True while a keyboard shortcut is switching modules; those switches are not animated. */
+    private boolean fromKeyboard;
     private ChangeListener<String> statusListener;
     private ChangeListener<StepStatus> toneListener;
 
@@ -145,7 +148,9 @@ public final class MainController {
             int n = e.getCode().getCode() - KeyCode.DIGIT1.getCode();
             ModuleId[] ids = ModuleId.values();
             if (n >= 0 && n < ids.length) {
+                fromKeyboard = true;
                 open(ids[n], NavigationRequest.NONE);
+                fromKeyboard = false;
                 e.consume();
             }
             return;
@@ -194,10 +199,14 @@ public final class MainController {
 
         if (changed) {
             contentHost.getChildren().setAll(target.view());
-            FadeTransition fade = new FadeTransition(Duration.millis(170), target.view());
-            fade.setFromValue(context.settings().animateTransitions() ? 0.25 : 1);
-            fade.setToValue(1);
-            fade.play();
+            target.view().setOpacity(1);
+            if (context.settings().animateTransitions() && !fromKeyboard) {
+                FadeTransition fade = new FadeTransition(Duration.millis(150), target.view());
+                fade.setFromValue(0.25);
+                fade.setToValue(1);
+                fade.setInterpolator(Easing.OUT);
+                fade.play();
+            }
         }
         target.controller().applySettings();
         target.controller().onShow(request == null ? NavigationRequest.NONE : request);

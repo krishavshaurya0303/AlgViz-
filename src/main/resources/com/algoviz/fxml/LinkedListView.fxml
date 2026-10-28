@@ -14,6 +14,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -82,7 +83,10 @@
             <VBox styleClass="side-panel">
                 <ExplanationCard fx:id="explanationCard"/>
                 <VBox styleClass="card">
-                    <Label fx:id="codeTitle" text="Pseudocode" styleClass="card-title"/>
+                    <HBox fx:id="codeHeader" styleClass="card-header">
+                        <Label fx:id="codeTitle" text="Code" styleClass="card-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
                     <PseudocodePanel fx:id="pseudocodePanel"/>
                 </VBox>
             </VBox>

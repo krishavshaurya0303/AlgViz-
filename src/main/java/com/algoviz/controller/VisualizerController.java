@@ -20,6 +20,7 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 
 import java.util.Locale;
 
@@ -48,6 +49,8 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     @FXML protected Legend legend;
     /** Optional: present only on screens whose data structure lives in dynamic memory. */
     @FXML protected MemoryView memoryView;
+    /** Header of the code card; the Pseudocode / C switch is added to it. */
+    @FXML protected HBox codeHeader;
 
     protected VisualizerController(AppContext context) {
         this.context = context;
@@ -57,6 +60,14 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     protected final void initPlayback() {
         playbackBar.bind(driver);
         driver.addChangeListener(this::onPlaybackChanged);
+        if (codeHeader != null) {
+            codeHeader.getChildren().add(pseudocodePanel.languageToggle());
+        }
+        pseudocodePanel.showCProperty().set(context.settings().showCCode());
+        pseudocodePanel.showCProperty().addListener((o, a, v) -> {
+            context.settings().setShowCCode(v);
+            context.saveSettings();
+        });
         if (memoryView != null) {
             memoryView.modelProperty().set(MemoryModel.parse(context.settings().memoryModel()));
             memoryView.modelProperty().addListener((o, a, v) -> {
@@ -129,6 +140,7 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
 
     @Override
     public void applySettings() {
+        pseudocodePanel.showCProperty().set(context.settings().showCCode());
         if (memoryView != null) {
             memoryView.modelProperty().set(MemoryModel.parse(context.settings().memoryModel()));
             memoryView.expandedProperty().set(context.settings().showMemory());

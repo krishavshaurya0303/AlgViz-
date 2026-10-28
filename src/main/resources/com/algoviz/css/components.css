@@ -325,6 +325,11 @@
     -fx-spacing: 0;
 }
 
+.card-header { -fx-alignment: center-left; -fx-spacing: 8; }
+.code-toggle .toggle-button { -fx-min-height: 28; -fx-padding: 3 10 3 10; -fx-font-size: 11.5px; }
+
+.pseudocode > .scroll-pane { -fx-padding: 0; }
+
 .pseudocode-empty { -fx-font-size: 12px; -fx-text-fill: -av-text-3; -fx-padding: 0 12 0 12; }
 
 .code-line {

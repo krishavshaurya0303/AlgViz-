@@ -66,6 +66,7 @@ public final class SettingsService {
         s.setMemoryModel(p.getProperty("memory.model", s.memoryModel()));
         s.setShowMemory(parseBool(p.getProperty("memory.visible"), s.showMemory()));
         s.setSidebarCollapsed(parseBool(p.getProperty("sidebar.collapsed"), s.sidebarCollapsed()));
+        s.setShowCCode("C".equalsIgnoreCase(p.getProperty("code.language")));
         ModuleId last = parseModule(p.getProperty("recent.module"), null);
         if (last != null) {
             s.recordActivity(last, p.getProperty("recent.algorithm"),
@@ -85,6 +86,7 @@ public final class SettingsService {
         p.setProperty("memory.model", s.memoryModel());
         p.setProperty("memory.visible", Boolean.toString(s.showMemory()));
         p.setProperty("sidebar.collapsed", Boolean.toString(s.sidebarCollapsed()));
+        p.setProperty("code.language", s.showCCode() ? "C" : "PSEUDOCODE");
         if (s.lastModule() != null) {
             p.setProperty("recent.module", s.lastModule().name());
             if (s.lastAlgorithmId() != null) {

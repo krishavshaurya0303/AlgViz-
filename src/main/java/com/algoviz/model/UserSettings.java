@@ -16,6 +16,7 @@ public final class UserSettings {
     private String memoryModel = "C";
     private boolean showMemory = true;
     private boolean sidebarCollapsed;
+    private boolean showCCode;
 
     // Recent activity — recorded only when the user actually opens a module.
     private ModuleId lastModule;
@@ -87,6 +88,15 @@ public final class UserSettings {
         this.sidebarCollapsed = value;
     }
 
+    /** True when visualizers show the C listing instead of the pseudocode. */
+    public boolean showCCode() {
+        return showCCode;
+    }
+
+    public void setShowCCode(boolean value) {
+        this.showCCode = value;
+    }
+
     public ModuleId lastModule() {
         return lastModule;
     }
@@ -121,5 +131,6 @@ public final class UserSettings {
         memoryModel = "C";
         showMemory = true;
         sidebarCollapsed = false;
+        showCCode = false;
     }
 }

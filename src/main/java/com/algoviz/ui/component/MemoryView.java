@@ -74,6 +74,11 @@ public final class MemoryView extends VBox {
         note.setMaxHeight(34);
         note.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(note, Priority.ALWAYS);
+        // Only the note may shrink: the title and buttons keep their full width when the note is long.
+        for (Region r : new Region[]{title, toggle, hide, c, java}) {
+            r.setMinWidth(Region.USE_PREF_SIZE);
+        }
+        note.setMinWidth(0);
         HBox header = new HBox(14, title, note, spacer, toggle, hide);
         header.setAlignment(Pos.CENTER_LEFT);
 

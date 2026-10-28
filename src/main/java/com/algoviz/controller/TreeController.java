@@ -18,6 +18,7 @@ import com.algoviz.ui.render.TreeCanvas;
 import com.algoviz.ui.theme.Palette;
 import com.algoviz.util.InvalidInputException;
 import com.algoviz.util.ValidationUtils;
+import com.algoviz.service.CSourceCatalog;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -282,8 +283,8 @@ public final class TreeController extends VisualizerController<TreeStep> {
         TreeOperation op = current.operation();
         if (op != shownCode && op != TreeOperation.VIEW) {
             shownCode = op;
-            pseudocodePanel.setCode(op.pseudocode());
-            codeTitle.setText("Pseudocode for " + op.label().toLowerCase());
+            pseudocodePanel.setCode(op.pseudocode(), CSourceCatalog.find("tree/" + op.name()).orElse(null));
+            codeTitle.setText("Code for " + op.label().toLowerCase());
         }
         if (op.isTraversal() && !current.output().isEmpty()) {
             outputTitle.setText(op.label() + " output");

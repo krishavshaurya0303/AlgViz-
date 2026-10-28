@@ -14,6 +14,8 @@ import com.algoviz.ui.component.IconType;
 import com.algoviz.ui.component.Icons;
 import com.algoviz.ui.render.GridCanvas;
 import com.algoviz.ui.theme.Palette;
+import com.algoviz.model.AlgorithmMetadata;
+import com.algoviz.service.CSourceCatalog;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -134,7 +136,8 @@ public final class GraphController extends VisualizerController<GraphStep> {
     }
 
     private void updateAlgorithmInfo() {
-        pseudocodePanel.setCode(selected().metadata().pseudocode());
+        AlgorithmMetadata m = selected().metadata();
+        pseudocodePanel.setCode(m.pseudocode(), CSourceCatalog.find("graph/" + m.id()).orElse(null));
         complexityCard.show(selected().metadata());
     }
 

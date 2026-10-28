@@ -17,6 +17,7 @@ import com.algoviz.ui.render.LinkedListCanvas;
 import com.algoviz.ui.theme.Palette;
 import com.algoviz.util.InvalidInputException;
 import com.algoviz.util.ValidationUtils;
+import com.algoviz.service.CSourceCatalog;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -283,8 +284,8 @@ public final class LinkedListController extends VisualizerController<ListStep> {
         ListOperation op = current.operation();
         if (op != shownCode) {
             shownCode = op;
-            pseudocodePanel.setCode(op.pseudocode());
-            codeTitle.setText("Pseudocode for " + op.label().toLowerCase());
+            pseudocodePanel.setCode(op.pseudocode(), CSourceCatalog.find("list/" + op.name()).orElse(null));
+            codeTitle.setText("Code for " + op.label().toLowerCase());
         }
     }
 

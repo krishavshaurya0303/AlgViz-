@@ -18,6 +18,7 @@ import com.algoviz.ui.theme.Palette;
 import com.algoviz.util.ComplexityUtils;
 import com.algoviz.util.InvalidInputException;
 import com.algoviz.util.ValidationUtils;
+import com.algoviz.service.CSourceCatalog;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -173,12 +174,12 @@ public final class SortingController extends VisualizerController<SortStep> {
 
     private void updateAlgorithmInfo() {
         AlgorithmMetadata m = selected().metadata();
-        pseudocodePanel.setCode(m.pseudocode());
+        pseudocodePanel.setCode(m.pseudocode(), CSourceCatalog.find("sorting/" + m.id()).orElse(null));
         complexityCard.show(m);
         aboutLabel.setText(m.summary() + "\n\nUseful for: " + m.whenUseful());
         boolean desc = orderBox.getValue() == SortOrder.DESCENDING;
         orderNote.setText(desc ? "Descending order: every comparison shown as \">\" or \"<=\" is reversed."
-                : "Pseudocode is written for ascending order.");
+                : "The code is written for ascending order.");
         canvas.setReserveBuffer(selected() instanceof MergeSort);
         canvas.setReserveKeyBand(selected() instanceof InsertionSort);
     }

@@ -21,7 +21,7 @@ public final class PlaybackBar extends HBox {
 
     private final Button back = stepButton("Previous", IconType.STEP_BACK, "Previous step (←)");
     private final Button forward = stepButton("Next", IconType.STEP_FORWARD, "Next step (→)");
-    private final Label stepLabel = new Label("Step 0 / 0");
+    private final Label stepLabel = new Label("No run yet");
 
     public PlaybackBar() {
         getStyleClass().add("playback-bar");
@@ -49,7 +49,18 @@ public final class PlaybackBar extends HBox {
         int size = driver.sizeProperty().get();
         back.setDisable(!has || idx == 0);
         forward.setDisable(!has || idx >= size - 1);
-        stepLabel.setText(has ? String.format(Locale.ROOT, "Step %d / %d", idx, Math.max(0, size - 1)) : "No run yet");
+        stepLabel.setText(has && size > 1 ? positionText(idx, size) : "No steps to replay");
+    }
+
+    /**
+     * Snapshot 0 is the untouched input and every later snapshot is one recorded step,
+     * so a trace of {@code size} snapshots holds {@code size - 1} steps.
+     */
+    public static String positionText(int index, int size) {
+        int steps = Math.max(0, size - 1);
+        return index == 0
+                ? String.format(Locale.ROOT, "Start  ·  %d step%s", steps, steps == 1 ? "" : "s")
+                : String.format(Locale.ROOT, "Step %d of %d", index, steps);
     }
 
     private static Button stepButton(String text, IconType type, String tooltip) {

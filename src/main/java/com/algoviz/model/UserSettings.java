@@ -15,6 +15,7 @@ public final class UserSettings {
     private boolean showGridDistances = true;
     private String memoryModel = "C";
     private boolean showMemory = true;
+    private boolean sidebarCollapsed;
 
     // Recent activity — recorded only when the user actually opens a module.
     private ModuleId lastModule;
@@ -78,6 +79,14 @@ public final class UserSettings {
         this.showMemory = value;
     }
 
+    public boolean sidebarCollapsed() {
+        return sidebarCollapsed;
+    }
+
+    public void setSidebarCollapsed(boolean value) {
+        this.sidebarCollapsed = value;
+    }
+
     public ModuleId lastModule() {
         return lastModule;
     }
@@ -111,5 +120,6 @@ public final class UserSettings {
         showGridDistances = true;
         memoryModel = "C";
         showMemory = true;
+        sidebarCollapsed = false;
     }
 }

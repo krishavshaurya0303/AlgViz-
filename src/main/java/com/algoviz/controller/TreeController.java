@@ -9,7 +9,6 @@ import com.algoviz.engine.tree.TreeSnapshot;
 import com.algoviz.engine.tree.TreeOperation;
 import com.algoviz.engine.tree.TreeStep;
 import com.algoviz.model.AlgorithmMetadata;
-import com.algoviz.model.MetricType;
 import com.algoviz.model.ModuleId;
 import com.algoviz.model.StepStatus;
 import com.algoviz.ui.component.EmptyState;
@@ -74,6 +73,8 @@ public final class TreeController extends VisualizerController<TreeStep> {
 
     @FXML
     private void initialize() {
+        // An empty message row takes no space, so the board sits right under the toolbar.
+        inputMessage.managedProperty().bind(inputMessage.textProperty().isNotEmpty());
         traversalBox.getItems().setAll(TreeOperation.INORDER, TreeOperation.PREORDER,
                 TreeOperation.POSTORDER, TreeOperation.LEVEL_ORDER);
         traversalBox.setConverter(new StringConverter<>() {
@@ -107,9 +108,6 @@ public final class TreeController extends VisualizerController<TreeStep> {
                 .item(Palette.AMBER, "Successor")
                 .item(Palette.CORAL, "Deleting");
 
-        metricsPanel.configure(List.of(MetricType.COMPARISONS, MetricType.NODES_VISITED,
-                        MetricType.NODE_COUNT, MetricType.TREE_HEIGHT),
-                List.<String[]>of(new String[]{STEP, "Position in the recorded steps of the current operation."}));
 
         AlgorithmMetadata bst = context.catalog().binarySearchTree();
         complexityCard.showOperations(bst.operations(), "Average", "Worst", bst.complexityNote());

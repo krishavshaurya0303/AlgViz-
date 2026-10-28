@@ -9,7 +9,6 @@ import com.algoviz.engine.sorting.SortOrder;
 import com.algoviz.engine.sorting.SortStep;
 import com.algoviz.engine.sorting.SortingAlgorithm;
 import com.algoviz.model.AlgorithmMetadata;
-import com.algoviz.model.MetricType;
 import com.algoviz.model.ModuleId;
 import com.algoviz.model.StepStatus;
 import com.algoviz.ui.component.IconType;
@@ -28,7 +27,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.util.StringConverter;
 
 import java.util.Arrays;
@@ -55,7 +54,7 @@ public final class SortingController extends VisualizerController<SortStep> {
         }
     }
 
-    @FXML private HBox toolbar;
+    @FXML private FlowPane toolbar;
     @FXML private ComboBox<SortingAlgorithm> algorithmBox;
     @FXML private ComboBox<SortOrder> orderBox;
     @FXML private Slider sizeSlider;
@@ -79,6 +78,8 @@ public final class SortingController extends VisualizerController<SortStep> {
 
     @FXML
     private void initialize() {
+        // An empty message row takes no space, so the board sits right under the toolbar.
+        inputMessage.managedProperty().bind(inputMessage.textProperty().isNotEmpty());
         algorithmBox.getItems().setAll(context.catalog().sortingAlgorithms());
         algorithmBox.setConverter(new StringConverter<>() {
             @Override
@@ -136,8 +137,6 @@ public final class SortingController extends VisualizerController<SortStep> {
                 .item(Palette.CYAN, "Minimum / key")
                 .item(Palette.GREEN, "Final position");
 
-        metricsPanel.configure(List.of(MetricType.COMPARISONS, MetricType.SWAPS, MetricType.WRITES),
-                List.<String[]>of(new String[]{STEP, "Position in the recorded sequence of steps."}));
 
         algorithmBox.setOnAction(e -> {
             updateAlgorithmInfo();
@@ -272,7 +271,7 @@ public final class SortingController extends VisualizerController<SortStep> {
 
     private void onTraceReady(ExecutionTrace<SortStep> trace) {
         driver.load(trace);
-        buildNote.setText(trace.size() + " steps recorded in " + ComplexityUtils.formatBuildTime(trace.buildNanos())
+        buildNote.setText((trace.size() - 1) + " steps recorded in " + ComplexityUtils.formatBuildTime(trace.buildNanos())
                 + " (includes snapshot recording — not a performance benchmark).");
     }
 

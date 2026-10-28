@@ -65,6 +65,7 @@ public final class SettingsService {
         s.setShowGridDistances(parseBool(p.getProperty("graph.showDistances"), s.showGridDistances()));
         s.setMemoryModel(p.getProperty("memory.model", s.memoryModel()));
         s.setShowMemory(parseBool(p.getProperty("memory.visible"), s.showMemory()));
+        s.setSidebarCollapsed(parseBool(p.getProperty("sidebar.collapsed"), s.sidebarCollapsed()));
         ModuleId last = parseModule(p.getProperty("recent.module"), null);
         if (last != null) {
             s.recordActivity(last, p.getProperty("recent.algorithm"),
@@ -83,6 +84,7 @@ public final class SettingsService {
         p.setProperty("graph.showDistances", Boolean.toString(s.showGridDistances()));
         p.setProperty("memory.model", s.memoryModel());
         p.setProperty("memory.visible", Boolean.toString(s.showMemory()));
+        p.setProperty("sidebar.collapsed", Boolean.toString(s.sidebarCollapsed()));
         if (s.lastModule() != null) {
             p.setProperty("recent.module", s.lastModule().name());
             if (s.lastAlgorithmId() != null) {

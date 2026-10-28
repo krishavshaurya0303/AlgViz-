@@ -34,6 +34,7 @@ public enum IconType {
     PIN("M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z M12 12.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 1 0 0 5z", false),
     ERASER("M8.5 19.5h11 M4.6 14.8l9.2-9.2a2 2 0 0 1 2.8 0l2.8 2.8a2 2 0 0 1 0 2.8l-7.8 7.8H8.5z M9.5 9.8l4.7 4.7", false),
     REVERSE("M4 8h14 M14 4l4 4-4 4 M20 16H6 M10 12l-4 4 4 4", false),
+    SIDEBAR("M4 5h16v14H4z M9.5 5v14", false),
     SPARK("M12 3v4 M12 17v4 M3 12h4 M17 12h4 M6 6l2.5 2.5 M15.5 15.5L18 18 M6 18l2.5-2.5 M15.5 8.5L18 6", false);
 
     private final String path;

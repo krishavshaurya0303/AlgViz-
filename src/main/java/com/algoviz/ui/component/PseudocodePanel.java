@@ -15,12 +15,19 @@ public final class PseudocodePanel extends VBox {
 
     public PseudocodePanel() {
         getStyleClass().add("pseudocode");
+        setCode(List.of());
     }
 
     public void setCode(List<String> code) {
         getChildren().clear();
         lines.clear();
         current = -1;
+        if (code.isEmpty()) {
+            Label none = new Label("Run an operation to see its pseudocode.");
+            none.getStyleClass().add("pseudocode-empty");
+            getChildren().add(none);
+            return;
+        }
         for (int i = 0; i < code.size(); i++) {
             Label no = new Label(String.valueOf(i + 1));
             no.getStyleClass().add("line-no");

@@ -51,8 +51,8 @@ public final class AlgoVizApplication extends Application {
         main.attach(scene);
 
         stage.setTitle(AppConfig.APP_NAME + " — " + AppConfig.APP_FULL_NAME);
-        stage.setMinWidth(1100);
-        stage.setMinHeight(700);
+        stage.setMinWidth(960);
+        stage.setMinHeight(640);
         stage.setScene(scene);
         stage.show();
         main.openStartModule();

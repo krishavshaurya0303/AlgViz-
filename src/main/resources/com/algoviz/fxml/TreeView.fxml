@@ -4,7 +4,6 @@
 <?import com.algoviz.ui.component.ExplanationCard?>
 <?import com.algoviz.ui.component.Legend?>
 <?import com.algoviz.ui.component.MemoryView?>
-<?import com.algoviz.ui.component.MetricsPanel?>
 <?import com.algoviz.ui.component.PlaybackBar?>
 <?import com.algoviz.ui.component.PseudocodePanel?>
 <?import com.algoviz.ui.render.TreeCanvas?>
@@ -15,20 +14,20 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.algoviz.controller.TreeController" styleClass="module-root">
 
-    <HBox fx:id="toolbar" styleClass="toolbar-row">
-        <VBox spacing="4">
+    <FlowPane fx:id="toolbar" styleClass="toolbar-flow">
+        <VBox styleClass="field">
             <Label text="Value" styleClass="field-label"/>
             <TextField fx:id="valueField" promptText="e.g. 42" prefWidth="110"/>
         </VBox>
-        <VBox spacing="4">
+        <VBox styleClass="field">
             <Label text="Operation" styleClass="field-label"/>
             <HBox spacing="8">
                 <Button fx:id="insertButton" text="Insert" styleClass="primary" onAction="#insert"/>
@@ -36,27 +35,25 @@
                 <Button fx:id="deleteButton" text="Delete" onAction="#delete"/>
             </HBox>
         </VBox>
-        <Region styleClass="separator-v" translateY="9"/>
-        <VBox spacing="4">
+        <VBox styleClass="field">
             <Label text="Traversal" styleClass="field-label"/>
             <HBox spacing="8">
                 <ComboBox fx:id="traversalBox" prefWidth="140"/>
                 <Button fx:id="traverseButton" text="Traverse" onAction="#traverse"/>
             </HBox>
         </VBox>
-        <Region HBox.hgrow="ALWAYS"/>
-        <VBox spacing="4">
+        <VBox styleClass="field">
             <Label text="Tree" styleClass="field-label"/>
             <HBox spacing="8">
                 <Button fx:id="sampleButton" text="Sample tree" onAction="#sample"/>
                 <Button fx:id="clearButton" text="Clear" styleClass="danger" onAction="#clearTree"/>
             </HBox>
         </VBox>
-    </HBox>
+    </FlowPane>
     <Label fx:id="inputMessage" styleClass="inline-message"/>
 
     <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.75">
-        <VBox spacing="12" minWidth="520">
+        <VBox spacing="12" minWidth="460">
             <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
                 <ScrollPane fx:id="canvasScroll" fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER">
                     <padding><Insets top="44"/></padding>
@@ -79,7 +76,6 @@
         <ScrollPane fitToWidth="true" minWidth="340" hbarPolicy="NEVER">
             <VBox styleClass="side-panel">
                 <ExplanationCard fx:id="explanationCard"/>
-                <MetricsPanel fx:id="metricsPanel"/>
                 <VBox styleClass="card">
                     <Label fx:id="codeTitle" text="Pseudocode" styleClass="card-title"/>
                     <PseudocodePanel fx:id="pseudocodePanel"/>

@@ -8,7 +8,6 @@ import com.algoviz.engine.linkedlist.ListStep;
 import com.algoviz.engine.linkedlist.SinglyLinkedList;
 import com.algoviz.engine.memory.MemoryLayout;
 import com.algoviz.engine.memory.MemoryModel;
-import com.algoviz.model.MetricType;
 import com.algoviz.model.ModuleId;
 import com.algoviz.model.StepStatus;
 import com.algoviz.ui.component.EmptyState;
@@ -66,6 +65,8 @@ public final class LinkedListController extends VisualizerController<ListStep> {
 
     @FXML
     private void initialize() {
+        // An empty message row takes no space, so the board sits right under the toolbar.
+        inputMessage.managedProperty().bind(inputMessage.textProperty().isNotEmpty());
         tip(insertHeadButton, "Insert the value at the front — O(1)");
         tip(insertTailButton, "Walk to the last node and append — O(n)");
         tip(insertAtButton, "Insert the value so that it ends up at the given index — O(n)");
@@ -93,9 +94,6 @@ public final class LinkedListController extends VisualizerController<ListStep> {
                 .item(Palette.AMBER, "Pointer just changed")
                 .item(Palette.BG_1, Palette.TEXT_3, "next box (slash = null)");
 
-        metricsPanel.configure(List.of(MetricType.NODES_VISITED, MetricType.COMPARISONS,
-                        MetricType.POINTER_CHANGES, MetricType.NODE_COUNT),
-                List.<String[]>of(new String[]{STEP, "Position in the recorded steps of the current operation."}));
 
         initPlayback();
         load(list.currentState(ListOperation.TRAVERSE, "The list is empty: head points to null."), false);

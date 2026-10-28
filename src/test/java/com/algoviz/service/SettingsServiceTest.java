@@ -32,14 +32,14 @@ class SettingsServiceTest {
         SettingsService svc = new SettingsService(dir.resolve("a/settings.properties"));
         UserSettings s = new UserSettings();
         s.setPlaybackSpeed(12);
-        s.setDefaultArraySize(40);
+        s.setDefaultArraySize(15);
         s.setStartModule(ModuleId.GRAPH);
         s.setAnimateTransitions(false);
         s.recordActivity(ModuleId.SORTING, "quick-sort", 1234L);
         assertTrue(svc.save(s));
         UserSettings back = svc.load();
         assertEquals(12, back.playbackSpeed());
-        assertEquals(40, back.defaultArraySize());
+        assertEquals(15, back.defaultArraySize());
         assertEquals(ModuleId.GRAPH, back.startModule());
         assertFalse(back.animateTransitions());
         assertEquals(ModuleId.SORTING, back.lastModule());

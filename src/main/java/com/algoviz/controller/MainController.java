@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputControl;
@@ -30,10 +31,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -59,8 +62,15 @@ public final class MainController {
     private boolean fromKeyboard;
     private ChangeListener<String> statusListener;
     private ChangeListener<StepStatus> toneListener;
+    /** Below this window width the sidebar collapses to icons on its own. */
+    private static final double NARROW_WIDTH = 1180;
+    private boolean collapsed;
 
+    @FXML private VBox sidebar;
     @FXML private HBox brandBox;
+    @FXML private VBox brandText;
+    @FXML private Button sidebarToggle;
+    @FXML private VBox sidebarFooter;
     @FXML private VBox navOverview;
     @FXML private VBox navModules;
     @FXML private VBox navLearn;
@@ -104,6 +114,8 @@ public final class MainController {
         addNav(navLearn, ModuleId.LIBRARY, IconType.LIBRARY, "Ctrl+6");
         addNav(navBottom, ModuleId.SETTINGS, IconType.SETTINGS, "Ctrl+7");
 
+        setCollapsed(context.settings().sidebarCollapsed());
+
         context.setNavigator(this::open);
         context.setNotifier(notifications::show);
     }
@@ -114,7 +126,11 @@ public final class MainController {
         b.getStyleClass().setAll("nav-item");
         b.setToggleGroup(navGroup);
         b.setMaxWidth(Double.MAX_VALUE);
-        b.setTooltip(new Tooltip(id.subtitle() + "  (" + shortcut + ")"));
+        b.setAccessibleText(id.title() + ", " + shortcut);
+        // The tooltip only appears when the sidebar is collapsed and the label is hidden.
+        Tooltip tip = new Tooltip(id.title() + "  (" + shortcut + ")");
+        tip.setShowDelay(Duration.millis(300));
+        b.setUserData(tip);
         b.setOnAction(e -> {
             if (current == id) {
                 b.setSelected(true); // a nav item cannot be "unselected"
@@ -137,6 +153,62 @@ public final class MainController {
         notifications.setPickOnBounds(false);
         scene.addEventFilter(KeyEvent.KEY_PRESSED, this::onKey);
         HoverMotion.install(scene, () -> context.settings().animateTransitions());
+        scene.widthProperty().addListener((o, was, now) -> {
+            boolean wasNarrow = was.doubleValue() < NARROW_WIDTH;
+            boolean isNarrow = now.doubleValue() < NARROW_WIDTH;
+            if (wasNarrow != isNarrow) {
+                setCollapsed(isNarrow || context.settings().sidebarCollapsed());
+            }
+        });
+        if (scene.getWidth() > 0 && scene.getWidth() < NARROW_WIDTH) {
+            setCollapsed(true);
+        }
+    }
+
+    /** Collapse button: remembers the choice when the window is wide enough to show labels. */
+    @FXML
+    private void toggleSidebar() {
+        setCollapsed(!collapsed);
+        Scene scene = sidebar.getScene();
+        if (scene == null || scene.getWidth() >= NARROW_WIDTH) {
+            context.settings().setSidebarCollapsed(collapsed);
+            context.saveSettings();
+        }
+    }
+
+    /** Icons only (labels move into tooltips) or icons with labels. */
+    private void setCollapsed(boolean value) {
+        collapsed = value;
+        if (value) {
+            if (!sidebar.getStyleClass().contains("collapsed")) {
+                sidebar.getStyleClass().add("collapsed");
+            }
+        } else {
+            sidebar.getStyleClass().remove("collapsed");
+        }
+        for (Node n : new Node[]{brandText, sidebarFooter}) {
+            n.setVisible(!value);
+            n.setManaged(!value);
+        }
+        ContentDisplay display = value ? ContentDisplay.GRAPHIC_ONLY : ContentDisplay.LEFT;
+        for (ToggleButton b : navButtons.values()) {
+            b.setContentDisplay(display);
+            b.setTooltip(value ? (Tooltip) b.getUserData() : null);
+        }
+        sidebarToggle.setText("Collapse sidebar");
+        sidebarToggle.setGraphic(Icons.create(IconType.SIDEBAR, 18));
+        sidebarToggle.setContentDisplay(display);
+        sidebarToggle.setTooltip(value ? new Tooltip("Expand sidebar") : null);
+        sidebarToggle.setAccessibleText(value ? "Expand sidebar" : "Collapse sidebar");
+    }
+
+    /** Tooltips are separate windows; one left open by a node that just left the screen would linger. */
+    private static void hideTooltips() {
+        for (Window w : new ArrayList<>(Window.getWindows())) {
+            if (w instanceof Tooltip t) {
+                t.hide();
+            }
+        }
     }
 
     public void openStartModule() {
@@ -189,6 +261,9 @@ public final class MainController {
         }
         boolean changed = current != id;
         current = id;
+        if (changed) {
+            hideTooltips();
+        }
         navButtons.get(id).setSelected(true);
 
         breadcrumb.setText("AlgoViz  /  " + id.title());

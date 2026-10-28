@@ -5,12 +5,13 @@
 /* ------------------------------------------------------------ buttons */
 .button, .toggle-button {
     -fx-background-color: -av-bg-3;
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
     -fx-text-fill: -av-text;
     -fx-font-size: 12.5px;
     -fx-padding: 7 14 7 14;
+    -fx-min-height: 36;
     -fx-cursor: hand;
     -fx-graphic-text-gap: 8;
 }
@@ -64,25 +65,27 @@
     -fx-text-fill: -av-text;
 }
 
-.button.ghost:focused { -fx-border-color: -av-cyan; }
+.button.ghost:focus-visible { -fx-border-color: -av-cyan; }
 
+.button.danger { -fx-text-fill: -av-coral; }
 .button.danger:hover {
+    -fx-background-color: rgba(181,69,46,0.10);
     -fx-border-color: -av-coral;
     -fx-text-fill: -av-coral;
 }
 
 .button.icon-button {
     -fx-padding: 7;
-    -fx-min-width: 34;
-    -fx-min-height: 34;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
 }
 
 /* segmented toggle group */
 .segmented {
     -fx-background-color: -av-bg-2;
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
     -fx-padding: 3;
     -fx-spacing: 2;
     -fx-alignment: center-left;
@@ -93,31 +96,33 @@
     -fx-border-color: transparent;
     -fx-text-fill: -av-text-2;
     -fx-padding: 5 11 5 11;
-    -fx-background-radius: 2;
-    -fx-border-radius: 2;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
     -fx-font-size: 12px;
 }
 
 .segmented .toggle-button:hover, .segmented .button:hover { -fx-background-color: -av-bg-3; -fx-text-fill: -av-text; }
 .segmented .toggle-button:selected {
-    -fx-background-color: -av-bg-4;
-    -fx-text-fill: -av-text;
-    -fx-border-color: -av-border-strong;
+    -fx-background-color: -av-steel;
+    -fx-text-fill: -av-paper;
+    -fx-border-color: -av-steel;
 }
-.segmented .toggle-button:focused, .segmented .button:focused { -fx-border-color: -av-cyan; }
+.segmented .toggle-button:selected .icon-stroke { -fx-stroke: -av-paper; }
+.segmented .toggle-button:focus-visible, .segmented .button:focus-visible { -fx-border-color: -av-cyan; }
 .segmented .button:pressed { -fx-background-color: -av-bg-4; }
 
 /* ------------------------------------------------------------ inputs */
 .text-field, .text-area {
     -fx-prompt-text-fill: -av-text-3;
     -fx-background-color: -av-bg-1;
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
     -fx-text-fill: -av-text;
     -fx-highlight-fill: derive(-av-indigo, -35%);
     -fx-highlight-text-fill: -av-text;
     -fx-padding: 7 10 7 10;
+    -fx-min-height: 36;
     -fx-font-size: 12.5px;
 }
 
@@ -128,14 +133,15 @@
 
 .text-field.invalid { -fx-border-color: -av-coral; }
 
-.text-area .content { -fx-background-color: -av-bg-1; -fx-background-radius: 3; }
+.text-area .content { -fx-background-color: -av-bg-1; -fx-background-radius: 6; }
 
 .combo-box, .spinner {
     -fx-background-color: -av-bg-3;
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
     -fx-padding: 1 2 1 4;
+    -fx-min-height: 36;
     -fx-cursor: hand;
 }
 
@@ -148,8 +154,8 @@
 .combo-box-popup .list-view {
     -fx-background-color: -av-bg-3;
     -fx-border-color: -av-border-strong;
-    -fx-background-radius: 3;
-    -fx-border-radius: 3;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
     -fx-padding: 4;
     -fx-effect: null;
 }
@@ -158,7 +164,7 @@
     -fx-background-color: transparent;
     -fx-text-fill: -av-text;
     -fx-padding: 7 10 7 10;
-    -fx-background-radius: 2;
+    -fx-background-radius: 4;
 }
 
 .combo-box-popup .list-view .list-cell:hover { -fx-background-color: -av-bg-4; }
@@ -182,8 +188,8 @@
 .check-box .box {
     -fx-background-color: -av-bg-1;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 2;
-    -fx-background-radius: 2;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
 }
 .check-box:selected .box { -fx-background-color: -av-indigo; -fx-border-color: -av-indigo; }
 .check-box:selected .mark { -fx-background-color: -av-text; }
@@ -210,7 +216,7 @@
 /* tooltip */
 .tooltip {
     -fx-background-color: -av-bg-3;
-    -fx-background-radius: 2;
+    -fx-background-radius: 4;
     -fx-text-fill: -av-text;
     -fx-font-size: 12px;
     -fx-padding: 7 10 7 10;
@@ -222,52 +228,47 @@
 /* ------------------------------------------------------------ cards */
 .card {
     -fx-background-color: -av-bg-2;
-    -fx-background-radius: 3;
+    -fx-background-radius: 10;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 10;
     -fx-padding: 16;
     -fx-spacing: 10;
 }
 
 .card-title {
-    -fx-font-size: 11px;
+    -fx-font-size: 12.5px;
     -fx-font-weight: bold;
-    -fx-text-fill: -av-text-3;
+    -fx-text-fill: -av-text-2;
 }
 
 .canvas-card {
     -fx-background-color: -av-bg-1;
-    -fx-background-radius: 3;
+    -fx-background-radius: 14;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 14;
 }
 
-.toolbar-row {
-    -fx-spacing: 10;
-    -fx-alignment: center-left;
-    -fx-padding: 0 0 0 0;
+.toolbar-flow {
+    -fx-hgap: 20;
+    -fx-vgap: 10;
+    -fx-alignment: bottom-left;
 }
+
+/* fields in one group sit closer together than the groups themselves */
+.toolbar-group { -fx-spacing: 12; -fx-alignment: bottom-left; }
+.field { -fx-spacing: 4; }
 
 .field-label {
     -fx-font-size: 11.5px;
     -fx-text-fill: -av-text-3;
 }
 
-.separator-v {
-    -fx-background-color: -av-border-strong;
-    -fx-min-width: 1;
-    -fx-pref-width: 1;
-    -fx-max-width: 1;
-    -fx-pref-height: 24;
-    -fx-max-height: 24;
-}
-
 /* chips */
 .chip {
     -fx-background-color: -av-bg-3;
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
     -fx-padding: 3 10 3 10;
     -fx-font-size: 11.5px;
     -fx-text-fill: -av-text-2;
@@ -280,9 +281,9 @@
 /* ------------------------------------------------------------ playback bar */
 .playback-bar {
     -fx-background-color: -av-bg-2;
-    -fx-background-radius: 3;
+    -fx-background-radius: 10;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 10;
     -fx-padding: 8 14 8 10;
     -fx-spacing: 8;
     -fx-alignment: center-left;
@@ -298,70 +299,33 @@
 /* ------------------------------------------------------------ explanation */
 .explanation-card {
     -fx-background-color: -av-bg-2;
-    -fx-background-radius: 3;
+    -fx-background-radius: 10;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 10;
     -fx-padding: 14 16 14 16;
     -fx-spacing: 6;
 }
 
 .explanation-card .explanation-text {
     -fx-wrap-text: true;
-    -fx-font-size: 13.5px;
-    -fx-line-spacing: 2;
+    -fx-font-size: 15.5px;
+    -fx-line-spacing: 3;
     -fx-text-fill: -av-text;
 }
 
-.explanation-accent {
-    -fx-background-color: -av-indigo;
-    -fx-background-radius: 3;
-    -fx-min-width: 3;
-    -fx-pref-width: 3;
-    -fx-max-width: 3;
-}
-
-.explanation-card.tone-active .explanation-accent { -fx-background-color: -av-cyan; }
-.explanation-card.tone-success .explanation-accent { -fx-background-color: -av-green; }
-.explanation-card.tone-warning .explanation-accent { -fx-background-color: -av-amber; }
-.explanation-card.tone-failure .explanation-accent { -fx-background-color: -av-coral; }
-
-/* ------------------------------------------------------------ metrics */
-.metric-grid {
-    -fx-hgap: 8;
-    -fx-vgap: 8;
-}
-
-.metric-tile {
-    -fx-background-color: -av-bg-1;
-    -fx-background-radius: 3;
-    -fx-border-color: -av-border;
-    -fx-border-radius: 3;
-    -fx-padding: 9 11 9 11;
-    -fx-spacing: 2;
-}
-
-.metric-label {
-    -fx-font-size: 10.5px;
-    -fx-text-fill: -av-text-3;
-}
-
-.metric-value {
-    -fx-font-family: "IBM Plex Mono", "Consolas", "DejaVu Sans Mono", monospace;
-    -fx-font-size: 16px;
-    -fx-text-fill: -av-text;
-}
-
-.metric-value.accent { -fx-text-fill: -av-accent-ink; }
+.explanation-accent { -fx-min-width: 0; -fx-pref-width: 0; -fx-max-width: 0; } /* the explanation is bare text */
 
 /* ------------------------------------------------------------ pseudocode */
 .pseudocode {
     -fx-background-color: -av-bg-1;
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
     -fx-padding: 8 0 8 0;
     -fx-spacing: 0;
 }
+
+.pseudocode-empty { -fx-font-size: 12px; -fx-text-fill: -av-text-3; -fx-padding: 0 12 0 12; }
 
 .code-line {
     -fx-padding: 2 10 2 0;
@@ -418,13 +382,14 @@
 
 /* ------------------------------------------------------------ legend */
 .legend {
-    -fx-spacing: 14;
+    -fx-hgap: 14;
+    -fx-vgap: 4;
     -fx-alignment: center-left;
     -fx-padding: 6 12 6 12;
     -fx-background-color: rgba(243,235,218,0.92);
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
 }
 
 .legend-item {
@@ -438,6 +403,9 @@
 }
 
 /* ------------------------------------------------------------ empty state */
+/* Sits on the board's own colour so the drawing underneath never shows through the text. */
+.empty-overlay { -fx-background-color: -av-bg-1; -fx-background-radius: 10; }
+
 .empty-state {
     -fx-spacing: 10;
     -fx-alignment: center;
@@ -513,18 +481,18 @@
     -fx-font-family: "IBM Plex Mono", "Consolas", "DejaVu Sans Mono", monospace;
     -fx-font-size: 11.5px;
     -fx-background-color: -av-bg-4;
-    -fx-background-radius: 2;
+    -fx-background-radius: 4;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 2;
+    -fx-border-radius: 4;
     -fx-padding: 2 7 2 7;
     -fx-text-fill: -av-text;
 }
 
 .output-strip {
     -fx-background-color: rgba(243,235,218,0.94);
-    -fx-background-radius: 3;
+    -fx-background-radius: 6;
     -fx-border-color: -av-border;
-    -fx-border-radius: 3;
+    -fx-border-radius: 6;
     -fx-padding: 8 12 8 12;
     -fx-spacing: 8;
     -fx-alignment: center-left;
@@ -548,8 +516,8 @@
 .memory-block {
     -fx-background-color: -av-bg-1;
     -fx-border-color: -av-border-strong;
-    -fx-border-radius: 3;
-    -fx-background-radius: 3;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-padding: 8 10 8 10;
     -fx-min-width: 118;
 }
@@ -561,24 +529,7 @@
 .memory-block.state-freed .memory-state { -fx-text-fill: -av-coral; }
 .memory-block.state-garbage { -fx-border-style: segments(4, 3); -fx-opacity: 0.5; }
 
-/* ---- de-slop pass (interface-design skill) ---- */
-
-.card-title { -fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: -av-text-2; }
-/* The explanation is the focal text of every visualizer: bigger type, no side stripe. */
-.explanation-accent { -fx-background-color: transparent; -fx-min-width: 0; -fx-pref-width: 0; -fx-max-width: 0; }
-.explanation-card .explanation-text { -fx-font-size: 15.5px; -fx-line-spacing: 3; }
-/* Metrics read as a quiet stat row, not four boxes inside a box. */
-.metric-tile { -fx-background-color: transparent; -fx-border-color: transparent transparent -av-border transparent; -fx-padding: 6 2 8 2; }
-.metric-value { -fx-font-size: 18px; }
-
-/* ---- detail pass (make-interfaces-feel-better skill) ---- */
-/* Hit areas: at least 34px for every button, 40px for the Previous / Next pair used on every step. */
-.button, .toggle-button { -fx-min-height: 34; }
+/* Previous / Next are pressed on every step, so they get the largest hit area. */
 .step-back-button, .step-forward-button { -fx-min-height: 40; -fx-padding: 8 18 8 18; }
 
-/* ---- rounded panels ---- */
-/* Boards get the largest curve; panels sit one step below; small things inside (legend, blocks) one more. */
-.canvas-card { -fx-background-radius: 14; -fx-border-radius: 14; }
-.card, .explanation-card, .playback-bar, .module-card, .continue-card { -fx-background-radius: 10; -fx-border-radius: 10; }
 .legend, .output-strip, .memory-block, .pseudocode { -fx-background-radius: 6; -fx-border-radius: 6; }
-.button, .toggle-button, .text-field, .combo-box { -fx-background-radius: 6; -fx-border-radius: 6; }

@@ -1,5 +1,6 @@
 package com.algoviz.engine.sorting;
 
+import com.algoviz.config.AppConfig;
 import com.algoviz.engine.ExecutionTrace;
 import com.algoviz.model.MetricType;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +38,7 @@ class SortingAlgorithmTest {
                 new int[]{0, -1, -1, 0, 1}));
         Random rnd = new Random(20261027L);
         for (int k = 0; k < 40; k++) {
-            int n = 2 + rnd.nextInt(149);
+            int n = 2 + rnd.nextInt(AppConfig.SORT_MAX_SIZE - 1);
             int[] a = new int[n];
             for (int i = 0; i < n; i++) {
                 a[i] = rnd.nextInt(1999) - 999;

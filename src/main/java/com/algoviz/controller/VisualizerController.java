@@ -12,7 +12,6 @@ import com.algoviz.ui.component.ComplexityCard;
 import com.algoviz.ui.component.ExplanationCard;
 import com.algoviz.ui.component.Legend;
 import com.algoviz.ui.component.MemoryView;
-import com.algoviz.ui.component.MetricsPanel;
 import com.algoviz.ui.component.PlaybackBar;
 import com.algoviz.ui.component.PseudocodePanel;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -22,19 +21,19 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
+import java.util.Locale;
+
 /**
  * Common base of the four visualizer screens (Sorting, Graph, Tree, Linked List).
  * <p>
  * It owns the playback driver and wires the shared components — playback bar,
- * explanation card, pseudocode, metrics — so each subclass only provides its
+ * explanation card and pseudocode — so each subclass only provides its
  * input controls and its {@link #render} method. The algorithm engines never
  * see this class: they produce traces, this class renders them.
  *
  * @param <S> step type of the module
  */
 public abstract class VisualizerController<S extends ExecutionStep> implements ModuleController {
-
-    protected static final String STEP = "Step";
 
     protected final AppContext context;
     protected final FxPlaybackDriver<S> driver = new FxPlaybackDriver<>();
@@ -45,7 +44,6 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     @FXML protected PlaybackBar playbackBar;
     @FXML protected ExplanationCard explanationCard;
     @FXML protected PseudocodePanel pseudocodePanel;
-    @FXML protected MetricsPanel metricsPanel;
     @FXML protected ComplexityCard complexityCard;
     @FXML protected Legend legend;
     /** Optional: present only on screens whose data structure lives in dynamic memory. */
@@ -96,11 +94,6 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
         if (current != null) {
             explanationCard.show(current.explanation(), current.status());
             pseudocodePanel.highlight(current.pseudocodeLine());
-            metricsPanel.show(current.metrics());
-            metricsPanel.setExtra(STEP, driver.indexProperty().get() + " / " + Math.max(0, driver.sizeProperty().get() - 1));
-        } else {
-            metricsPanel.show(null);
-            metricsPanel.setExtra(STEP, "—");
         }
         if (previous != current) {
             render(previous, current, transitionMillis());
@@ -119,8 +112,8 @@ public abstract class VisualizerController<S extends ExecutionStep> implements M
     private void updateStatus(PlaybackState state, S current) {
         // Mid-run positions are PAUSED in the engine; with manual stepping only, call that "Stepping".
         String text = state == PlaybackState.PAUSED ? "Stepping" : state.label();
-        if (driver.hasTrace()) {
-            text += "  ·  step " + driver.indexProperty().get() + " / " + Math.max(0, driver.sizeProperty().get() - 1);
+        if (driver.hasTrace() && driver.sizeProperty().get() > 1) {
+            text += "  ·  " + PlaybackBar.positionText(driver.indexProperty().get(), driver.sizeProperty().get()).toLowerCase(Locale.ROOT);
         }
         status.set(text);
         StepStatus t = switch (state) {

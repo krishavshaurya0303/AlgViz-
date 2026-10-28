@@ -164,17 +164,17 @@ class UiSmokeTest {
 
         // Sorting: trace is built in the background, then step forward / backward through the bar.
         waitMs(800);
-        assertTrue(stepLabel().startsWith("Step 0 / "), stepLabel());
+        assertTrue(stepLabel().startsWith("Start"), stepLabel());
         click("Next step");
         click("Next step");
-        assertTrue(stepLabel().startsWith("Step 2 / "));
+        assertTrue(stepLabel().startsWith("Step 2 of "));
         click("Previous step");
-        assertTrue(stepLabel().startsWith("Step 1 / "));
+        assertTrue(stepLabel().startsWith("Step 1 of "));
         waitMs(700);
-        assertTrue(stepLabel().startsWith("Step 1 / "), "nothing may advance without a click");
+        assertTrue(stepLabel().startsWith("Step 1 of "), "nothing may advance without a click");
         stepToEnd();
         String s = stepLabel();
-        String[] parts = s.replace("Step ", "").split(" / ");
+        String[] parts = s.replace("Step ", "").split(" of ");
         assertEquals(parts[1], parts[0]);
 
         // Tree: sample + delete, then step backward through the operation.

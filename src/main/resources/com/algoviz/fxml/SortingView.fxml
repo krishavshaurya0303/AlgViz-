@@ -3,7 +3,6 @@
 <?import com.algoviz.ui.component.ComplexityCard?>
 <?import com.algoviz.ui.component.ExplanationCard?>
 <?import com.algoviz.ui.component.Legend?>
-<?import com.algoviz.ui.component.MetricsPanel?>
 <?import com.algoviz.ui.component.PlaybackBar?>
 <?import com.algoviz.ui.component.PseudocodePanel?>
 <?import com.algoviz.ui.render.SortingCanvas?>
@@ -14,49 +13,50 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.algoviz.controller.SortingController" styleClass="module-root">
 
-    <!-- Input toolbar -->
-    <HBox fx:id="toolbar" styleClass="toolbar-row">
-        <VBox spacing="4">
-            <Label text="Algorithm" styleClass="field-label"/>
-            <ComboBox fx:id="algorithmBox" prefWidth="170"/>
-        </VBox>
-        <VBox spacing="4">
-            <Label text="Order" styleClass="field-label"/>
-            <ComboBox fx:id="orderBox" prefWidth="130"/>
-        </VBox>
-        <VBox spacing="4">
-            <Label fx:id="sizeLabel" text="Size" styleClass="field-label"/>
-            <Slider fx:id="sizeSlider" prefWidth="140"/>
-        </VBox>
-        <VBox spacing="4">
-            <Label text="Pattern" styleClass="field-label"/>
-            <ComboBox fx:id="patternBox" prefWidth="140"/>
-        </VBox>
-        <VBox spacing="4" alignment="BOTTOM_LEFT">
-            <Label text=" " styleClass="field-label"/>
-            <Button fx:id="generateButton" text="Generate new array" onAction="#generate"/>
-        </VBox>
-        <Region styleClass="separator-v" translateY="9"/>
-        <VBox spacing="4" HBox.hgrow="ALWAYS">
-            <Label text="Custom values (comma or space separated)" styleClass="field-label"/>
+    <!-- Input toolbar: groups stay whole and wrap onto a second row when the window is narrow. -->
+    <FlowPane fx:id="toolbar" styleClass="toolbar-flow">
+        <HBox styleClass="toolbar-group">
+            <VBox styleClass="field">
+                <Label text="Algorithm" styleClass="field-label" labelFor="$algorithmBox"/>
+                <ComboBox fx:id="algorithmBox" prefWidth="170"/>
+            </VBox>
+            <VBox styleClass="field">
+                <Label text="Order" styleClass="field-label" labelFor="$orderBox"/>
+                <ComboBox fx:id="orderBox" prefWidth="130"/>
+            </VBox>
+            <VBox styleClass="field">
+                <Label fx:id="sizeLabel" text="Size" styleClass="field-label" labelFor="$sizeSlider"/>
+                <Slider fx:id="sizeSlider" prefWidth="140" minHeight="36"/>
+            </VBox>
+            <VBox styleClass="field">
+                <Label text="Pattern" styleClass="field-label" labelFor="$patternBox"/>
+                <ComboBox fx:id="patternBox" prefWidth="140"/>
+            </VBox>
+            <VBox styleClass="field" alignment="BOTTOM_LEFT">
+                <Label text=" " styleClass="field-label"/>
+                <Button fx:id="generateButton" text="Generate new array" onAction="#generate"/>
+            </VBox>
+        </HBox>
+        <VBox styleClass="field">
+            <Label text="Custom values (comma or space separated)" styleClass="field-label" labelFor="$customField"/>
             <HBox spacing="8">
-                <TextField fx:id="customField" promptText="e.g. 38, 12, 7, 25, 7, 41" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="customField" promptText="e.g. 38, 12, 7, 25, 7, 41" prefWidth="250" HBox.hgrow="ALWAYS"/>
                 <Button fx:id="applyButton" text="Use values" onAction="#applyCustom"/>
             </HBox>
         </VBox>
-    </HBox>
+    </FlowPane>
     <Label fx:id="inputMessage" styleClass="inline-message"/>
 
     <SplitPane fx:id="split" VBox.vgrow="ALWAYS" dividerPositions="0.75">
-        <VBox spacing="12" minWidth="520">
+        <VBox spacing="12" minWidth="460">
             <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
                 <SortingCanvas fx:id="canvas"/>
                 <Legend fx:id="legend" StackPane.alignment="TOP_LEFT">
@@ -68,7 +68,6 @@
         <ScrollPane fitToWidth="true" minWidth="340" hbarPolicy="NEVER">
             <VBox styleClass="side-panel">
                 <ExplanationCard fx:id="explanationCard"/>
-                <MetricsPanel fx:id="metricsPanel"/>
                 <Label fx:id="buildNote" styleClass="note-text"/>
                 <VBox styleClass="card">
                     <Label text="Pseudocode" styleClass="card-title"/>

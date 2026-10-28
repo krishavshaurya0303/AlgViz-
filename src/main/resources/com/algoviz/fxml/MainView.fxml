@@ -15,12 +15,12 @@
     <left>
         <VBox fx:id="sidebar" styleClass="sidebar">
             <HBox fx:id="brandBox" styleClass="brand">
-                <VBox spacing="1">
+                <VBox fx:id="brandText" spacing="1">
                     <Label text="AlgoViz" styleClass="brand-name"/>
                     <Label text="Algorithm Visualizer" styleClass="brand-sub"/>
                 </VBox>
             </HBox>
-            <Label text="Overview" styleClass="nav-section"/>
+            <Label text="Workspace" styleClass="nav-section"/>
             <VBox fx:id="navOverview" spacing="2"/>
             <Label text="Visualizers" styleClass="nav-section"/>
             <VBox fx:id="navModules" spacing="2"/>
@@ -28,7 +28,8 @@
             <VBox fx:id="navLearn" spacing="2"/>
             <Region VBox.vgrow="ALWAYS"/>
             <VBox fx:id="navBottom" spacing="2"/>
-            <VBox styleClass="sidebar-footer">
+            <Button fx:id="sidebarToggle" styleClass="sidebar-toggle" onAction="#toggleSidebar"/>
+            <VBox fx:id="sidebarFooter" styleClass="sidebar-footer">
                 <Label fx:id="versionLabel"/>
                 <Label text="Offline · no account needed"/>
             </VBox>

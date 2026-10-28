@@ -12,8 +12,8 @@ public final class AppConfig {
 
     // Sorting Studio limits
     public static final int SORT_MIN_SIZE = 2;
-    public static final int SORT_MAX_SIZE = 150;
-    public static final int SORT_DEFAULT_SIZE = 24;
+    public static final int SORT_MAX_SIZE = 20;
+    public static final int SORT_DEFAULT_SIZE = 12;
     public static final int SORT_MIN_VALUE = -999;
     public static final int SORT_MAX_VALUE = 999;
     public static final int SORT_RANDOM_MIN = 5;

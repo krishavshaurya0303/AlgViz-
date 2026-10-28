@@ -2,18 +2,36 @@ package com.algoviz.ui.component;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-/** Colour legend overlay ("Comparing", "Swapping", ...). */
-public final class Legend extends HBox {
+/**
+ * Colour legend overlay ("Comparing", "Swapping", ...). One row when the board is
+ * wide enough; on a narrow board the entries wrap instead of being cut off.
+ */
+public final class Legend extends FlowPane {
+
+    /** Gap kept between the legend and the right edge of the board. */
+    private static final double EDGE = 24;
 
     public Legend() {
         getStyleClass().add("legend");
         setAlignment(Pos.CENTER_LEFT);
-        setMaxWidth(USE_PREF_SIZE);
-        setMaxHeight(USE_PREF_SIZE);
+        setPrefWrapLength(4000); // preferred size is a single row
+    }
+
+    @Override
+    protected double computeMaxWidth(double height) {
+        double single = prefWidth(-1);
+        return getParent() instanceof Region r ? Math.min(single, Math.max(0, r.getWidth() - EDGE)) : single;
+    }
+
+    @Override
+    protected double computeMaxHeight(double width) {
+        return prefHeight(width);
     }
 
     public Legend item(Color color, String label) {

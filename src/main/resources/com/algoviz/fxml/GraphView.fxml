@@ -3,7 +3,6 @@
 <?import com.algoviz.ui.component.ComplexityCard?>
 <?import com.algoviz.ui.component.ExplanationCard?>
 <?import com.algoviz.ui.component.Legend?>
-<?import com.algoviz.ui.component.MetricsPanel?>
 <?import com.algoviz.ui.component.PlaybackBar?>
 <?import com.algoviz.ui.component.PseudocodePanel?>
 <?import com.algoviz.ui.render.GridCanvas?>
@@ -14,21 +13,22 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.algoviz.controller.GraphController" styleClass="module-root">
 
-    <HBox fx:id="toolbar" styleClass="toolbar-row">
-        <VBox spacing="4">
-            <Label text="Algorithm" styleClass="field-label"/>
+    <!-- Three groups (algorithm, draw tool, board) that wrap as whole groups on narrow windows. -->
+    <FlowPane fx:id="toolbar" styleClass="toolbar-flow">
+        <VBox styleClass="field">
+            <Label text="Algorithm" styleClass="field-label" labelFor="$algorithmBox"/>
             <ComboBox fx:id="algorithmBox" prefWidth="190"/>
         </VBox>
-        <VBox spacing="4">
-            <Label text="Draw tool (left-click / drag · right-click erases)" styleClass="field-label"/>
+        <VBox styleClass="field">
+            <Label text="Draw tool  (drag to paint, right-click to erase)" styleClass="field-label"/>
             <HBox fx:id="toolGroup" styleClass="segmented">
                 <ToggleButton fx:id="wallTool" text="Wall"/>
                 <ToggleButton fx:id="weightTool" text="Weight ×5"/>
@@ -37,8 +37,7 @@
                 <ToggleButton fx:id="targetTool" text="Move target"/>
             </HBox>
         </VBox>
-        <Region HBox.hgrow="ALWAYS"/>
-        <VBox spacing="4">
+        <VBox styleClass="field">
             <Label text="Board" styleClass="field-label"/>
             <HBox spacing="8">
                 <Button fx:id="mazeButton" text="Random walls" onAction="#randomWalls"/>
@@ -46,11 +45,11 @@
                 <Button fx:id="clearButton" text="Clear board" onAction="#clearBoard"/>
             </HBox>
         </VBox>
-    </HBox>
+    </FlowPane>
     <Label fx:id="inputMessage" styleClass="inline-message"/>
 
     <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.75">
-        <VBox spacing="12" minWidth="520">
+        <VBox spacing="12" minWidth="460">
             <StackPane styleClass="canvas-card" VBox.vgrow="ALWAYS">
                 <GridCanvas fx:id="canvas"/>
                 <Legend fx:id="legend" StackPane.alignment="TOP_LEFT">
@@ -65,7 +64,6 @@
         <ScrollPane fitToWidth="true" minWidth="340" hbarPolicy="NEVER">
             <VBox styleClass="side-panel">
                 <ExplanationCard fx:id="explanationCard"/>
-                <MetricsPanel fx:id="metricsPanel"/>
                 <VBox styleClass="card">
                     <Label text="Pseudocode" styleClass="card-title"/>
                     <PseudocodePanel fx:id="pseudocodePanel"/>

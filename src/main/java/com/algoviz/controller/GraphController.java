@@ -24,7 +24,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 
 import java.util.List;
 import java.util.Random;
@@ -34,7 +34,7 @@ public final class GraphController extends VisualizerController<GraphStep> {
 
     private enum Tool { WALL, WEIGHT, ERASE, START, TARGET }
 
-    @FXML private HBox toolbar;
+    @FXML private FlowPane toolbar;
     @FXML private ComboBox<GraphSearchAlgorithm> algorithmBox;
     @FXML private ToggleButton wallTool;
     @FXML private ToggleButton weightTool;
@@ -61,6 +61,8 @@ public final class GraphController extends VisualizerController<GraphStep> {
 
     @FXML
     private void initialize() {
+        // An empty message row takes no space, so the board sits right under the toolbar.
+        inputMessage.managedProperty().bind(inputMessage.textProperty().isNotEmpty());
         algorithmBox.getItems().setAll(context.catalog().graphAlgorithms());
         algorithmBox.setCellFactory(l -> nameCell());
         algorithmBox.setButtonCell(nameCell());
@@ -100,9 +102,6 @@ public final class GraphController extends VisualizerController<GraphStep> {
                 .item(Palette.INDIGO, "Start")
                 .item(Palette.CORAL, "Target");
 
-        metricsPanel.configure(List.of(MetricType.NODES_EXPLORED, MetricType.FRONTIER_SIZE,
-                        MetricType.PATH_LENGTH, MetricType.PATH_COST),
-                List.<String[]>of(new String[]{STEP, "Position in the recorded sequence of steps."}));
 
         rulesLabel.setText("Movement is 4-directional: up, right, down, left — no diagonals, so walls can never "
                 + "be cut through at corners. Entering a normal cell costs 1 and a weighted cell costs "

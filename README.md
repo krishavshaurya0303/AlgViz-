@@ -2,8 +2,8 @@
 
 AlgoViz is a JavaFX desktop application that shows how data structures and algorithms execute internally.
 Every animation is generated from a **real, instrumented implementation**: the engine records each comparison,
-swap, visit and pointer change as an immutable snapshot, and the UI plays those snapshots back — forward,
-backward, paused or at any speed — together with the matching pseudocode line and a plain-English explanation.
+swap, visit and pointer change as an immutable snapshot, and the user steps through those snapshots one at a time
+with **Previous** and **Next**, together with the matching pseudocode line and a plain-English explanation.
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
@@ -30,13 +30,26 @@ sequences that are not connected to real code.
 | **Dashboard** | Welcome, entry points to every module, honest summary, *Continue learning* (only if you really opened a module before). |
 | **Sorting Studio** | Bubble, Selection, Insertion, Merge, Quick Sort. Ascending/descending. Size 2–150, patterns (random, nearly sorted, reversed, sorted, few unique), custom input with validation. Merge Sort shows its temporary buffer; Insertion Sort lifts the key out and shows shifts; Quick Sort shows pivot and `i` boundary; Selection Sort shows the current minimum. |
 | **Graph Explorer** | 19 × 35 grid, 4-directional movement. Draw/erase walls and weighted cells (cost 5), move start/target. BFS, DFS, Dijkstra. Frontier, visited, current node, final path, Dijkstra distances, explicit *No path found* state. |
-| **Tree Visualizer** | Standard (unbalanced) BST: insert, search, delete (leaf / one child / two children with inorder successor), inorder, preorder, postorder, level-order, sample tree, clear. Duplicates rejected. |
-| **Linked List Lab** | Singly linked list (head pointer only): insert head/tail/index, delete head/tail/index, search, traverse, reverse, clear. Every pointer assignment is its own step; arrows are drawn from the real `next` pointers so reversal visibly flips them. |
+| **Tree Visualizer** | Standard (unbalanced) BST: insert, search, delete (leaf / one child / two children with inorder successor), inorder, preorder, postorder, level-order, sample tree, clear. Duplicates rejected. Nodes can be dragged (see below). |
+| **Linked List Lab** | Singly linked list (head pointer only): insert head/tail/index, delete head/tail/index, search, traverse, reverse, clear. Every pointer assignment is its own step; arrows are drawn from the real `next` pointers so reversal visibly flips them. Nodes can be dragged. |
 | **Algorithm Library** | Summary, use cases, how it works, pseudocode, best/average/worst complexity, stability, in-place status, operation tables, "Open in visualizer". |
-| **Settings** | Default speed, animate transitions (reduced motion), default array size, start module, Dijkstra distances, clear recent activity, reset. Saved to `~/.algoviz/settings.properties`. |
+| **Settings** | Animate transitions (reduced motion), default array size, start module, Dijkstra distances, clear recent activity, reset. Saved to `~/.algoviz/settings.properties`. |
 
-Shared execution controls in every visualizer: **Previous step and Next step**. There is no automatic playback; the
-user advances every step by hand. Keyboard: `←`, `→`, `Ctrl+1…7`, `F1`.
+**Stepping.** Every visualizer has the same two controls: **Previous** and **Next** (keyboard `←` / `→`). There is
+no automatic playback; each run opens at step 0 and advances only when the user asks, which keeps the pace under the
+learner's control during a demo. Other shortcuts: `Ctrl+1…7` switch module, `F1` opens help.
+
+**Interaction.**
+* *Draggable nodes* (Tree Visualizer, Linked List Lab): grab a node and its neighbours follow through elastic
+  links, nodes push each other apart, and everything springs back to the correct layout on release — the
+  structure on screen is never left in a wrong state (`ui/animation/SpringField`).
+* *Hover feedback*: tree/list nodes grow slightly and their links brighten; buttons lift and press in, sidebar
+  items and library rows slide, dashboard cards rise (`ui/animation/HoverMotion`). Turning off *Animate
+  transitions* stops the control motions.
+
+**Look.** A single dark "ink on paper" theme: warm charcoal surfaces, paper-white text and one brick-red accent,
+flat (no gradients, glows or shadows). Fonts: Atkinson Hyperlegible for the interface — designed for legibility,
+which helps on a projector — and IBM Plex Mono for code, values and counters.
 
 | | |
 |---|---|
@@ -44,12 +57,12 @@ user advances every step by hand. Keyboard: `←`, `→`, `Ctrl+1…7`, `F1`.
 | ![Dijkstra](docs/screenshots/graph-dijkstra.png) | ![Tree traversal](docs/screenshots/tree-traversal.png) |
 | ![Linked list reversal](docs/screenshots/linkedlist-reverse.png) | ![Library](docs/screenshots/library.png) |
 
-*Screenshots were captured from the running application (Xvfb, 1440×900) with the screenshot harness in
+*Screenshots were captured from the running application (Windows, 1440×900) with the screenshot harness in
 `src/test/java/com/algoviz/tools/ScreenshotHarness.java`.*
 
 ## 4. Technology stack
 
-* Java 17+ (built and tested on OpenJDK 21), JavaFX 21.0.5 (controls, FXML), custom CSS
+* Java 17+ (tested on OpenJDK 21 / Linux and Java 27 / Windows 11), JavaFX 21.0.5 (controls, FXML), custom CSS
 * Maven 3.9, JUnit 5
 * Bundled fonts: Atkinson Hyperlegible and IBM Plex Mono (SIL Open Font License, see `src/main/resources/com/algoviz/fonts/`)
 * No database, no network access, no accounts
@@ -61,7 +74,7 @@ flowchart LR
     subgraph UI["JavaFX layer (FX thread only)"]
         FXML["FXML views + CSS"] --> C["Controllers<br/>(MainController, *Controller)"]
         C --> R["Renderers<br/>SortingCanvas, GridCanvas,<br/>TreeCanvas, LinkedListCanvas"]
-        C --> D["FxPlaybackDriver<br/>(Timeline → tick)"]
+        C --> D["FxPlaybackDriver<br/>(Previous / Next → step)"]
         C --> COMP["Components<br/>PlaybackBar, MetricsPanel,<br/>PseudocodePanel, ExplanationCard"]
     end
     subgraph Engine["Engine (no JavaFX imports)"]
@@ -80,8 +93,13 @@ flowchart LR
 
 **Flow of one run:** the controller builds the input → the selected `Algorithm` strategy runs on it (in a
 background `Task` for sorting/graph) and returns an `ExecutionTrace` of immutable steps → the trace is loaded into
-the `PlaybackController` → a JavaFX `Timeline` calls `tick()` → listeners render the current step, update
-pseudocode, explanation and metrics.
+the `PlaybackController` at step 0 → each **Next** / **Previous** moves its cursor one snapshot → listeners render
+that step and update pseudocode, explanation and metrics. (The engine can also auto-play via `tick()`; the UI
+deliberately uses manual stepping only.)
+
+An interactive, source-linked version of this diagram is in
+[`docs/architecture/algoviz-architecture.html`](docs/architecture/algoviz-architecture.html) — open it in a browser
+and click any box to see the exact lines of code behind it.
 
 ## 6. Package structure
 
@@ -99,14 +117,14 @@ src/main/java/com/algoviz/
 ├── service/                                 AlgorithmCatalog (strategy registry + docs), SettingsService (persistence)
 ├── controller/                              MainController, VisualizerController (base), StaticPageController (base),
 │                                            Dashboard/Sorting/Graph/Tree/LinkedList/Library/Settings controllers, AppContext
-├── ui/animation/                            FxPlaybackDriver, Tween, BackgroundRunner
+├── ui/animation/                            FxPlaybackDriver, Tween, BackgroundRunner, SpringField, HoverMotion
 ├── ui/component/                            PlaybackBar, MetricsPanel, PseudocodePanel, ExplanationCard, ComplexityCard,
 │                                            Legend, EmptyState, NotificationCenter, Icons, IconType, BrandMark
 ├── ui/render/                               ResizableCanvas (base) + 4 canvases
 ├── ui/theme/                                Palette, FontLoader
 └── util/                                    ValidationUtils, InvalidInputException, ComplexityUtils
 src/main/resources/com/algoviz/  fxml/ (8 views) · css/ (app, components, modules) · fonts/
-src/test/java/com/algoviz/       engine/ · service/ · util/ · ui/UiSmokeTest · tools/ScreenshotHarness
+src/test/java/com/algoviz/       engine/ · service/ · util/ · ui/UiSmokeTest · ui/animation/SpringFieldTest · tools/ScreenshotHarness
 ```
 
 ## 7. Class responsibilities (key classes)
@@ -117,7 +135,9 @@ src/test/java/com/algoviz/       engine/ · service/ · util/ · ui/UiSmokeTest 
 | `ExecutionTrace<S>` | Ordered, unmodifiable list of steps from one run (+ recording time). |
 | `ExecutionHistory<S>` | Cursor over a trace: forward, backward, seek, rewind. |
 | `PlaybackController<S>` | FX-independent state machine (EMPTY/READY/PLAYING/PAUSED/FINISHED), stopwatch, generation counter, observers. |
-| `FxPlaybackDriver<S>` | Adapts the controller to JavaFX: `Timeline` ticks, observable properties, speed. |
+| `FxPlaybackDriver<S>` | Adapts the controller to JavaFX: step commands, observable properties, change listeners for rendering. |
+| `SpringField` | Spring physics for draggable nodes: each node has a displacement from its layout position, pulled home, along links and away from other nodes. Pure arithmetic, unit-tested without JavaFX. |
+| `HoverMotion` | One scene-wide mouse filter that eases hover/press motion for buttons, sidebar items, cards and rows (JavaFX 21 CSS has no transitions). |
 | `SortRecorder` | Instrumented array — every compare/swap/write goes through it, so counts and highlights are always consistent. |
 | `SortingAlgorithm` | Template method: records initial/final states; subclasses implement `sort()`. |
 | `GraphSearchAlgorithm` | Template: initial state, path reconstruction from parent pointers, "no path" outcome. |
@@ -201,13 +221,14 @@ does **not** self-balance (no AVL in this release).
 
 ## 11. Installation
 
-Requirements: **JDK 17 or newer** and **Maven 3.8+**. JavaFX is downloaded by Maven automatically (it is not part
-of the JDK); the correct native artifacts for Windows, macOS or Linux are selected by the OpenJFX dependencies.
+Requirements: **JDK 17 or newer**. Maven is optional — the bundled Maven Wrapper (`mvnw` / `mvnw.cmd`) downloads
+it. JavaFX is downloaded automatically too (it is not part of the JDK); the correct native artifacts for Windows,
+macOS or Linux are selected by the OpenJFX dependencies.
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/krishavshaurya0303/AlgViz-.git
 cd AlgViz-
-mvn -q compile
+mvnw.cmd -q compile                  # ./mvnw -q compile on macOS/Linux
 ```
 
 ## 12. Running
@@ -216,11 +237,15 @@ mvn -q compile
 (Windows) or run `./run-mac-linux.sh` (macOS/Linux). Maven is not needed: the bundled Maven Wrapper downloads it.
 
 ```bash
-mvn javafx:run                       # recommended
+mvnw.cmd javafx:run                  # Windows, from a terminal (./mvnw javafx:run on macOS/Linux)
+mvn javafx:run                       # if Maven is installed
 # or build a self-contained jar for the current platform:
-mvn package
+mvnw.cmd package
 java -jar target/algoviz-1.0.0-app.jar
 ```
+
+On Java 22+ the terminal prints several `WARNING:` lines about `sun.misc.Unsafe` and native access. They come
+from Maven and JavaFX 21 on newer JDKs and are harmless.
 
 The `-app.jar` contains the JavaFX natives of the platform it was built on (build it on the machine you run it on).
 JavaFX prints a harmless "Unsupported JavaFX configuration: classes were loaded from unnamed module" warning
@@ -229,11 +254,13 @@ when started from the jar.
 ## 13. Tests
 
 ```bash
-mvn test                             # engine, service, util tests (UI test skipped without a display)
+mvnw.cmd test                        # Windows; engine, service, util tests (UI test skipped without DISPLAY)
 xvfb-run -a mvn test                 # Linux headless: also runs the JavaFX UI smoke test
 ```
 
-Latest run (OpenJDK 21, Linux, under Xvfb): **1086 tests, 0 failures, 0 errors, 0 skipped.**
+To include the UI smoke test on Windows, set `DISPLAY` first: in PowerShell `$env:DISPLAY=':0'; .\mvnw.cmd test`.
+
+Latest run (Java 27, Windows 11, with `DISPLAY` set): **1090 tests, 0 failures, 0 errors, 0 skipped.**
 
 | Suite | Tests | What is verified |
 |---|---|---|
@@ -245,6 +272,7 @@ Latest run (OpenJDK 21, Linux, under Xvfb): **1086 tests, 0 failures, 0 errors, 
 | `PlaybackControllerTest` | 15 | Pause stops ticks, resume, finish, replay, step forward/back restore identical snapshots and metrics, repeated round trips, reset clears time, paused time excluded (fake clock), generation invalidation, seek, listeners. |
 | `SettingsServiceTest` | 4 | Defaults, round trip, malformed values, unreadable/unwritable file. |
 | `AlgorithmCatalogTest`, `ValidationUtilsTest` | 5 | Catalog completeness and stability facts; input parsing and range errors. |
+| `SpringFieldTest` | 4 | Dragged node stays under the cursor, neighbours follow less with distance, everything returns home after release, removed nodes are forgotten. |
 | `UiSmokeTest` | 1 | Launches the real app, opens every module, drives Previous/Next stepping via the UI, validates inline errors, runs tree/list/graph operations, fails on any FX-thread exception. |
 
 ## 14. Limitations and future work
@@ -253,7 +281,8 @@ Latest run (OpenJDK 21, Linux, under Xvfb): **1086 tests, 0 failures, 0 errors, 
 * Graph Explorer uses a fixed 19 × 35 grid with one weight value (5); no diagonal movement; no A*.
 * Linked List Lab is limited to 10 nodes and the tree to 63 nodes so every node stays readable.
 * Single dark theme; no sound.
+* Stepping is manual only (no Play button); the engine still supports timed playback if it is ever wanted back.
+* Only tree and list nodes are draggable; sorting bars and grid cells are not.
 * The shaded jar is platform-specific; jlink/jpackage installers are not provided yet.
-* The elapsed time is animation wall-clock time, not an algorithm benchmark (by design).
 
 See `docs/VIVA.md` for viva preparation notes.

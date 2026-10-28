@@ -31,7 +31,7 @@ mvnw.cmd test                    # run all tests (the UI smoke test is skipped w
 mvnw.cmd package                 # also builds target/algoviz-1.0.0-app.jar (platform-specific fat jar)
 ```
 On Linux a headless UI test run is `xvfb-run -a mvn test`.
-Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and on Windows/Java 27 (2026-10-27: 1086 run, 0 failures, 1 skipped = `UiSmokeTest`, no DISPLAY). The stack trace printed during `SettingsServiceTest` is the intentional "Could not read settings" path, not a failure.
+Last verified result: **1090 tests, 0 failures, 0 skipped** (Windows/Java 27 with `$env:DISPLAY=':0'`, 2026-10-28). The stack trace printed during `SettingsServiceTest` is the intentional "Could not read settings" path, not a failure.
 
 ## Architecture (where things are)
 `src/main/java/com/algoviz/`
@@ -66,6 +66,8 @@ Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and 
   - `FxPlaybackDriver`: a Timeline calls `tick()` and the speed sets the Timeline rate.
   - `Tween`: AnimationTimer-based easing.
   - `BackgroundRunner`: JavaFX Task plus a ticket so only the newest result is delivered.
+  - `SpringField`: spring physics for draggable tree/list nodes (displacement from layout home; home, link and repulsion forces; tested in `SpringFieldTest`). `ResizableCanvas.enableDragging` wires the mouse; canvases call `beginHomes`/`rememberHome` each frame and read `hoverOf(id)` for hover effects.
+  - `HoverMotion`: scene-wide mouse filter easing translate/scale for `.button`, `.toggle-button`, `.nav-item`, `.module-card`, `.library-item`. Disabled when Settings → Animate transitions is off.
 - `ui/render/`: `ResizableCanvas` base plus `SortingCanvas`, `GridCanvas`, `TreeCanvas` (x = inorder rank, y = depth), `LinkedListCanvas`.
 - `ui/component/`: `PlaybackBar`, `MetricsPanel`, `PseudocodePanel`, `ExplanationCard`, `ComplexityCard`, `Legend`, `EmptyState`, `NotificationCenter`, `Icons`/`IconType` (custom SVG paths), `BrandMark`.
 - `ui/theme/`: `Palette` (mirrors the CSS tokens), `FontLoader` (bundled Atkinson Hyperlegible and IBM Plex Mono, both OFL).
@@ -83,12 +85,14 @@ Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and 
 - **All UI and playback changes happen on the FX thread.** Heavy trace building (sorting, graph) runs in a background Task on copies of the input. Stale results are dropped via tickets.
 - **Honest metrics.**
   - Writes count array assignments; a swap counts as 2 writes. Insertion shifts and merge copies count as writes, never swaps.
-  - Elapsed time is playback wall-clock time, not a benchmark.
+  - No elapsed-time tile any more (removed with Play); the sorting build note says "not a performance benchmark".
   - Complexity cards are labelled "theoretical".
 - **Never mark an element sorted early.** A test enforces this for every step of every sort.
 - **BST does not self-balance**, and the app says so. AVL was deliberately not built.
 - **Input limits**: sort 2–150 values in the range −999..999; tree ≤ 63 nodes; list ≤ 10 nodes.
 - Single dark theme and no sound, so neither has a setting (this is stated in the Settings screen).
+- **Look = "ink on dark paper"** (chosen 2026-10-28 because the owner wants it to not look AI-made): warm charcoal, paper-white text, one brick-red accent (`-av-indigo` / `Palette.INDIGO` keep their old names but now hold brick red). No gradients, glows, drop shadows or pill shapes; corners 2–3px. Fonts: Atkinson Hyperlegible (UI) + IBM Plex Mono (code), OFL, licence files next to the fonts.
+- Dragged nodes always spring back home on release, so the drawn BST/list is never left in a wrong layout.
 
 ## Bugs found and fixed during the build (don't reintroduce)
 - `Timeline.playFromStart()` writes `rate`, so the ticker's rate must NOT be bound. A listener on speed sets it instead.
@@ -110,6 +114,13 @@ Last verified result: **1086 tests, 0 failures**. Confirmed on Linux/JDK 21 and 
 5. Added the Maven Wrapper (`mvnw`, `mvnw.cmd`, `.mvn/`) and launchers (`run-windows.bat`, `run-mac-linux.sh`). Sent `AlgoViz.zip`. User unzipped it to `Documents\AlgoViz` on Windows and the app opened (Java 27).
 6. User is moving to a local session on the laptop. This file was written as the handoff.
 7. Local session (2026-10-27): ran the suite on Windows/Java 27 (all pass). winget is broken on the laptop, so Git for Windows 2.56.0.4 was installed from the official GitHub release. The working copy was attached to the remote with `git init` + fetch + `git reset origin/<branch>`.
+8. 2026-10-27/28, same local session:
+   - Playback reduced to Previous/Next (Play, speed, reset, end, seek, Elapsed tile and default-speed setting removed).
+   - Linked List Lab: complexity and "Pointers in a nutshell" cards removed; null-pointer badges moved above the head box.
+   - Node 24 + Archify skill installed; interactive architecture diagram in `docs/architecture/` (source `candidate.json`, rebuild with Archify `finalize`).
+   - Dark paper theme; draggable spring-physics nodes; Atkinson Hyperlegible + IBM Plex Mono; hover animations; dashboard Quick start (and the "demo" navigation action) removed.
+   - README, VIVA.md and screenshots refreshed.
+   - Owner learned the Git loop and pushed `bb856f3` and `c88684b` himself.
 
 ## Known limitations / possible next work
 - AVL (or Red-Black) tree with rotation animation.

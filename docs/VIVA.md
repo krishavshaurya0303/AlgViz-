@@ -6,12 +6,13 @@ Short, code-referenced answers. File paths are under `src/main/java/com/algoviz/
 JavaFX has a scene graph with hardware-accelerated rendering, CSS styling, FXML for declarative layouts,
 built-in animation (`Timeline`, `AnimationTimer`, transitions) and observable properties/bindings. Swing has none
 of the CSS/FXML separation and needs manual repainting for animation. Our dark theme lives entirely in
-`resources/com/algoviz/css/*.css`, layouts in `resources/com/algoviz/fxml/*.fxml`.
+`resources/com/algoviz/css/*.css` (colours mirrored for canvas drawing in `ui/theme/Palette`), layouts in
+`resources/com/algoviz/fxml/*.fxml`.
 
 ### 2. Why MVC?
 To keep algorithm logic testable and independent from the screen. **Model**: `engine/**`, `model/**`
 (no JavaFX imports). **View**: FXML + CSS + `ui/render` canvases. **Controller**: `controller/*Controller`.
-Because the engine is UI-free, 1085 of the 1086 tests run without starting JavaFX.
+Because the engine is UI-free, 1089 of the 1090 tests run without starting JavaFX (only `UiSmokeTest` needs it).
 
 ### 3. What is the Strategy pattern here?
 `engine/Algorithm.java` is the strategy interface (`run(I input) → ExecutionTrace<S>`). `BubbleSort`,
@@ -35,14 +36,16 @@ held key, a metrics snapshot, the pseudocode line and the explanation. The list 
 
 ### 6. How does Step Backward work?
 Each step is a complete snapshot, and `ExecutionHistory` is just a cursor (`index`) into the trace.
-Step Backward = `cursor--` and render that snapshot — array, highlights **and counters** come back exactly,
+**Previous** = `cursor--` and render that snapshot — array, highlights **and counters** come back exactly,
 because counters are stored per step (`ExecutionMetrics` is immutable). Nothing is "undone" or recomputed, so
 forward/backward any number of times is consistent (`PlaybackControllerTest.repeatedForwardBackwardIsConsistent`).
 Memory is bounded by input limits (≤150 elements, ≤665 grid cells).
 
 ### 7. How is thread safety maintained?
-* All UI updates and all playback state changes happen on the JavaFX Application Thread: `FxPlaybackDriver`
-  uses a `Timeline` whose `KeyFrame` calls `tick()` — no worker thread touches nodes.
+* All UI updates and all playback state changes happen on the JavaFX Application Thread: Previous/Next are
+  button and key handlers, which JavaFX always runs on that thread, and they call `FxPlaybackDriver` directly —
+  no worker thread touches nodes. (The driver also has a `Timeline` for timed playback, which runs on the same
+  thread; the current UI does not use it.)
 * Expensive trace building (sorting, graph) runs in a `javafx.concurrent.Task` on a single daemon thread
   (`ui/animation/BackgroundRunner`). The task works on *copies* (`SortInput` clones the array,
   `GridGraph.copy()`), and its result is delivered on the FX thread only if its ticket is still the newest —
@@ -80,14 +83,28 @@ delete degrade from O(log n) to O(n) (`BinarySearchTreeTest.heightAndDegenerateT
 (AVL, Red-Black) fix this with rotations; AlgoViz deliberately labels its tree as a standard BST.
 
 ### 13. What tests verify correctness?
-1086 JUnit 5 tests (see README §13). Highlights: every sort on 50 inputs × 2 orders vs `Arrays.sort`, plus the
+1090 JUnit 5 tests (see README §13). Highlights: every sort on 50 inputs × 2 orders vs `Arrays.sort`, plus the
 invariant "never marked sorted early"; BFS/Dijkstra optimality vs independent reference implementations on
 random grids; 2000 random BST operations vs `java.util.TreeSet`; linked-list link integrity after every
-operation; playback pause/resume/reset/step consistency with a fake clock; and a UI smoke test that drives the
-real application.
+operation; playback step consistency with a fake clock; spring physics for draggable nodes; and a UI smoke test
+that drives the real application with Previous/Next.
+
+### 14. Why only Previous and Next, no Play button?
+A learner (or an examiner) controls the pace: each step stays on screen with its explanation and pseudocode line
+until they choose to move on, and nothing changes behind their back. The engine still supports timed playback
+(`PlaybackController.play()`/`tick()`, tested in `PlaybackControllerTest`), so this is a UI choice, not a missing
+feature.
+
+### 15. How do the draggable nodes work without breaking the structure?
+`ui/animation/SpringField` never moves a node's *layout* position — it only stores a displacement from it. Each
+frame, three forces act on the displacement: a spring back home, springs along each link towards the neighbours'
+displacement (so a dragged node pulls its neighbours like a rope), and a push away from nodes that come too close;
+damping makes it settle. On release every displacement decays to 0, so the BST stays in sorted order and the list
+in link order. The physics is plain arithmetic and is unit-tested without JavaFX (`SpringFieldTest`).
 
 ### Bonus: how are metrics kept honest?
 Counters are incremented only inside recorders at the moment the operation happens; each `MetricType` has a
-written definition shown as a tooltip. Elapsed time uses `System.nanoTime()` (monotonic) and excludes paused
-time (`engine/Stopwatch`). Complexity cards are titled "Theoretical complexity" and come from documentation,
-not from measurements.
+written definition shown as a tooltip. No timing is shown on screen (the old "Elapsed" counter was removed with the
+Play button, because manual stepping would make it meaningless); the step-recording time under the sorting chart is
+labelled "not a performance benchmark". Complexity cards are titled "Theoretical complexity" and come from
+documentation, not from measurements.
